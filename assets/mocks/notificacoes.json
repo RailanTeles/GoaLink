@@ -1,0 +1,11 @@
+[
+  {
+    "id_notificacao": "notif_001",
+    "usuario_id": "jogador_01",
+    "tipo": "nova_mensagem",
+    "conteudo": "Marcos Observador enviou uma nova mensagem para você.",
+    "link_id": "chat_001",
+    "lida": false,
+    "criado_em": "2026-03-22T09:30:00Z"
+  }
+]

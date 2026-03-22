@@ -1,0 +1,31 @@
+[
+  {
+    "id_chat": "chat_001",
+    "participantes": ["jogador_01", "olheiro_01"],
+    "ultima_mensagem": "Me envie seu vídeo completo, por favor.",
+    "atualizado_em": "2026-03-22T09:30:00Z",
+    "mensagens": [
+      {
+        "id_mensagem": "msg_001",
+        "remetente_id": "olheiro_01",
+        "texto": "Olá, Lian! Gostei muito do seu perfil. Você tem algum vídeo de jogo completo?",
+        "lida": true,
+        "criado_em": "2026-03-22T09:00:00Z"
+      },
+      {
+        "id_mensagem": "msg_002",
+        "remetente_id": "jogador_01",
+        "texto": "Olá, Marcos! Muito obrigado. Tenho sim, vou fazer o upload e te mando o link.",
+        "lida": true,
+        "criado_em": "2026-03-22T09:15:00Z"
+      },
+      {
+        "id_mensagem": "msg_003",
+        "remetente_id": "olheiro_01",
+        "texto": "Me envie seu vídeo completo, por favor.",
+        "lida": false,
+        "criado_em": "2026-03-22T09:30:00Z"
+      }
+    ]
+  }
+]

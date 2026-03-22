@@ -1,0 +1,62 @@
+[
+  {
+    "id": "jogador_01",
+    "tipo": "jogador",
+    "nome": "Lian fofinho",
+    "data_nascimento": "2005-04-12T00:00:00Z",
+    "altura": 1.78,
+    "peso": 70.0,
+    "posicao": "Meio-campo",
+    "cidade": "Salvador",
+    "perna_preferida": "ambidestro",
+    "descricao": "Armador com boa visão de jogo e passe preciso.",
+    "foto_perfil": "https://via.placeholder.com/150",
+    "contatos": {
+      "whatsapp": "+5571999999999",
+      "instagram": "@lian.fofinho"
+    },
+    "criado_em": "2026-01-15T14:30:00Z" 
+  },
+  {
+    "id": "jogador_02",
+    "tipo": "jogador",
+    "nome": "Liantio",
+    "data_nascimento": "2007-08-25T00:00:00Z",
+    "altura": 1.85,
+    "peso": 78.5,
+    "posicao": "Zagueiro",
+    "cidade": "Feira de Santana",
+    "perna_preferida": "direita",
+    "descricao": "Zagueiro alto, forte na bola aérea e bom tempo de bola.",
+    "foto_perfil": "https://via.placeholder.com/150",
+    "contatos": {
+      "whatsapp": "+5575988888888"
+    },
+    "criado_em": "2026-03-20T09:15:00Z" 
+  },
+  {
+    "id": "clube_01",
+    "tipo": "clube",
+    "nome": "Esporte Clube Futuro",
+    "cidade": "São Paulo",
+    "descricao": "Clube focado em revelar talentos para o futebol nacional e internacional.",
+    "redes_sociais": {
+      "instagram": "@ecfuturo",
+      "site": "www.ecfuturo.com.br"
+    },
+    "jogadores_procurados": "Buscamos laterais rápidos e zagueiros com boa saída de bola, nascidos entre 2005 e 2008.",
+    "criado_em": "2025-11-10T10:00:00Z"
+  },
+  {
+    "id": "olheiro_01",
+    "tipo": "olheiro",
+    "nome": "Marcos Observador",
+    "clube_representante": "Esporte Clube Futuro",
+    "descricao": "Olheiro com 15 anos de experiência nas categorias de base.",
+    "redes_sociais": {
+      "linkedin": "linkedin.com/in/marcos-observador"
+    },
+    "jogadores_procurados": "Atacantes finalizadores e goleiros com mais de 1.85m.",
+    "criado_em": "2025-12-05T08:00:00Z"
+  }
+]
