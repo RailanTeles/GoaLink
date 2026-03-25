@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goalink/core/input_personalizado.dart';
 
 class PainelInferior extends StatefulWidget {
   const PainelInferior({super.key, required this.alturaContainer});
@@ -9,7 +10,8 @@ class PainelInferior extends StatefulWidget {
 }
 
 class _PainelInferiorState extends State<PainelInferior> {
-  bool _ocultarSenha = true;
+  final _emailController = TextEditingController();
+  final _senhaController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,78 +42,19 @@ class _PainelInferiorState extends State<PainelInferior> {
                 mainAxisAlignment: .spaceEvenly,
                 crossAxisAlignment: .center,
                 children: [
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 400),
-                    child: TextFormField(
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.white),
-                        prefixIcon: const Icon(
-                          Icons.email,
-                          color: Colors.white,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 2.0,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 2.0, // Mantém grosso quando clica
-                          ),
-                        ),
-                      ),
-                    ),
+                  InputPersonalizado(
+                    labelText: 'Email',
+                    prefixIcon: Icons.email,
+                    controller: _emailController,
                   ),
                   Column(
                     crossAxisAlignment: .end,
                     children: [
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 400),
-                        child: TextFormField(
-                          obscureText: _ocultarSenha,
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            labelStyle: TextStyle(color: Colors.white),
-                            labelText: 'Senha',
-                            prefixIcon: const Icon(
-                              Icons.password,
-                              color: Colors.white,
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _ocultarSenha = !_ocultarSenha;
-                                });
-                              },
-                              icon: Icon(
-                                _ocultarSenha
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Colors.white54,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: const BorderSide(
-                                color: Colors.white,
-                                width: 2.0,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 2.0, // Mantém grosso quando clica
-                              ),
-                            ),
-                          ),
-                        ),
+                      InputPersonalizado(
+                        labelText: 'Senha',
+                        prefixIcon: Icons.password,
+                        controller: _senhaController,
+                        isPassword: true,
                       ),
                       SizedBox(height: 5),
                       TextButton(
@@ -136,6 +79,7 @@ class _PainelInferiorState extends State<PainelInferior> {
                         child: ElevatedButton(
                           onPressed: () {
                             // Ação de login aqui
+                            // print(_emailController.text);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
