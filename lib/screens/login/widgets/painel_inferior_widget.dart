@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:goalink/core/input_personalizado.dart';
 
 class PainelInferior extends StatefulWidget {
@@ -78,6 +79,7 @@ class _PainelInferiorState extends State<PainelInferior> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
+                            context.go('/');
                             // Ação de login aqui
                             // print(_emailController.text);
                           },

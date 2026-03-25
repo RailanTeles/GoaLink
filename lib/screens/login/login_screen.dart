@@ -23,50 +23,52 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: .center,
-                children: [
-                  Image.asset("assets/images/logo.png"),
-                  SizedBox(width: 10),
-                  Text.rich(
-                    TextSpan(
-                      style: const TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      children: [
-                        const TextSpan(
-                          text: 'Goa',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        TextSpan(
-                          text: 'Link',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.png'),
+              fit: BoxFit.cover,
             ),
-            PainelInferior(alturaContainer: alturaContainer),
-          ],
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: .center,
+                  children: [
+                    Image.asset("assets/images/logo.png"),
+                    SizedBox(width: 10),
+                    Text.rich(
+                      TextSpan(
+                        style: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: 'Goa',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: 'Link',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              PainelInferior(alturaContainer: alturaContainer),
+            ],
+          ),
         ),
       ),
     );

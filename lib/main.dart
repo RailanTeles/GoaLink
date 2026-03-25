@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:goalink/screens/login/login_screen.dart';
+import 'package:goalink/routes.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,15 +17,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return MaterialApp.router(
+      title: 'GoaLink',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: const Color(0xFF195E3B)),
         fontFamily: "MavenPro",
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      routerConfig: router,
     );
   }
 }
