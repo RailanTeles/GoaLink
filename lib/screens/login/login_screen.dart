@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goalink/widgets/painel_inferior_widget.dart';
+import 'package:goalink/screens/login/widgets/painel_inferior_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -37,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Expanded(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: .center,
                 children: [
                   Image.asset("assets/images/logo.png"),
                   SizedBox(width: 10),

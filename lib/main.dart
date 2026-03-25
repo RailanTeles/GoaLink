@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:goalink/screens/login_screen.dart';
+import 'package:goalink/screens/login/login_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
