@@ -60,7 +60,6 @@ class _PainelInferiorState extends State<PainelInferior> {
                       SizedBox(height: 5),
                       TextButton(
                         onPressed: () {
-                          // Navegar para a tela de recuperar senha
                           context.go('/recuperar-senha');
                         },
                         child: Text(

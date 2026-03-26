@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/app_scaffold.dart';
 import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
@@ -20,6 +21,20 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-    GoRoute(path: '/recuperar-senha', builder: (context, state) => const RecuperarSenha()),
+    GoRoute(
+      path: '/recuperar-senha',
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: const RecuperarSenha(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+              child: child,
+            );
+          },
+        );
+      },
+    ),
   ],
 );
