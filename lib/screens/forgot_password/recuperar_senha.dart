@@ -16,25 +16,27 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
     super.initState();
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
-        alturaContainer = 500.0; 
+        if (mounted) {
+          alturaContainer = 500.0;
+        }
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
-              fit: BoxFit.cover,
-            ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: SafeArea(
           child: PainelInferior(alturaContainer: alturaContainer),
         ),
       ),

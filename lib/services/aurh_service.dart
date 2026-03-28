@@ -1,8 +1,12 @@
 class AuthService {
   // Simula o Login
   Future<bool> fazerLogin(String email, String senha) async {
+    if (email.isEmpty || senha.isEmpty) {
+      throw Exception('Os campos e-mail e senhas não podem estar vazios');
+    }
+
     await Future.delayed(const Duration(seconds: 1));
-    if (email == 'teste@teste.com' && senha == '123456') {
+    if (email == 'lian@teste.com' && senha == '123456') {
       return true;
     }
     throw Exception('E-mail ou senha incorretos.');

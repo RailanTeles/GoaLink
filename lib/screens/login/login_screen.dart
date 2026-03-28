@@ -15,34 +15,37 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        alturaContainer = 500.0;
-      });
+      if (mounted) {
+        setState(() {
+          alturaContainer = 500.0;
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
-              fit: BoxFit.cover,
-            ),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: SafeArea(
           child: Column(
             children: [
               Expanded(
                 child: Row(
-                  mainAxisAlignment: .center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset("assets/images/logo.png"),
-                    SizedBox(width: 10),
+                    Image.asset("assets/images/logo.png", height: 70),
+                    const SizedBox(width: 10),
                     Text.rich(
                       TextSpan(
                         style: const TextStyle(
