@@ -22,16 +22,15 @@ class _InputPersonalizadoState extends State<InputPersonalizado> {
   bool _ocultarSenha = true;
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 400),
+    return SizedBox(
+      width: double.infinity,
       child: TextFormField(
         controller: widget.controller,
         obscureText: widget.isPassword ? _ocultarSenha : false,
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: widget.labelText,
-          labelStyle: const TextStyle(color: Colors.white),
-          prefixIcon: Icon(widget.prefixIcon, color: Colors.white),
+          prefixIcon: Icon(widget.prefixIcon),
           suffixIcon: widget.isPassword
               ? IconButton(
                   onPressed: () {
@@ -41,22 +40,9 @@ class _InputPersonalizadoState extends State<InputPersonalizado> {
                   },
                   icon: Icon(
                     _ocultarSenha ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.white54,
                   ),
                 )
               : null,
-
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            borderSide: const BorderSide(color: Colors.white, width: 2.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
-              width: 2.0,
-            ),
-          ),
         ),
       ),
     );

@@ -22,6 +22,21 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: const Color(0xFF195E3B)),
+        inputDecorationTheme: InputDecorationTheme(
+          labelStyle: const TextStyle(color: Colors.white),
+          prefixIconColor: Colors.white,
+          suffixIconColor: Colors.white54,
+
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: const BorderSide(color: Colors.white, width: 2.0),
+          ),
+
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide(color: const Color(0xFF195E3B), width: 2.0),
+          ),
+        ),
         fontFamily: "MavenPro",
         useMaterial3: true,
       ),
