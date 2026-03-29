@@ -12,7 +12,9 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      appBar: Navbar(),
+      appBar: navigationShell.currentIndex == 3
+          ? const ChatNavbar()
+          : const Navbar(),
       body: SafeArea(bottom: false, child: navigationShell),
       // bottomNavigationBar
       bottomNavigationBar: SafeArea(
@@ -42,7 +44,7 @@ class AppScaffold extends StatelessWidget {
 
   Widget _buildNavItem(int index, String urlImage) {
     final isSelected = navigationShell.currentIndex == index;
-    final corAtiva = const Color(0xFF022412);
+    final corAtiva = const Color(0xFF195E3B);
     final corInativa = Colors.white;
     final corAtual = isSelected ? corAtiva : corInativa;
 

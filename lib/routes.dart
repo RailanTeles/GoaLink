@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/app_scaffold.dart';
+import 'package:goalink/screens/chat/chat_detail_screen.dart';
 import 'package:goalink/screens/chat/chat_screen.dart';
 // import 'package:goalink/screens/favorites/favorites_screen.dart';
 import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
@@ -52,6 +53,13 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: '/chat/conversation/:chatId',
+      builder: (context, state) {
+        final chatId = state.pathParameters['chatId']!;
+        return ChatDetailScreen(chatId: chatId);
+      },
+    ),
     GoRoute(
       path: '/recuperar-senha',
       pageBuilder: (context, state) {
