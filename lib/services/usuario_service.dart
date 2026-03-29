@@ -18,6 +18,11 @@ class UsuarioService {
     return todos.where((user) => user.tipo == 'jogador').toList();
   }
 
+  Future<UsuarioModel> getJogadorId(String id) async {
+    final todos = await _lerTodosUsuarios();
+    return todos.firstWhere((user) => user.id == id);
+  }
+
   // Requisito: Traz "Jogadores Novos" (Criados nos últimos 30 dias)
   Future<List<UsuarioModel>> getJogadoresNovos() async {
     final jogadores = await getJogadores();

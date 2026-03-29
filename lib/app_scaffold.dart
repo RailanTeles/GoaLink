@@ -14,7 +14,6 @@ class AppScaffold extends StatelessWidget {
       extendBody: true,
       appBar: Navbar(),
       body: SafeArea(bottom: false, child: navigationShell),
-      // bottomNavigationBar
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
