@@ -8,6 +8,7 @@ import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/login/login_screen.dart';
 import 'package:goalink/screens/profile/profile_screen.dart';
 import 'package:goalink/screens/search/search_screen.dart';
+import 'package:goalink/screens/search/profiles/profiles_screen.dart';
 import 'package:goalink/screens/tips/tips_screen.dart';
 
 final GoRouter router = GoRouter(
@@ -65,6 +66,14 @@ final GoRouter router = GoRouter(
             );
           },
         );
+      },
+    ),
+    // Rota para perfil de outros usuários
+    GoRoute(
+      path: '/search/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return ProfilesScreen(usuarioId: id);
       },
     ),
   ],
