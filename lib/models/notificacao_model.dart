@@ -6,6 +6,9 @@ class NotificacaoModel {
   final String linkId;
   final bool lida;
   final DateTime criadoEm;
+  final String? nomeRemetente;
+  final String? acao;
+  final String? avatarUrl;
 
   NotificacaoModel({
     required this.idNotificacao,
@@ -15,6 +18,9 @@ class NotificacaoModel {
     required this.linkId,
     required this.lida,
     required this.criadoEm,
+    this.nomeRemetente,
+    this.acao,
+    this.avatarUrl,
   });
 
   factory NotificacaoModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +32,9 @@ class NotificacaoModel {
       linkId: json['link_id'] ?? '',
       lida: json['lida'] ?? false,
       criadoEm: DateTime.parse(json['criado_em']),
+      nomeRemetente: json['nome_remetente'],
+      acao: json['acao'],
+      avatarUrl: json['avatar_url'],
     );
   }
 
@@ -38,6 +47,9 @@ class NotificacaoModel {
       'link_id': linkId,
       'lida': lida,
       'criado_em': criadoEm.toIso8601String(),
+      'nome_remetente': nomeRemetente,
+      'acao': acao,
+      'avatar_url': avatarUrl,
     };
   }
 }

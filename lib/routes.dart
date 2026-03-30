@@ -7,6 +7,7 @@ import 'package:goalink/screens/chat/chat_screen.dart';
 import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
 import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/login/login_screen.dart';
+import 'package:goalink/screens/notifications/notifications_screen.dart';
 import 'package:goalink/screens/profile/profile_screen.dart';
 import 'package:goalink/screens/search/search_screen.dart';
 import 'package:goalink/screens/tips/tips_screen.dart';
@@ -53,6 +54,10 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: '/notifications',
+      builder: (context, state) => const NotificationsScreen(),
+    ),
     GoRoute(
       path: '/chat/conversation/:chatId',
       builder: (context, state) {

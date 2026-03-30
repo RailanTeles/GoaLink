@@ -63,7 +63,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               child: Text(
                 conversation.avatarLabel,
                 style: const TextStyle(
-                  color: _darkGreen,
+                  color: Color(0xFF195E3B),
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -116,7 +116,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: message.isMe ? _darkGreen : Colors.white,
+                            color: message.isMe ? const Color(0xFF195E3B) : Colors.white,
                             borderRadius: BorderRadius.only(
                               topLeft: const Radius.circular(22),
                               topRight: const Radius.circular(22),
