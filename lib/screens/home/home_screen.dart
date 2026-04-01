@@ -19,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<UsuarioModel> listaJogadoresNovos = [];
   List<PostagemModel> listaPostagens = [];
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -30,21 +32,38 @@ class _HomeScreenState extends State<HomeScreen> {
       final usuarios = await _usuarioService.getJogadoresNovos();
       final postagens = await _postagemService.getFeedPostagens();
 
+      await Future.delayed(const Duration(seconds: 2));
+
       if (mounted) {
         setState(() {
           listaJogadoresNovos = usuarios;
           listaPostagens = postagens;
+          _isLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
-        setState(() {});
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Center(
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+            strokeWidth: 4.0,
+          ),
+        ),
+      );
+    }
     return Scaffold(
       body: CustomScrollView(
         slivers: [
