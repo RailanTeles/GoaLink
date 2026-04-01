@@ -5,7 +5,7 @@ class AuthService {
       throw Exception('Os campos e-mail e senhas não podem estar vazios');
     }
 
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 3));
     if (email == 'lian@teste.com' && senha == '123456') {
       return true;
     }

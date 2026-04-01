@@ -15,10 +15,15 @@ class _PainelInferiorState extends State<PainelInferior> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
   final _authService = AuthService();
+  bool _isLoading = false;
 
   Future<void> _handleLogin() async {
     final emailDigitado = _emailController.text;
     final senhaDigitada = _senhaController.text;
+
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
       bool sucesso = await _authService.fazerLogin(
@@ -32,6 +37,9 @@ class _PainelInferiorState extends State<PainelInferior> {
       }
     } catch (e) {
       if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
@@ -103,10 +111,16 @@ class _PainelInferiorState extends State<PainelInferior> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _handleLogin,
+                        onPressed: _isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black,
+                          disabledBackgroundColor: Colors.white.withValues(
+                            alpha: 0.50,
+                          ),
+                          disabledForegroundColor: Colors.black.withValues(
+                            alpha: 0.50,
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
