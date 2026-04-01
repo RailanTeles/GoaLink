@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import '../models/usuario_model.dart';
 
 class UsuarioService {
-  // Função auxiliar privada para ler o JSON geral
   Future<List<UsuarioModel>> _lerTodosUsuarios() async {
     final String response = await rootBundle.loadString(
       'assets/mocks/usuarios.json',
@@ -12,7 +11,6 @@ class UsuarioService {
     return data.map((json) => UsuarioModel.fromJson(json)).toList();
   }
 
-  // Traz APENAS jogadores
   Future<List<UsuarioModel>> getJogadores() async {
     final todos = await _lerTodosUsuarios();
     return todos.where((user) => user.tipo == 'jogador').toList();
@@ -23,36 +21,29 @@ class UsuarioService {
     return todos.firstWhere((user) => user.id == id);
   }
 
-  // Requisito: Traz "Jogadores Novos" (Criados nos últimos 30 dias)
   Future<List<UsuarioModel>> getJogadoresNovos() async {
     final jogadores = await getJogadores();
     final dataLimite = DateTime.now().subtract(const Duration(days: 30));
 
     return jogadores.where((jogador) {
-      // Verifica se a data de criação é depois (isAfter) da data limite
       return jogador.criadoEm.isAfter(dataLimite);
     }).toList();
   }
 
-  // Requisito: Busca de atletas com filtros (Posição e Cidade)
-  Future<List<UsuarioModel>> buscarJogadores({
-    String? posicao,
-    String? cidade,
-  }) async {
-    var jogadores = await getJogadores();
+  Future<List<UsuarioModel>> getUsuariosPorNome(String query) async {
+    // Substitua getUsuarios() pelo método que lê a sua lista completa
+    final usuarios = await _lerTodosUsuarios();
 
-    if (posicao != null && posicao.isNotEmpty) {
-      jogadores = jogadores
-          .where((j) => j.posicao?.toLowerCase() == posicao.toLowerCase())
-          .toList();
+    if (query.trim().isEmpty) {
+      return usuarios;
     }
 
-    if (cidade != null && cidade.isNotEmpty) {
-      jogadores = jogadores
-          .where((j) => j.cidade?.toLowerCase() == cidade.toLowerCase())
-          .toList();
-    }
+    final busca = query.trim().toLowerCase();
 
-    return jogadores;
+    return usuarios.where((usuario) {
+      final nomeUsuario = usuario.nome.toLowerCase();
+
+      return nomeUsuario.contains(busca);
+    }).toList();
   }
 }
