@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goalink/core/avatar_usuario.dart';
 import 'package:goalink/models/usuario_model.dart';
 
 class NovosJogadoresWidget extends StatefulWidget {
@@ -28,7 +30,6 @@ class _NovosJogadoresWidgetState extends State<NovosJogadoresWidget> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final diametroDaFoto = constraints.maxHeight * 0.60;
-              final raioDaFoto = diametroDaFoto / 2;
 
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -37,52 +38,43 @@ class _NovosJogadoresWidgetState extends State<NovosJogadoresWidget> {
                   final usuario = widget.listaJogadores[index];
                   return Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.75),
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2,
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push('/search/${usuario.id}');
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.75),
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2,
+                          ),
                         ),
-                      ),
-                      child: SizedBox(
-                        width: diametroDaFoto + 10,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: raioDaFoto,
-                              backgroundColor: Theme.of(
-                                context,
-                              ).colorScheme.primary,
-                              backgroundImage:
-                                  (usuario.fotoPerfil?.isNotEmpty ?? false)
-                                  ? NetworkImage(usuario.fotoPerfil!)
-                                  : null,
-                              onBackgroundImageError: (_, __) {},
-                              child: (usuario.fotoPerfil?.isEmpty ?? true)
-                                  ? Icon(
-                                      Icons.person,
-                                      color: Colors.white,
-                                      size: raioDaFoto,
-                                    )
-                                  : null,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              usuario.nome,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                        child: SizedBox(
+                          width: diametroDaFoto + 10,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AvatarUsuario(
+                                urlFoto: usuario.fotoPerfil,
+                                tamanho: 60,
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 8),
+                              Text(
+                                usuario.nome,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
