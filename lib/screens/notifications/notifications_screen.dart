@@ -105,7 +105,7 @@ class _NotificationsHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Notificacoes',
+            'Notifica\u00e7\u00f5es',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: NotificationsScreen._titleColor,
               fontWeight: FontWeight.w700,
@@ -115,7 +115,7 @@ class _NotificationsHeader extends StatelessWidget {
           Row(
             children: [
               _HeaderIconButton(
-                icon: Icons.arrow_back_ios_new_rounded,
+                icon: Icons.chevron_left_rounded,
                 onTap: onBackPressed,
               ),
               const Spacer(),
@@ -145,7 +145,7 @@ class _HeaderIconButton extends StatelessWidget {
         child: SizedBox(
           width: 42,
           height: 42,
-          child: Icon(icon, color: const Color(0xFF185B38), size: 20),
+          child: Icon(icon, color: const Color(0xFF185B38), size: 28),
         ),
       ),
     );

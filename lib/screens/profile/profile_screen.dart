@@ -1,15 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goalink/screens/profile/widgets/change_password_form.dart';
+import 'package:goalink/screens/profile/widgets/delete_account_form.dart';
+import 'package:goalink/screens/profile/widgets/edit_profile_form.dart';
+import 'package:goalink/screens/profile/widgets/notifications_form.dart';
+import 'package:goalink/screens/profile/widgets/settings_expansion_tile.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
+  static const Color _darkGreen = Color(0xFF1B5E20);
 
-class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Profile")));
+    return Scaffold(
+      backgroundColor: const Color(0xFFF7F8F7),
+      appBar: AppBar(
+        backgroundColor: _darkGreen,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Configurações',
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+              return;
+            }
+
+            context.go('/');
+          },
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(18)),
+        ),
+      ),
+      body: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 120),
+          child: Column(
+            children: const [
+              SettingsExpansionTile(
+                title: 'Conta',
+                leadingIcon: Icons.person,
+                initiallyExpanded: true,
+                children: [
+                  SettingsExpansionTile(
+                    title: 'Editar Perfil',
+                    leadingIcon: Icons.edit_outlined,
+                    isSubItem: true,
+                    children: [EditProfileForm()],
+                  ),
+                  SettingsExpansionTile(
+                    title: 'Alterar Senha',
+                    leadingIcon: Icons.lock_outline,
+                    isSubItem: true,
+                    children: [ChangePasswordForm()],
+                  ),
+                  SettingsExpansionTile(
+                    title: 'Excluir Conta',
+                    leadingIcon: Icons.delete_outline,
+                    isSubItem: true,
+                    children: [DeleteAccountForm()],
+                  ),
+                ],
+              ),
+              SizedBox(height: 14),
+              SettingsExpansionTile(
+                title: 'Notificações',
+                leadingIcon: Icons.notifications_none,
+                children: [NotificationsForm()],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

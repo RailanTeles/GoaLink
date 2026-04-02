@@ -10,12 +10,18 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = navigationShell.currentIndex;
+
     return Scaffold(
       extendBody: true,
-      appBar: navigationShell.currentIndex == 3
+      appBar: currentIndex == 4
+          ? null
+          : currentIndex == 3
           ? const ChatNavbar()
           : const Navbar(),
-      body: SafeArea(bottom: false, child: navigationShell),
+      body: currentIndex == 4
+          ? navigationShell
+          : SafeArea(bottom: false, child: navigationShell),
       // bottomNavigationBar
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -23,7 +29,7 @@ class AppScaffold extends StatelessWidget {
           child: Container(
             height: 70,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              color: const Color(0xFF1B5E20),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -44,7 +50,7 @@ class AppScaffold extends StatelessWidget {
 
   Widget _buildNavItem(int index, String urlImage) {
     final isSelected = navigationShell.currentIndex == index;
-    final corAtiva = const Color(0xFF195E3B);
+    final corAtiva = const Color(0xFF022412);
     final corInativa = Colors.white;
     final corAtual = isSelected ? corAtiva : corInativa;
 
