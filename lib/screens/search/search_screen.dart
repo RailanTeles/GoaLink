@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/models/usuario_model.dart';
+import 'package:goalink/screens/search/widgets/perfil_banner.dart';
 import 'package:goalink/services/usuario_service.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -78,10 +79,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 itemCount: _listaUsuarios!.length,
                 itemBuilder: (context, index) {
                   final usuario = _listaUsuarios![index];
-                  return ListTile(title: Text(usuario.nome));
+                  return PerfilBanner(usuario: usuario);
                 },
               ),
             ),
+          const SliverToBoxAdapter(child: SizedBox(height: 120)),
         ],
       ),
     );
