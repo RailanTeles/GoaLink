@@ -9,6 +9,8 @@ import 'package:goalink/screens/login/login_screen.dart';
 import 'package:goalink/screens/profile/profile_screen.dart';
 import 'package:goalink/screens/search/search_screen.dart';
 import 'package:goalink/screens/tips/tips_screen.dart';
+import 'package:goalink/screens/tips/tip_detail_screen.dart';
+import 'package:goalink/models/dica_treino_model.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/login',
@@ -31,7 +33,19 @@ final GoRouter router = GoRouter(
         // Index 2: Tips
         StatefulShellBranch(
           routes: [
-            GoRoute(path: '/tips', builder: (c, s) => const TipsScreen()),
+            GoRoute(
+              path: '/tips',
+              builder: (c, s) => const TipsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'detalhe',
+                  builder: (c, s) {
+                    final dica = s.extra as DicaTreinoModel;
+                    return TipDetailScreen(dica: dica);
+                  },
+                ),
+              ],
+            ),
           ],
         ),
         // Index 3: Chat
@@ -44,7 +58,7 @@ final GoRouter router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/myprofile',
+              path: '/favorites',
               builder: (c, s) => const ProfileScreen(),
             ),
           ],
