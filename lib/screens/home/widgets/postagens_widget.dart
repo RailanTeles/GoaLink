@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goalink/core/avatar_usuario.dart';
 import 'package:goalink/core/video_player_widget.dart';
 import 'package:goalink/models/postagem_model.dart';
 import 'package:goalink/models/usuario_model.dart';
@@ -48,25 +49,7 @@ class _PostagensWidgetState extends State<PostagensWidget> {
                     Row(
                       mainAxisAlignment: .start,
                       children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primary,
-                          backgroundImage:
-                              (usuario.fotoPerfil?.isNotEmpty ?? false)
-                              ? NetworkImage(usuario.fotoPerfil!)
-                              : null,
-                          onBackgroundImageError: (_, __) {},
-                          child: (usuario.fotoPerfil?.isEmpty ?? true)
-                              ? const Icon(
-                                  Icons.person,
-                                  color: Colors.white,
-                                  size: 20,
-                                )
-                              : null,
-                        ),
-
+                        AvatarUsuario(urlFoto: usuario.fotoPerfil),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
