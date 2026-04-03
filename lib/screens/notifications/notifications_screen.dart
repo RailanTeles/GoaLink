@@ -136,17 +136,13 @@ class _HeaderIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(14),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: SizedBox(
-          width: 42,
-          height: 42,
-          child: Icon(icon, color: const Color(0xFF185B38), size: 28),
-        ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: const SizedBox(
+        width: 42,
+        height: 42,
+        child: Icon(Icons.chevron_left_rounded, color: Colors.white, size: 34),
       ),
     );
   }
