@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/models/usuario_model.dart';
+import 'package:goalink/screens/search/profiles/widgets/post_coment_widget.dart';
 import 'package:goalink/screens/search/profiles/widgets/profile_header_widget.dart';
 import 'package:goalink/screens/search/profiles/widgets/profile_infos_widget.dart';
 import 'package:goalink/services/usuario_service.dart';
@@ -112,24 +113,38 @@ class _ProfilesScreenState extends State<ProfilesScreen> {
               ),
             ],
           ),
-          body: SafeArea(
-            top: false,
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: ProfileHeaderWidget(usuario: usuario),
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: ProfileHeaderWidget(usuario: usuario)),
+              SliverPadding(
+                padding: EdgeInsetsGeometry.symmetric(
+                  horizontal: 10,
+                  vertical: 20,
                 ),
-                SliverPadding(
-                  padding: EdgeInsetsGeometry.symmetric(
-                    horizontal: 10,
-                    vertical: 20,
-                  ),
-                  sliver: SliverToBoxAdapter(
-                    child: ProfileInfos(usuario: usuario),
-                  ),
+                sliver: SliverToBoxAdapter(
+                  child: ProfileInfos(usuario: usuario),
                 ),
-              ],
+              ),
+              SliverPadding(
+                padding: EdgeInsetsGeometry.only(
+                  top: 10,
+                  right: 10,
+                  left: 10,
+                  bottom: 100,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: PostComentWidget(usuario: usuario),
+                ),
+              ),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
+            backgroundColor: Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
+            child: const Icon(Icons.send_rounded, color: Colors.white),
           ),
         );
       },

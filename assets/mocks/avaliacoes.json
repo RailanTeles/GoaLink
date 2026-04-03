@@ -5,5 +5,12 @@
     "autor_id": "olheiro_01",
     "texto": "Acompanhei alguns vídeos. Excelente impulsão e posicionamento na área defensiva.",
     "criado_em": "2026-03-21T18:20:00Z"
+  },
+  {
+    "id_avaliacao": "aval_001",
+    "jogador_id": "jogador_01",
+    "autor_id": "olheiro_01",
+    "texto": "Acompanhei alguns vídeos. Excelente impulsão e posicionamento na área defensiva.",
+    "criado_em": "2026-03-21T18:20:00Z"
   }
 ]
