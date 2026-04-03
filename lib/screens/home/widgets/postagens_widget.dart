@@ -18,7 +18,7 @@ class _PostagensWidgetState extends State<PostagensWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.listaPostagens.isEmpty) {
-      return const SliverToBoxAdapter(child: SizedBox.shrink());
+      return const SizedBox.shrink();
     }
 
     return SliverList.builder(

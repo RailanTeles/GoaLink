@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goalink/core/circular_loading.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/screens/search/widgets/perfil_banner.dart';
 import 'package:goalink/services/usuario_service.dart';
@@ -13,17 +14,24 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final _usuarioService = UsuarioService();
   List<UsuarioModel>? _listaUsuarios;
+  bool _carregando = false;
 
   Future<void> _pesquisarNome(String nome) async {
     if (nome.trim() == "") {
       setState(() {
         _listaUsuarios = null;
+        _carregando = false;
       });
       return;
     }
+    setState(() {
+      _carregando = true;
+    });
     final usuarios = await _usuarioService.getUsuariosPorNome(nome);
+
     setState(() {
       _listaUsuarios = usuarios;
+      _carregando = false;
     });
   }
 
@@ -60,7 +68,9 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
           ),
-          if (_listaUsuarios == null)
+          if (_carregando)
+            SliverFillRemaining(hasScrollBody: false, child: CircularLoading())
+          else if (_listaUsuarios == null)
             const SliverToBoxAdapter(child: SizedBox.shrink())
           else if (_listaUsuarios!.isEmpty)
             const SliverFillRemaining(

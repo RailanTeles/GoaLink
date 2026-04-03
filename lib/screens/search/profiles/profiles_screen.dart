@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goalink/core/circular_loading.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/screens/search/profiles/widgets/post_coment_widget.dart';
 import 'package:goalink/screens/search/profiles/widgets/profile_header_widget.dart';
@@ -30,18 +31,7 @@ class _ProfilesScreenState extends State<ProfilesScreen> {
       future: _futuroUsuario,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).primaryColor,
-                  strokeWidth: 4.0,
-                ),
-              ),
-            ),
-          );
+          return Scaffold(body: CircularLoading());
         }
 
         if (snapshot.hasError) {

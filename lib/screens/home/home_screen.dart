@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goalink/core/circular_loading.dart';
 import 'package:goalink/models/postagem_model.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/screens/home/widgets/novos_jogadores_widget.dart';
@@ -53,33 +54,31 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Center(
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: CircularProgressIndicator(
-            color: Theme.of(context).primaryColor,
-            strokeWidth: 4.0,
-          ),
-        ),
-      );
+      return const CircularLoading();
     }
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-              child: NovosJogadoresWidget(listaJogadores: listaJogadoresNovos),
+      body: RefreshIndicator(
+        onRefresh: _carregarDadosIniciais,
+        color: Theme.of(context).colorScheme.secondary,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                child: NovosJogadoresWidget(
+                  listaJogadores: listaJogadoresNovos,
+                ),
+              ),
             ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 20)),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            sliver: PostagensWidget(listaPostagens: listaPostagens),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 120)),
-        ],
+            const SliverToBoxAdapter(child: SizedBox(height: 20)),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              sliver: PostagensWidget(listaPostagens: listaPostagens),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 120)),
+          ],
+        ),
       ),
     );
   }

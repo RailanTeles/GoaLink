@@ -21,7 +21,10 @@ class MyApp extends StatelessWidget {
       title: 'GoaLink',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: const Color(0xFF195E3B)),
+        colorScheme: .fromSeed(
+          seedColor: const Color(0xFF195E3B),
+          secondary: const Color(0xFF022412),
+        ),
         inputDecorationTheme: InputDecorationTheme(
           labelStyle: const TextStyle(color: Colors.white),
           prefixIconColor: Colors.white,

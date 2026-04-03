@@ -12,7 +12,7 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      appBar: Navbar(),
+      appBar: const Navbar(),
       body: SafeArea(bottom: false, child: navigationShell),
       bottomNavigationBar: SafeArea(
         child: Padding(
