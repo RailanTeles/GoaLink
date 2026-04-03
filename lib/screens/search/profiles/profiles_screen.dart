@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/screens/search/profiles/widgets/profile_header_widget.dart';
+import 'package:goalink/screens/search/profiles/widgets/profile_infos_widget.dart';
 import 'package:goalink/services/usuario_service.dart';
 
 class ProfilesScreen extends StatefulWidget {
@@ -117,6 +118,15 @@ class _ProfilesScreenState extends State<ProfilesScreen> {
               slivers: [
                 SliverToBoxAdapter(
                   child: ProfileHeaderWidget(usuario: usuario),
+                ),
+                SliverPadding(
+                  padding: EdgeInsetsGeometry.symmetric(
+                    horizontal: 10,
+                    vertical: 20,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: ProfileInfos(usuario: usuario),
+                  ),
                 ),
               ],
             ),
