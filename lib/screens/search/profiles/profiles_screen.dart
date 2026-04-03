@@ -86,9 +86,29 @@ class _ProfilesScreenState extends State<ProfilesScreen> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            iconTheme: const IconThemeData(color: Colors.white),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                onPressed: () => Navigator.pop(context),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.white.withValues(alpha: 0.8),
+                  foregroundColor: Colors.black,
+                ),
+                icon: const Icon(Icons.arrow_back),
+              ),
+            ),
             actions: [
-              IconButton(icon: const Icon(Icons.star_border), onPressed: () {}),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  onPressed: () {},
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.white.withValues(alpha: 0.8),
+                    foregroundColor: Colors.black,
+                  ),
+                  icon: const Icon(Icons.star_border),
+                ),
+              ),
             ],
           ),
           body: SafeArea(
