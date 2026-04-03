@@ -10,18 +10,31 @@ class ProfileHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Imagem de fundo
         Container(
           height: 280,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(usuario.fotoPerfil ?? ''),
-              fit: BoxFit.cover,
-              onError: (exception, stackTrace) {},
-            ),
+          width: double.infinity,
+          decoration: BoxDecoration(color: Colors.grey.shade300),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child:
+                (usuario.fotoPerfil != null && usuario.fotoPerfil!.isNotEmpty)
+                ? Image.network(
+                    usuario.fotoPerfil!,
+                    width: double.infinity,
+                    height: 280,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => const Icon(
+                      Icons.person,
+                      size: double.infinity,
+                      color: Colors.grey,
+                    ),
+                  )
+                : FittedBox(
+                    fit: BoxFit.contain,
+                    child: const Icon(Icons.person, color: Colors.grey),
+                  ),
           ),
         ),
-        // Overlay com gradiente
         Container(
           height: 280,
           decoration: BoxDecoration(
@@ -29,33 +42,12 @@ class ProfileHeaderWidget extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.black.withOpacity(0.3),
-                Colors.black.withOpacity(0.6),
+                Colors.black.withValues(alpha: 0.3),
+                Colors.black.withValues(alpha: 0.6),
               ],
             ),
           ),
         ),
-        // Botão de voltar
-        Positioned(
-          top: 40,
-          left: 20,
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-                size: 24,
-              ),
-            ),
-          ),
-        ),
-        // Informações do usuário (no rodapé da imagem)
         Positioned(
           bottom: 20,
           left: 20,
@@ -81,6 +73,9 @@ class ProfileHeaderWidget extends StatelessWidget {
                   const SizedBox(width: 8),
                   if (usuario.peso != null)
                     _buildInfoChip('${usuario.peso?.toStringAsFixed(1)} kg'),
+                  const SizedBox(width: 8),
+                  if (usuario.altura != null)
+                    _buildInfoChip('${usuario.altura?.toStringAsFixed(1)} m'),
                 ],
               ),
             ],
@@ -104,7 +99,7 @@ class ProfileHeaderWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFF195E3B).withOpacity(0.8),
+        color: const Color(0xFF195E3B).withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(

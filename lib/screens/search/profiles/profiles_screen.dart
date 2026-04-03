@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/models/usuario_model.dart';
-import 'package:goalink/services/usuario_service.dart';
 import 'package:goalink/screens/search/profiles/widgets/profile_header_widget.dart';
-import 'package:goalink/screens/search/profiles/widgets/profile_info_widget.dart';
-import 'package:goalink/screens/search/profiles/widgets/profile_description_widget.dart';
-import 'package:goalink/screens/search/profiles/widgets/profile_contacts_widget.dart';
-import 'package:goalink/screens/search/profiles/widgets/profile_actions_widget.dart';
+import 'package:goalink/services/usuario_service.dart';
 
 class ProfilesScreen extends StatefulWidget {
   final String usuarioId;
 
-  const ProfilesScreen({
-    super.key,
-    required this.usuarioId,
-  });
+  const ProfilesScreen({super.key, required this.usuarioId});
 
   @override
   State<ProfilesScreen> createState() => _ProfilesScreenState();
@@ -35,9 +28,16 @@ class _ProfilesScreenState extends State<ProfilesScreen> {
       future: _futuroUsuario,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
+          return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(color: Colors.green),
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).primaryColor,
+                  strokeWidth: 4.0,
+                ),
+              ),
             ),
           );
         }
@@ -75,62 +75,31 @@ class _ProfilesScreenState extends State<ProfilesScreen> {
               title: const Text('Perfil'),
               backgroundColor: Colors.green,
             ),
-            body: const Center(
-              child: Text('Usuário não encontrado'),
-            ),
+            body: const Center(child: Text('Usuário não encontrado')),
           );
         }
 
         final usuario = snapshot.data!;
 
         return Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              // Header com foto
-              SliverToBoxAdapter(
-                child: ProfileHeaderWidget(usuario: usuario),
-              ),
-              // Informações
-              SliverToBoxAdapter(
-                child: ProfileInfoWidget(usuario: usuario),
-              ),
-              // Descrição
-              SliverToBoxAdapter(
-                child: ProfileDescriptionWidget(
-                  descricao: usuario.descricao,
-                ),
-              ),
-              // Contatos
-              SliverToBoxAdapter(
-                child: ProfileContactsWidget(
-                  contatos: usuario.contatos,
-                  redesSociais: usuario.redesSociais,
-                ),
-              ),
-              // Ações
-              SliverToBoxAdapter(
-                child: ProfileActionsWidget(
-                  onUltimoJogoPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Funcionalidade em desenvolvimento'),
-                      ),
-                    );
-                  },
-                  onComentariosPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Funcionalidade em desenvolvimento'),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              // Espaço no final
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 60),
-              ),
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.white),
+            actions: [
+              IconButton(icon: const Icon(Icons.star_border), onPressed: () {}),
             ],
+          ),
+          body: SafeArea(
+            top: false,
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: ProfileHeaderWidget(usuario: usuario),
+                ),
+              ],
+            ),
           ),
         );
       },
