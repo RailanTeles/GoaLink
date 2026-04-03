@@ -31,21 +31,22 @@ class _SettingsExpansionTileState extends State<SettingsExpansionTile> {
 
   @override
   Widget build(BuildContext context) {
+    const appGreen = Color(0xFF195E3B);
     final borderColor = widget.isSubItem
-        ? const Color(0xFFDCE8DE)
-        : const Color(0xFF1B5E20);
+        ? const Color(0xFFD9E6DD)
+        : appGreen;
 
     return Container(
       margin: EdgeInsets.only(bottom: widget.isSubItem ? 10 : 0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFFCFDFC),
         borderRadius: BorderRadius.circular(widget.isSubItem ? 14 : 18),
         border: Border.all(color: borderColor, width: widget.isSubItem ? 1 : 1.5),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 10,
-            offset: Offset(0, 3),
+            color: Color(0x12000000),
+            blurRadius: 8,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -59,7 +60,7 @@ class _SettingsExpansionTileState extends State<SettingsExpansionTile> {
           leading: Icon(
             widget.leadingIcon,
             size: 20,
-            color: widget.isSubItem ? const Color(0xFF1F1F1F) : const Color(0xFF1B5E20),
+            color: widget.isSubItem ? const Color(0xFF2B2B2B) : appGreen,
           ),
           title: Text(
             widget.title,

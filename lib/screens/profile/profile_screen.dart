@@ -9,12 +9,12 @@ import 'package:goalink/screens/profile/widgets/settings_expansion_tile.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  static const Color _darkGreen = Color(0xFF1B5E20);
+  static const Color _darkGreen = Color(0xFF195E3B);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8F7),
+      backgroundColor: const Color(0xFFF8FBF6),
       appBar: AppBar(
         backgroundColor: _darkGreen,
         foregroundColor: Colors.white,

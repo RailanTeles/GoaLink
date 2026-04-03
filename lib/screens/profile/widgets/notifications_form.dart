@@ -36,7 +36,7 @@ class _NotificationsFormState extends State<NotificationsForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Receber notificacoes:',
+          'Receber notificações:',
           style: TextStyle(
             color: Color(0xFF1B5E20),
             fontWeight: FontWeight.w700,
@@ -55,7 +55,7 @@ class _NotificationsFormState extends State<NotificationsForm> {
           onChanged: (value) => setState(() => _messages = value ?? false),
         ),
         _NotificationCheckboxTile(
-          label: 'Atualizacoes',
+          label: 'Atualizações',
           value: _updates,
           onChanged: (value) => setState(() => _updates = value ?? false),
         ),
@@ -102,7 +102,7 @@ class _NotificationsFormState extends State<NotificationsForm> {
     setState(() => _isSaving = false);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Preferencias de notificacao salvas com sucesso.'),
+        content: Text('Preferências de notificação salvas com sucesso.'),
       ),
     );
   }

@@ -37,7 +37,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
 class ChatNavbar extends StatelessWidget implements PreferredSizeWidget {
   const ChatNavbar({super.key});
 
-  static const Color florestgreen = Color(0xFF195E3B);
+  static const Color _darkGreen = Color(0xFF195E3B);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class ChatNavbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         const SizedBox(width: 8),
       ],
-      backgroundColor: const Color(0xFF195E3B),
+      backgroundColor: _darkGreen,
       foregroundColor: Colors.white,
       elevation: 0,
       shape: const RoundedRectangleBorder(
