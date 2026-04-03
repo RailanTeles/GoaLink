@@ -8,9 +8,13 @@ import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/login/login_screen.dart';
 import 'package:goalink/screens/profile/profile_screen.dart';
 import 'package:goalink/screens/register/funcao_screen.dart';
+import 'package:goalink/screens/register/clube/register_clube_final_screen.dart';
+import 'package:goalink/screens/register/clube/register_clube_screen.dart';
 import 'package:goalink/screens/register/jogador/register_jogador_final_screen.dart';
 import 'package:goalink/screens/register/jogador/register_jogador_segundo_screen.dart';
 import 'package:goalink/screens/register/jogador/register_jogador_screen.dart';
+import 'package:goalink/screens/register/olheiro/register_olheiro_final_screen.dart';
+import 'package:goalink/screens/register/olheiro/register_olheiro_screen.dart';
 import 'package:goalink/screens/search/search_screen.dart';
 import 'package:goalink/screens/tips/tips_screen.dart';
 
@@ -67,6 +71,22 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/cadastro/jogador-3',
       builder: (context, state) => const RegisterJogadorFinalScreen(),
+    ),
+    GoRoute(
+      path: '/cadastro/olheiro',
+      builder: (context, state) => const RegisterOlheiroScreen(),
+    ),
+    GoRoute(
+      path: '/cadastro/olheiro-final',
+      builder: (context, state) => const RegisterOlheiroFinalScreen(),
+    ),
+    GoRoute(
+      path: '/cadastro/clube',
+      builder: (context, state) => const RegisterClubeScreen(),
+    ),
+    GoRoute(
+      path: '/cadastro/clube-final',
+      builder: (context, state) => const RegisterClubeFinalScreen(),
     ),
     GoRoute(
       path: '/cadastro/funcao',

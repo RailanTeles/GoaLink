@@ -103,14 +103,18 @@ class FuncaoScreen extends StatelessWidget {
                     assetPath: 'assets/images/icons/equipamentodefutebol.svg',
                     label: 'Olheiro',
                     iconSize: 48,
-                    onTap: () {},
+                    onTap: () {
+                      context.go('/cadastro/olheiro');
+                    },
                   ),
                   const SizedBox(height: 34),
                   _FuncaoButton(
                     assetPath: 'assets/images/icons/clubedefutebol.svg',
                     label: 'Clube',
                     iconSize: 54,
-                    onTap: () {},
+                    onTap: () {
+                      context.go('/cadastro/clube');
+                    },
                   ),
                   const Spacer(),
                 ],

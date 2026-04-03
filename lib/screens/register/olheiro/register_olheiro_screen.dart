@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/screens/register/widgets/register_background.dart';
 import 'package:goalink/screens/register/widgets/register_error_banner.dart';
@@ -7,33 +6,33 @@ import 'package:goalink/screens/register/widgets/register_header.dart';
 import 'package:goalink/screens/register/widgets/register_input_field.dart';
 import 'package:goalink/screens/register/widgets/register_primary_button.dart';
 
-class RegisterJogadorScreen extends StatefulWidget {
-  const RegisterJogadorScreen({super.key});
+class RegisterOlheiroScreen extends StatefulWidget {
+  const RegisterOlheiroScreen({super.key});
 
   @override
-  State<RegisterJogadorScreen> createState() => _RegisterScreenState();
+  State<RegisterOlheiroScreen> createState() => _RegisterOlheiroScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterJogadorScreen> {
+class _RegisterOlheiroScreenState extends State<RegisterOlheiroScreen> {
+  final _nomeController = TextEditingController();
   final _emailController = TextEditingController();
-  final _birthDateController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final _senhaController = TextEditingController();
+  final _confirmarSenhaController = TextEditingController();
 
-  bool _showPassword = false;
-  bool _showConfirmPassword = false;
+  bool _showSenha = false;
+  bool _showConfirmarSenha = false;
   bool _showErrors = false;
 
   bool get _isFormValid {
+    final nome = _nomeController.text.trim();
     final email = _emailController.text.trim();
-    final birthDate = _birthDateController.text.trim();
-    final password = _passwordController.text;
-    final confirmPassword = _confirmPasswordController.text;
+    final senha = _senhaController.text;
+    final confirmarSenha = _confirmarSenhaController.text;
 
-    return _isValidEmail(email) &&
-        _isValidBirthDate(birthDate) &&
-        password.length >= 6 &&
-        confirmPassword == password;
+    return nome.isNotEmpty &&
+        RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email) &&
+        senha.length >= 6 &&
+        confirmarSenha == senha;
   }
 
   String? get _validationMessage {
@@ -42,52 +41,27 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
         : 'Preencha todos os campos corretamente para continuar.';
   }
 
-  bool _isValidEmail(String email) {
-    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
-  }
-
-  bool _isValidBirthDate(String value) {
-    final match = RegExp(r'^(\d{2})\/(\d{2})\/(\d{4})$').firstMatch(value);
-    if (match == null) return false;
-
-    final day = int.tryParse(match.group(1)!);
-    final month = int.tryParse(match.group(2)!);
-    final year = int.tryParse(match.group(3)!);
-    if (day == null || month == null || year == null) return false;
-    if (month < 1 || month > 12 || day < 1) return false;
-
-    final date = DateTime.tryParse(
-      '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}',
-    );
-
-    return date != null &&
-        date.day == day &&
-        date.month == month &&
-        date.year == year &&
-        !date.isAfter(DateTime.now());
-  }
-
   void _refreshForm() => setState(() {});
 
   @override
   void initState() {
     super.initState();
+    _nomeController.addListener(_refreshForm);
     _emailController.addListener(_refreshForm);
-    _birthDateController.addListener(_refreshForm);
-    _passwordController.addListener(_refreshForm);
-    _confirmPasswordController.addListener(_refreshForm);
+    _senhaController.addListener(_refreshForm);
+    _confirmarSenhaController.addListener(_refreshForm);
   }
 
   @override
   void dispose() {
+    _nomeController.removeListener(_refreshForm);
     _emailController.removeListener(_refreshForm);
-    _birthDateController.removeListener(_refreshForm);
-    _passwordController.removeListener(_refreshForm);
-    _confirmPasswordController.removeListener(_refreshForm);
+    _senhaController.removeListener(_refreshForm);
+    _confirmarSenhaController.removeListener(_refreshForm);
+    _nomeController.dispose();
     _emailController.dispose();
-    _birthDateController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    _senhaController.dispose();
+    _confirmarSenhaController.dispose();
     super.dispose();
   }
 
@@ -100,7 +74,7 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: IntrinsicHeight(
@@ -108,45 +82,38 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         RegisterHeader(
-                          title: 'Jogador',
-                          topSpacing: 20,
-                          iconSize: 110,
+                          title: 'Olheiro',
+                          iconSize: 120,
                           onBack: () {
                             if (context.canPop()) {
                               context.pop();
                               return;
                             }
-                            context.go('/login');
+                            context.go('/cadastro/funcao');
                           },
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 34),
                         RegisterInputField(
-                          label: 'Email',
+                          label: 'Nome',
+                          controller: _nomeController,
+                        ),
+                        const SizedBox(height: 24),
+                        RegisterInputField(
+                          label: 'E-mail',
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                         ),
                         const SizedBox(height: 24),
                         RegisterInputField(
-                          label: 'Data de Nascimento',
-                          controller: _birthDateController,
-                          hintText: 'DD/MM/AAAA',
-                          keyboardType: TextInputType.datetime,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            _DateInputFormatter(),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        RegisterInputField(
                           label: 'Senha',
-                          controller: _passwordController,
-                          obscureText: !_showPassword,
+                          controller: _senhaController,
+                          obscureText: !_showSenha,
                           suffixIcon: IconButton(
                             onPressed: () {
-                              setState(() => _showPassword = !_showPassword);
+                              setState(() => _showSenha = !_showSenha);
                             },
                             icon: Icon(
-                              _showPassword
+                              _showSenha
                                   ? Icons.visibility_outlined
                                   : Icons.visibility_off_outlined,
                               color: Colors.white70,
@@ -156,17 +123,17 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
                         const SizedBox(height: 24),
                         RegisterInputField(
                           label: 'Confirmar Senha',
-                          controller: _confirmPasswordController,
-                          obscureText: !_showConfirmPassword,
+                          controller: _confirmarSenhaController,
+                          obscureText: !_showConfirmarSenha,
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(
                                 () =>
-                                    _showConfirmPassword = !_showConfirmPassword,
+                                    _showConfirmarSenha = !_showConfirmarSenha,
                               );
                             },
                             icon: Icon(
-                              _showConfirmPassword
+                              _showConfirmarSenha
                                   ? Icons.visibility_outlined
                                   : Icons.visibility_off_outlined,
                               color: Colors.white70,
@@ -182,7 +149,7 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
                               _showErrors = true;
                             });
                             if (_isFormValid) {
-                              context.go('/cadastro/jogador-2');
+                              context.go('/cadastro/olheiro-final');
                             }
                           },
                         ),
@@ -199,33 +166,6 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _DateInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final digitsOnly = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
-    final limited = digitsOnly.length > 8
-        ? digitsOnly.substring(0, 8)
-        : digitsOnly;
-
-    final buffer = StringBuffer();
-    for (var i = 0; i < limited.length; i++) {
-      buffer.write(limited[i]);
-      if ((i == 1 || i == 3) && i < limited.length - 1) {
-        buffer.write('/');
-      }
-    }
-
-    final formatted = buffer.toString();
-    return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }
