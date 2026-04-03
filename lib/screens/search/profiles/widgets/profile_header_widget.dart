@@ -23,6 +23,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                     width: double.infinity,
                     height: 280,
                     fit: BoxFit.cover,
+                    alignment: .topCenter,
                     errorBuilder: (_, _, _) => const Icon(
                       Icons.person,
                       size: double.infinity,

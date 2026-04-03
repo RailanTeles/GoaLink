@@ -15,18 +15,35 @@ class LabelInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: .start,
+      crossAxisAlignment: .start,
       children: [
         Row(
           children: [
-            Icon(icone, color: Theme.of(context).primaryColor),
+            Icon(icone, color: Theme.of(context).primaryColor, size: 20),
             const SizedBox(width: 5),
-            Text(
-              textoTitulo,
-              style: TextStyle(color: Colors.grey, fontWeight: .bold),
+            Expanded(
+              child: Text(
+                textoTitulo,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.grey, fontWeight: .bold),
+              ),
             ),
           ],
         ),
-        Text(textoLabel, style: const TextStyle(fontWeight: .bold)),
+        Row(
+          children: [
+            const SizedBox(width: 25),
+            Expanded(
+              child: Text(
+                textoLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: .bold, fontSize: 13),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
