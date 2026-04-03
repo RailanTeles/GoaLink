@@ -7,6 +7,10 @@ import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
 import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/login/login_screen.dart';
 import 'package:goalink/screens/profile/profile_screen.dart';
+import 'package:goalink/screens/register/funcao_screen.dart';
+import 'package:goalink/screens/register/jogador/register_jogador_final_screen.dart';
+import 'package:goalink/screens/register/jogador/register_jogador_segundo_screen.dart';
+import 'package:goalink/screens/register/jogador/register_jogador_screen.dart';
 import 'package:goalink/screens/search/search_screen.dart';
 import 'package:goalink/screens/tips/tips_screen.dart';
 
@@ -52,6 +56,22 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: '/cadastro',
+      builder: (context, state) => const RegisterJogadorScreen(),
+    ),
+    GoRoute(
+      path: '/cadastro/jogador-2',
+      builder: (context, state) => const RegisterJogadorSegundoScreen(),
+    ),
+    GoRoute(
+      path: '/cadastro/jogador-3',
+      builder: (context, state) => const RegisterJogadorFinalScreen(),
+    ),
+    GoRoute(
+      path: '/cadastro/funcao',
+      builder: (context, state) => const FuncaoScreen(),
+    ),
     GoRoute(
       path: '/recuperar-senha',
       pageBuilder: (context, state) {

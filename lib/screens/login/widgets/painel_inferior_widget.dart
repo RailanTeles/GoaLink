@@ -124,7 +124,7 @@ class _PainelInferiorState extends State<PainelInferior> {
                     SizedBox(height: 10),
                     TextButton(
                       onPressed: () {
-                        // Navegar para cadastrar
+                        context.go('/cadastro/funcao');
                       },
                       child: Text.rich(
                         TextSpan(
