@@ -6,10 +6,12 @@ class LabelInfo extends StatelessWidget {
     required this.icone,
     required this.textoTitulo,
     required this.textoLabel,
+    this.maximoLinhas = 1,
   });
   final IconData icone;
   final String textoTitulo;
   final String textoLabel;
+  final int maximoLinhas;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class LabelInfo extends StatelessWidget {
             Expanded(
               child: Text(
                 textoLabel,
-                maxLines: 1,
+                maxLines: maximoLinhas,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontWeight: .bold, fontSize: 13),
               ),

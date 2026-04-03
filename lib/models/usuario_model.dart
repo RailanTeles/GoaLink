@@ -11,7 +11,6 @@ class UsuarioModel {
   final String? pernaPreferida;
   final String? descricao;
   final String? fotoPerfil;
-  final Map<String, dynamic>? contatos;
   final Map<String, dynamic>? redesSociais;
   final String? clubeRepresentante;
   final String? jogadoresProcurados;
@@ -29,7 +28,6 @@ class UsuarioModel {
     this.pernaPreferida,
     this.descricao,
     this.fotoPerfil,
-    this.contatos,
     this.redesSociais,
     this.clubeRepresentante,
     this.jogadoresProcurados,
@@ -51,7 +49,6 @@ class UsuarioModel {
       pernaPreferida: json['perna_preferida'],
       descricao: json['descricao'],
       fotoPerfil: json['foto_perfil'],
-      contatos: json['contatos'],
       redesSociais: json['redes_sociais'],
       clubeRepresentante: json['clube_representante'],
       jogadoresProcurados: json['jogadores_procurados'],
@@ -72,7 +69,6 @@ class UsuarioModel {
       'perna_preferida': pernaPreferida,
       'descricao': descricao,
       'foto_perfil': fotoPerfil,
-      'contatos': contatos,
       'redes_sociais': redesSociais,
       'clube_representante': clubeRepresentante,
       'jogadores_procurados': jogadoresProcurados,
