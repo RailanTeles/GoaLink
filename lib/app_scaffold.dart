@@ -20,7 +20,7 @@ class AppScaffold extends StatelessWidget {
           child: Container(
             height: 70,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              color: const Color(0xFF195E3B),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(

@@ -8,6 +8,7 @@ class UsuarioModel {
   final double? peso;
   final String? posicao;
   final String? cidade;
+  final String? cpf;
   final String? pernaPreferida;
   final String? descricao;
   final String? fotoPerfil;
@@ -25,6 +26,7 @@ class UsuarioModel {
     this.peso,
     this.posicao,
     this.cidade,
+    this.cpf,
     this.pernaPreferida,
     this.descricao,
     this.fotoPerfil,
@@ -46,6 +48,7 @@ class UsuarioModel {
       peso: json['peso']?.toDouble(),
       posicao: json['posicao'],
       cidade: json['cidade'],
+      cpf: json['cpf'],
       pernaPreferida: json['perna_preferida'],
       descricao: json['descricao'],
       fotoPerfil: json['foto_perfil'],
@@ -66,6 +69,7 @@ class UsuarioModel {
       'peso': peso,
       'posicao': posicao,
       'cidade': cidade,
+      'cpf': cpf,
       'perna_preferida': pernaPreferida,
       'descricao': descricao,
       'foto_perfil': fotoPerfil,
@@ -77,5 +81,45 @@ class UsuarioModel {
     dados.removeWhere((chave, valor) => valor == null);
 
     return dados;
+  }
+
+  UsuarioModel copyWith({
+    String? id,
+    String? tipo,
+    String? nome,
+    DateTime? criadoEm,
+    DateTime? dataNascimento,
+    double? altura,
+    double? peso,
+    String? posicao,
+    String? cidade,
+    String? cpf,
+    String? pernaPreferida,
+    String? descricao,
+    String? fotoPerfil,
+    String? videoPerfil,
+    Map<String, dynamic>? contatos,
+    Map<String, dynamic>? redesSociais,
+    String? clubeRepresentante,
+    String? jogadoresProcurados,
+  }) {
+    return UsuarioModel(
+      id: id ?? this.id,
+      tipo: tipo ?? this.tipo,
+      nome: nome ?? this.nome,
+      criadoEm: criadoEm ?? this.criadoEm,
+      dataNascimento: dataNascimento ?? this.dataNascimento,
+      altura: altura ?? this.altura,
+      peso: peso ?? this.peso,
+      posicao: posicao ?? this.posicao,
+      cidade: cidade ?? this.cidade,
+      cpf: cpf ?? this.cpf,
+      pernaPreferida: pernaPreferida ?? this.pernaPreferida,
+      descricao: descricao ?? this.descricao,
+      fotoPerfil: fotoPerfil ?? this.fotoPerfil,
+      redesSociais: redesSociais ?? this.redesSociais,
+      clubeRepresentante: clubeRepresentante ?? this.clubeRepresentante,
+      jogadoresProcurados: jogadoresProcurados ?? this.jogadoresProcurados,
+    );
   }
 }

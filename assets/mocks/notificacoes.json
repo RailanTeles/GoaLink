@@ -2,10 +2,73 @@
   {
     "id_notificacao": "notif_001",
     "usuario_id": "jogador_01",
-    "tipo": "nova_mensagem",
-    "conteudo": "Marcos Observador enviou uma nova mensagem para você.",
-    "link_id": "chat_001",
+    "tipo": "favorito",
+    "conteudo": "favoritou sua postagem.",
+    "link_id": "post_001",
     "lida": false,
-    "criado_em": "2026-03-22T09:30:00Z"
+    "criado_em": "2026-03-28T12:58:00Z",
+    "nome_remetente": "Lian Scout",
+    "acao": "favoritou sua postagem.",
+    "avatar_url": "assets/images/lian.png"
+  },
+  {
+    "id_notificacao": "notif_002",
+    "usuario_id": "jogador_01",
+    "tipo": "comentario",
+    "conteudo": "comentou em sua postagem.",
+    "link_id": "post_002",
+    "lida": false,
+    "criado_em": "2026-03-28T14:24:00Z",
+    "nome_remetente": "Lian Scout",
+    "acao": "comentou em sua postagem.",
+    "avatar_url": "assets/images/lian.png"
+  },
+  {
+    "id_notificacao": "notif_003",
+    "usuario_id": "jogador_01",
+    "tipo": "mensagem",
+    "conteudo": "mandou uma mensagem para voce.",
+    "link_id": "chat_001",
+    "lida": true,
+    "criado_em": "2026-03-28T00:14:00Z",
+    "nome_remetente": "Lian Scout",
+    "acao": "mandou uma mensagem para voce.",
+    "avatar_url": "assets/images/lian.png"
+  },
+  {
+    "id_notificacao": "notif_004",
+    "usuario_id": "jogador_01",
+    "tipo": "favorito",
+    "conteudo": "favoritou sua postagem.",
+    "link_id": "post_003",
+    "lida": true,
+    "criado_em": "2026-03-28T14:24:00Z",
+    "nome_remetente": "Lian Scout",
+    "acao": "favoritou sua postagem.",
+    "avatar_url": "assets/images/lian.png"
+  },
+  {
+    "id_notificacao": "notif_005",
+    "usuario_id": "jogador_01",
+    "tipo": "comentario",
+    "conteudo": "comentou em sua postagem.",
+    "link_id": "post_004",
+    "lida": true,
+    "criado_em": "2026-03-28T14:24:00Z",
+    "nome_remetente": "Lian Scout",
+    "acao": "comentou em sua postagem.",
+    "avatar_url": "assets/images/lian.png"
+  },
+  {
+    "id_notificacao": "notif_006",
+    "usuario_id": "jogador_01",
+    "tipo": "mensagem",
+    "conteudo": "mandou uma mensagem para voce.",
+    "link_id": "chat_002",
+    "lida": true,
+    "criado_em": "2026-03-28T00:14:00Z",
+    "nome_remetente": "Lian Scout",
+    "acao": "mandou uma mensagem para voce.",
+    "avatar_url": "assets/images/lian.png"
   }
 ]

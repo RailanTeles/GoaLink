@@ -1,30 +1,101 @@
 [
   {
-    "id_chat": "chat_001",
-    "participantes": ["jogador_01", "olheiro_01"],
-    "ultima_mensagem": "Me envie seu vídeo completo, por favor.",
-    "atualizado_em": "2026-03-22T09:30:00Z",
+    "id_chat": "clube-folhinha",
+    "participantes": ["jogador_01", "clube_folhinha"],
+    "nome_contato": "Clube Fofinho",
+    "avatar_label": "CF",
+    "ultima_mensagem": "Pelo visto joga em qual posicao?",
+    "atualizado_em": "2026-03-28T14:32:00Z",
     "mensagens": [
       {
         "id_mensagem": "msg_001",
-        "remetente_id": "olheiro_01",
-        "texto": "Olá, Lian! Gostei muito do seu perfil. Você tem algum vídeo de jogo completo?",
+        "remetente_id": "clube_folhinha",
+        "texto": "Boa noite, craque!",
         "lida": true,
-        "criado_em": "2026-03-22T09:00:00Z"
+        "criado_em": "2026-03-28T14:30:00Z"
       },
       {
         "id_mensagem": "msg_002",
-        "remetente_id": "jogador_01",
-        "texto": "Olá, Marcos! Muito obrigado. Tenho sim, vou fazer o upload e te mando o link.",
+        "remetente_id": "clube_folhinha",
+        "texto": "Fala, tudo bem em que posso ajudar?",
         "lida": true,
-        "criado_em": "2026-03-22T09:15:00Z"
+        "criado_em": "2026-03-28T14:31:00Z"
       },
       {
         "id_mensagem": "msg_003",
-        "remetente_id": "olheiro_01",
-        "texto": "Me envie seu vídeo completo, por favor.",
+        "remetente_id": "jogador_01",
+        "texto": "Sou goleiro playboy",
+        "lida": true,
+        "criado_em": "2026-03-28T14:31:30Z"
+      },
+      {
+        "id_mensagem": "msg_004",
+        "remetente_id": "clube_folhinha",
+        "texto": "Pelo visto joga em qual posicao?",
         "lida": false,
-        "criado_em": "2026-03-22T09:30:00Z"
+        "criado_em": "2026-03-28T14:32:00Z"
+      }
+    ]
+  },
+  {
+    "id_chat": "lion-scout",
+    "participantes": ["jogador_01", "lion_scout"],
+    "nome_contato": "Lion Scout",
+    "avatar_label": "LS",
+    "ultima_mensagem": "Show. Manda seu material e seguimos.",
+    "atualizado_em": "2026-03-28T11:18:00Z",
+    "mensagens": [
+      {
+        "id_mensagem": "msg_005",
+        "remetente_id": "lion_scout",
+        "texto": "Vi seu perfil no marketplace.",
+        "lida": true,
+        "criado_em": "2026-03-28T11:12:00Z"
+      },
+      {
+        "id_mensagem": "msg_006",
+        "remetente_id": "jogador_01",
+        "texto": "Perfeito, posso enviar meus melhores lances.",
+        "lida": true,
+        "criado_em": "2026-03-28T11:15:00Z"
+      },
+      {
+        "id_mensagem": "msg_007",
+        "remetente_id": "lion_scout",
+        "texto": "Show. Manda seu material e seguimos.",
+        "lida": false,
+        "criado_em": "2026-03-28T11:18:00Z"
+      }
+    ]
+  },
+  {
+    "id_chat": "base-verde",
+    "participantes": ["jogador_01", "base_verde_fc"],
+    "nome_contato": "Base Verde FC",
+    "avatar_label": "BV",
+    "ultima_mensagem": "Treino aberto confirmado para amanha.",
+    "atualizado_em": "2026-03-28T09:05:00Z",
+    "mensagens": [
+      {
+        "id_mensagem": "msg_008",
+        "remetente_id": "base_verde_fc",
+        "texto": "Recebemos seu cadastro por aqui.",
+        "lida": true,
+        "criado_em": "2026-03-28T08:55:00Z"
+      },
+      {
+        "id_mensagem": "msg_009",
+        "remetente_id": "jogador_01",
+        "texto": "Excelente, obrigado pelo retorno.",
+        "lida": true,
+        "criado_em": "2026-03-28T09:00:00Z"
+      },
+      {
+        "id_mensagem": "msg_010",
+        "remetente_id": "base_verde_fc",
+        "texto": "Treino aberto confirmado para amanha.",
+        "lida": false,
+        "criado_em": "2026-03-28T09:05:00Z"
       }
     ]
   }
