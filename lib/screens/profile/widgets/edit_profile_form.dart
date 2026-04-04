@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/models/usuario_model.dart';
+import 'package:goalink/screens/profile/widgets/settings_dropdown_field.dart';
 import 'package:goalink/screens/profile/widgets/settings_primary_button.dart';
 import 'package:goalink/screens/profile/widgets/settings_text_field.dart';
 import 'package:goalink/services/profile_settings_service.dart';
@@ -19,12 +20,32 @@ class _EditProfileFormState extends State<EditProfileForm> {
   bool _isSaving = false;
   UsuarioModel? _currentProfile;
   String? _selectedPhotoPath;
-  String? _selectedVideoPath;
+  String? _selectedPosition;
+  String? _selectedPreferredFoot;
+
+  static const List<String> _positions = [
+    'Goleiro',
+    'Zagueiro',
+    'Lateral Direito',
+    'Lateral Esquerdo',
+    'Volante',
+    'Meio-campo',
+    'Meia Atacante',
+    'Ponta Direita',
+    'Ponta Esquerda',
+    'Centroavante',
+  ];
+
+  static const List<String> _preferredFeet = [
+    'Direita',
+    'Esquerda',
+    'Ambidestra',
+  ];
 
   @override
   void initState() {
     super.initState();
-    _controllers = List.generate(9, (_) => TextEditingController());
+    _controllers = List.generate(6, (_) => TextEditingController());
     _loadProfile();
   }
 
@@ -73,16 +94,21 @@ class _EditProfileFormState extends State<EditProfileForm> {
           controller: _controllers[4],
           keyboardType: TextInputType.datetime,
         ),
-        SettingsTextField(
-          label: 'CPF',
-          controller: _controllers[5],
-          keyboardType: TextInputType.number,
+        SettingsDropdownField(
+          label: 'Posição',
+          value: _selectedPosition,
+          items: _positions,
+          onChanged: (value) => setState(() => _selectedPosition = value),
         ),
-        SettingsTextField(label: 'Posicao', controller: _controllers[6]),
-        SettingsTextField(label: 'Perna Preferida', controller: _controllers[7]),
+        SettingsDropdownField(
+          label: 'Perna Preferida',
+          value: _selectedPreferredFoot,
+          items: _preferredFeet,
+          onChanged: (value) => setState(() => _selectedPreferredFoot = value),
+        ),
         SettingsTextField(
           label: 'Bio',
-          controller: _controllers[8],
+          controller: _controllers[5],
           maxLines: 4,
         ),
         const SizedBox(height: 2),
@@ -92,14 +118,6 @@ class _EditProfileFormState extends State<EditProfileForm> {
               ? 'Insira a foto aqui'
               : 'Foto selecionada: ${_fileName(_selectedPhotoPath)}',
           onPressed: _pickPhoto,
-        ),
-        const SizedBox(height: 10),
-        _MediaPickerButton(
-          icon: Icons.videocam_outlined,
-          label: _selectedVideoPath == null
-              ? 'Insira o video aqui'
-              : 'Video selecionado: ${_fileName(_selectedVideoPath)}',
-          onPressed: _pickVideo,
         ),
         const SizedBox(height: 16),
         SettingsPrimaryButton(
@@ -118,10 +136,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
     _controllers[2].text = profile.peso?.toString() ?? '';
     _controllers[3].text = profile.cidade ?? '';
     _controllers[4].text = _formatDate(profile.dataNascimento);
-    _controllers[5].text = profile.cpf ?? '';
-    _controllers[6].text = profile.posicao ?? '';
-    _controllers[7].text = profile.pernaPreferida ?? '';
-    _controllers[8].text = profile.descricao ?? '';
+    _controllers[5].text = profile.descricao ?? '';
 
     if (!mounted) {
       return;
@@ -130,7 +145,11 @@ class _EditProfileFormState extends State<EditProfileForm> {
     setState(() {
       _currentProfile = profile;
       _selectedPhotoPath = profile.fotoPerfil;
-      _selectedVideoPath = profile.videoPerfil;
+      _selectedPosition =
+          _positions.contains(profile.posicao) ? profile.posicao : null;
+      _selectedPreferredFoot = _preferredFeet.contains(profile.pernaPreferida)
+          ? profile.pernaPreferida
+          : null;
       _isLoading = false;
     });
   }
@@ -143,16 +162,6 @@ class _EditProfileFormState extends State<EditProfileForm> {
     }
 
     setState(() => _selectedPhotoPath = photo.path);
-  }
-
-  Future<void> _pickVideo() async {
-    final video = await _imagePicker.pickVideo(source: ImageSource.gallery);
-
-    if (video == null || !mounted) {
-      return;
-    }
-
-    setState(() => _selectedVideoPath = video.path);
   }
 
   Future<void> _saveProfile() async {
@@ -168,14 +177,14 @@ class _EditProfileFormState extends State<EditProfileForm> {
       nome: _controllers[0].text.trim(),
       altura: _parseDouble(_controllers[1].text),
       peso: _parseDouble(_controllers[2].text),
-      cidade: _controllers[3].text.trim(),
+      cidade: _emptyToNull(_controllers[3].text),
       dataNascimento: _parseDate(_controllers[4].text),
-      cpf: _emptyToNull(_controllers[5].text),
-      posicao: _emptyToNull(_controllers[6].text),
-      pernaPreferida: _emptyToNull(_controllers[7].text),
-      descricao: _emptyToNull(_controllers[8].text),
+      cpf: null,
+      posicao: _selectedPosition,
+      pernaPreferida: _selectedPreferredFoot,
+      descricao: _emptyToNull(_controllers[5].text),
       fotoPerfil: _selectedPhotoPath,
-      videoPerfil: _selectedVideoPath,
+      videoPerfil: null,
     );
 
     await ProfileSettingsService.instance.saveProfile(updatedProfile);

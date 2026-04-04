@@ -115,7 +115,7 @@ class _NotificationsHeader extends StatelessWidget {
           Row(
             children: [
               _HeaderIconButton(
-                icon: Icons.chevron_left_rounded,
+                icon: Icons.arrow_back,
                 onTap: onBackPressed,
               ),
               const Spacer(),
@@ -139,10 +139,10 @@ class _HeaderIconButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
-      child: const SizedBox(
+      child: SizedBox(
         width: 42,
         height: 42,
-        child: Icon(Icons.chevron_left_rounded, color: Colors.white, size: 34),
+        child: Icon(icon, color: Colors.white, size: 28),
       ),
     );
   }
