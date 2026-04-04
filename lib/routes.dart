@@ -6,7 +6,7 @@ import 'package:goalink/screens/chat/chat_screen.dart';
 import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
 import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/login/login_screen.dart';
-import 'package:goalink/screens/profile/profile_screen.dart';
+import 'package:goalink/screens/profile/perfil_screen.dart';
 import 'package:goalink/screens/register/funcao_screen.dart';
 import 'package:goalink/screens/register/clube/register_clube_final_screen.dart';
 import 'package:goalink/screens/register/clube/register_clube_screen.dart';
