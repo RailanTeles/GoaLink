@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class LabelInfoWidget extends StatelessWidget {
   const LabelInfoWidget({
     super.key,
+    required this.icon,
     required this.title,
     required this.value,
   });
 
+  final IconData icon;
   final String title;
   final String value;
 
@@ -17,34 +19,26 @@ class LabelInfoWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Container(
-              width: 18,
-              height: 18,
-              decoration: BoxDecoration(
-                color: const Color(0xFF145237),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(width: 10),
+            Icon(icon, size: 18, color: const Color(0xFF2C6D49)),
+            const SizedBox(width: 8),
             Flexible(
               child: Text(
                 title,
                 style: const TextStyle(
-                  color: Color(0xFF6D7571),
-                  fontSize: 18,
+                  color: Color(0xFF7D847F),
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Text(
           value,
           style: const TextStyle(
-            color: Color(0xFF294232),
-            fontSize: 18,
-            height: 1.3,
+            color: Color(0xFF324A39),
+            fontSize: 15,
             fontWeight: FontWeight.w700,
           ),
         ),

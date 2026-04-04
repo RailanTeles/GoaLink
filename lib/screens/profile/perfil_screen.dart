@@ -18,7 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final UsuarioModel _usuario = UsuarioModel(
     id: 'jogador_03',
     tipo: 'jogador',
-    nome: 'Lucas Andrade',
+    nome: 'Lian Pedro',
     criadoEm: DateTime(2026, 4, 3),
     dataNascimento: DateTime(2007, 6, 11),
     altura: 1.60,
@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     fotoPerfil:
         'https://i.ibb.co/XrNzzWdR/Whats-App-Image-2026-03-18-at-19-49-19.jpg',
     redesSociais: const {
-      'instagram': '@lucas.andrade',
+      'instagram': 'https://www.instagram.com/lian_p17/',
       'linkedin': 'lucas-andrade',
       'facebook': 'lucas.andrade',
     },

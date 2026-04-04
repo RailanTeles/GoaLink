@@ -14,29 +14,34 @@ class PerfilInfosWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: LabelInfoWidget(
+                icon: Icons.location_on,
                 title: 'Cidade',
                 value: usuario.cidade ?? '-',
               ),
             ),
-            const SizedBox(width: 18),
+            const SizedBox(width: 40),
             Expanded(
               child: LabelInfoWidget(
+                icon: Icons.sports_soccer_outlined,
                 title: 'Posição',
                 value: usuario.posicao ?? '-',
               ),
             ),
           ],
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 16),
         LabelInfoWidget(
-          title: 'Perna',
+          icon: Icons.directions_run,
+          title: 'Perna Preferida',
           value: usuario.pernaPreferida ?? '-',
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 16),
         LabelInfoWidget(
+          icon: Icons.description,
           title: 'Descrição',
           value: usuario.descricao ?? '-',
         ),
