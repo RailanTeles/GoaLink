@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/models/usuario_model.dart';
-import 'package:goalink/screens/profile/widgets/settings_dropdown_field.dart';
-import 'package:goalink/screens/profile/widgets/settings_primary_button.dart';
-import 'package:goalink/screens/profile/widgets/settings_text_field.dart';
+import 'package:goalink/screens/settings/widgets/settings_dropdown_field.dart';
+import 'package:goalink/screens/settings/widgets/settings_primary_button.dart';
+import 'package:goalink/screens/settings/widgets/settings_text_field.dart';
 import 'package:goalink/services/profile_settings_service.dart';
 import 'package:image_picker/image_picker.dart';
 

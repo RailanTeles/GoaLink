@@ -10,18 +10,12 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = navigationShell.currentIndex;
-
     return Scaffold(
       extendBody: true,
-      appBar: currentIndex == 4
-          ? null
-          : currentIndex == 3
+      appBar: navigationShell.currentIndex == 3
           ? const ChatNavbar()
           : const Navbar(),
-      body: currentIndex == 4
-          ? navigationShell
-          : SafeArea(bottom: false, child: navigationShell),
+      body: SafeArea(bottom: false, child: navigationShell),
       // bottomNavigationBar
       bottomNavigationBar: SafeArea(
         child: Padding(

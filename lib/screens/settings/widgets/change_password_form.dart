@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goalink/screens/profile/widgets/settings_primary_button.dart';
-import 'package:goalink/screens/profile/widgets/settings_text_field.dart';
+import 'package:goalink/screens/settings/widgets/settings_primary_button.dart';
+import 'package:goalink/screens/settings/widgets/settings_text_field.dart';
 import 'package:goalink/services/profile_settings_service.dart';
 
 class ChangePasswordForm extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/models/notification_preferences_model.dart';
-import 'package:goalink/screens/profile/widgets/settings_primary_button.dart';
+import 'package:goalink/screens/settings/widgets/settings_primary_button.dart';
 import 'package:goalink/services/profile_settings_service.dart';
 
 class NotificationsForm extends StatefulWidget {

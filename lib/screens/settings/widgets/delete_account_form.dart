@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goalink/screens/profile/widgets/settings_primary_button.dart';
-import 'package:goalink/screens/profile/widgets/settings_text_field.dart';
+import 'package:goalink/screens/settings/widgets/settings_primary_button.dart';
+import 'package:goalink/screens/settings/widgets/settings_text_field.dart';
 
 class DeleteAccountForm extends StatefulWidget {
   const DeleteAccountForm({super.key});
