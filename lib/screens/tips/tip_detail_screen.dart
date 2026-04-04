@@ -31,7 +31,7 @@ class _TipDetailScreenState extends State<TipDetailScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 75),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

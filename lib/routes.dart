@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/app_scaffold.dart';
 import 'package:goalink/screens/chat/chat_screen.dart';
-// import 'package:goalink/screens/favorites/favorites_screen.dart';
+import 'package:goalink/screens/favorites/favorites_screen.dart';
 import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
 import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/login/login_screen.dart';
@@ -56,10 +56,19 @@ final GoRouter router = GoRouter(
         ),
         // Index 4: Perfil
         StatefulShellBranch(
+           routes: [
+            GoRoute(
+              path: '/myprofile',
+              builder: (c, s) => const ProfileScreen(),
+            ),
+          ],
+        ),
+        //Index 5: favorites
+        StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/favorites',
-              builder: (c, s) => const ProfileScreen(),
+              builder: (c, s) => const FavoritesScreen(),
             ),
           ],
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/services/interacao_service.dart';
 
@@ -38,7 +37,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 75),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -85,9 +84,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget _buildFavoritoItem(UsuarioModel usuario) {
     final tipo = usuario.tipo[0].toUpperCase() + usuario.tipo.substring(1);
     final marcado = !_desmarcados.contains(usuario.id);
-    final icone = marcado
-        ? 'assets/images/icons/favorito_estrela.svg'
-        : 'assets/images/icons/favorito_estrela_desmarcada.svg';
 
     return GestureDetector(
       // TODO: descomentar quando a rota de perfil do jogador estiver pronta
@@ -123,16 +119,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             ],
           ),
         ),
-        GestureDetector(
-          onTap: () => _toggleFavorito(usuario.id),
-          child: SvgPicture.asset(
-            icone,
-            width: 36,
-            height: 36,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).colorScheme.primary,
-              BlendMode.srcIn,
-            ),
+        IconButton(
+          onPressed: () => _toggleFavorito(usuario.id),
+          icon: Icon(
+            marcado ? Icons.star : Icons.star_border,
+            size: 36,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ],
