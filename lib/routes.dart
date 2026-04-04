@@ -17,6 +17,8 @@ import 'package:goalink/screens/register/olheiro/register_olheiro_final_screen.d
 import 'package:goalink/screens/register/olheiro/register_olheiro_screen.dart';
 import 'package:goalink/screens/search/search_screen.dart';
 import 'package:goalink/screens/tips/tips_screen.dart';
+import 'package:goalink/screens/video_posts/posts_final.dart';
+import 'package:goalink/screens/video_posts/posts_inicio.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/login',
@@ -60,6 +62,21 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: '/posts/inicio',
+      builder: (context, state) => const PostsInicio(),
+    ),
+    GoRoute(
+      path: '/posts/final',
+      builder: (context, state) {
+        final extra = state.extra as PostsFinalArgs;
+        return PostsFinal(
+          mediaPath: extra.path,
+          isVideo: extra.isVideo,
+          initialPost: extra.initialPost,
+        );
+      },
+    ),
     GoRoute(
       path: '/cadastro',
       builder: (context, state) => const RegisterJogadorScreen(),

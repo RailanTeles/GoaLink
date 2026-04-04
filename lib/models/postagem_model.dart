@@ -36,4 +36,20 @@ class PostagemModel {
 
     return dados;
   }
+
+  PostagemModel copyWith({
+    String? idPostagem,
+    String? jogadorId,
+    String? midiaUrl,
+    String? descricao,
+    DateTime? criadoEm,
+  }) {
+    return PostagemModel(
+      idPostagem: idPostagem ?? this.idPostagem,
+      jogadorId: jogadorId ?? this.jogadorId,
+      midiaUrl: midiaUrl ?? this.midiaUrl,
+      descricao: descricao ?? this.descricao,
+      criadoEm: criadoEm ?? this.criadoEm,
+    );
+  }
 }

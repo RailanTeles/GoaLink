@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:goalink/core/circular_loading.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/screens/profile/widgets/postagem_comentario_widget.dart';
 import 'package:goalink/screens/profile/widgets/perfil_header_widget.dart';
 import 'package:goalink/screens/profile/widgets/perfil_infos_widget.dart';
-import 'package:goalink/services/usuario_service.dart';
+import 'package:goalink/services/postagem_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,6 +13,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final PostagemService _postagemService = PostagemService();
+
   final UsuarioModel _usuario = UsuarioModel(
     id: 'jogador_03',
     tipo: 'jogador',
@@ -34,6 +35,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'facebook': 'lucas.andrade',
     },
   );
+
+  @override
+  void initState() {
+    super.initState();
+    _postagemService.ensureLoaded();
+  }
 
   @override
   Widget build(BuildContext context) {

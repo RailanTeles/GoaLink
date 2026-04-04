@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Navbar extends StatelessWidget implements PreferredSizeWidget {
   const Navbar({super.key});
@@ -11,7 +12,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
       title: Image.asset("assets/images/logo.png", height: 45),
       leading: IconButton(
         icon: const Icon(Icons.add_box, size: 28),
-        onPressed: () {},
+        onPressed: () => context.push('/posts/inicio'),
       ),
       actions: [
         IconButton(
