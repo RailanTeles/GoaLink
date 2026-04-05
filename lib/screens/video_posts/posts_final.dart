@@ -57,6 +57,7 @@ class _PostsFinalState extends State<PostsFinal> {
                   Container(
                     width: double.infinity,
                     height: 240,
+                    clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black, width: 1.2),
                       color: const Color(0xFFD8DEE4),
@@ -124,6 +125,7 @@ class _PostsFinalState extends State<PostsFinal> {
       await PostagemService().atualizarPostagem(
         initialPost.copyWith(
           midiaUrl: widget.mediaPath,
+          isVideo: widget.isVideo,
           descricao: _captionController.text.trim(),
         ),
       );
@@ -132,6 +134,7 @@ class _PostsFinalState extends State<PostsFinal> {
         idPostagem: 'post_${DateTime.now().millisecondsSinceEpoch}',
         jogadorId: 'jogador_03',
         midiaUrl: widget.mediaPath,
+        isVideo: widget.isVideo,
         descricao: _captionController.text.trim(),
         criadoEm: DateTime.now(),
       );

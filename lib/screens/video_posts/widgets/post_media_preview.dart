@@ -65,13 +65,16 @@ class _PostMediaPreviewState extends State<PostMediaPreview> {
       return Stack(
         alignment: Alignment.center,
         children: [
-          SizedBox.expand(
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                width: controller.value.size.width,
-                height: controller.value.size.height,
-                child: VideoPlayer(controller),
+          ColoredBox(
+            color: Colors.black,
+            child: SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: SizedBox(
+                  width: controller.value.size.width,
+                  height: controller.value.size.height,
+                  child: VideoPlayer(controller),
+                ),
               ),
             ),
           ),
@@ -105,7 +108,7 @@ class _PostMediaPreviewState extends State<PostMediaPreview> {
 
     return Image.memory(
       _imageBytes!,
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
       errorBuilder: (_, _, _) => const PostMediaPlaceholder(),
     );
   }

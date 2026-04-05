@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/models/postagem_model.dart';
@@ -86,7 +89,10 @@ class _ProfilePostCard extends StatelessWidget {
                   border: Border.all(color: Colors.black, width: 1.2),
                   color: const Color(0xFFD8DEE4),
                 ),
-                child: _ProfileMediaView(mediaUrl: postagem.midiaUrl),
+                child: _ProfileMediaView(
+                  mediaUrl: postagem.midiaUrl,
+                  isVideo: postagem.isVideo,
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -105,18 +111,11 @@ class _ProfilePostCard extends StatelessWidget {
                   angle: -0.25,
                   child: IconButton(
                     onPressed: () {
-                      final mediaUrl = postagem.midiaUrl.toLowerCase();
-                      final isVideo =
-                          mediaUrl.endsWith('.mp4') ||
-                          mediaUrl.endsWith('.mov') ||
-                          mediaUrl.endsWith('.webm') ||
-                          mediaUrl.contains('video');
-
                       context.push(
                         '/posts/final',
                         extra: PostsFinalArgs(
                           path: postagem.midiaUrl,
-                          isVideo: isVideo,
+                          isVideo: postagem.isVideo,
                           initialPost: postagem,
                         ),
                       );
@@ -147,9 +146,10 @@ class _ProfilePostCard extends StatelessWidget {
 }
 
 class _ProfileMediaView extends StatefulWidget {
-  const _ProfileMediaView({required this.mediaUrl});
+  const _ProfileMediaView({required this.mediaUrl, required this.isVideo});
 
   final String mediaUrl;
+  final bool isVideo;
 
   @override
   State<_ProfileMediaView> createState() => _ProfileMediaViewState();
@@ -157,24 +157,30 @@ class _ProfileMediaView extends StatefulWidget {
 
 class _ProfileMediaViewState extends State<_ProfileMediaView> {
   VideoPlayerController? _controller;
+  Uint8List? _imageBytes;
 
-  bool get _isVideo {
-    final lower = widget.mediaUrl.toLowerCase();
-    return lower.endsWith('.mp4') ||
-        lower.endsWith('.mov') ||
-        lower.endsWith('.webm') ||
-        lower.contains('video');
-  }
+  bool get _isVideo => widget.isVideo;
 
   @override
   void initState() {
     super.initState();
     if (_isVideo) {
-      _controller = VideoPlayerController.networkUrl(Uri.parse(widget.mediaUrl))
+      final uri = Uri.tryParse(widget.mediaUrl);
+      final resolvedUri = uri != null && uri.hasScheme
+          ? uri
+          : Uri.file(widget.mediaUrl);
+      _controller = VideoPlayerController.networkUrl(resolvedUri)
         ..initialize().then((_) {
           if (!mounted) return;
-          setState(() {});
+          setState(() {}); 
         });
+    } else {
+      XFile(widget.mediaUrl).readAsBytes().then((bytes) {
+        if (!mounted) return;
+        setState(() {
+          _imageBytes = bytes;
+        });
+      });
     }
   }
 
@@ -197,13 +203,16 @@ class _ProfileMediaViewState extends State<_ProfileMediaView> {
       return Stack(
         alignment: Alignment.center,
         children: [
-          SizedBox.expand(
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                width: controller.value.size.width,
-                height: controller.value.size.height,
-                child: VideoPlayer(controller),
+          ColoredBox(
+            color: Colors.black,
+            child: SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: SizedBox(
+                  width: controller.value.size.width,
+                  height: controller.value.size.height,
+                  child: VideoPlayer(controller),
+                ),
               ),
             ),
           ),
@@ -227,9 +236,15 @@ class _ProfileMediaViewState extends State<_ProfileMediaView> {
       );
     }
 
-    return Image.network(
-      widget.mediaUrl,
-      fit: BoxFit.cover,
+    if (_imageBytes == null) {
+      return const Center(
+        child: CircularProgressIndicator(color: Color(0xFF1E6B47)),
+      );
+    }
+
+    return Image.memory(
+      _imageBytes!,
+      fit: BoxFit.contain,
       errorBuilder: (_, _, _) => CustomPaint(
         painter: _PlaceholderPainter(),
         child: const SizedBox.expand(),
