@@ -27,14 +27,16 @@ class _TipsScreenState extends State<TipsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 75),
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: 75,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Dicas de Treinamento',
-              style: TextStyle(fontSize: 20),
-            ),
+            const Text('Dicas de Treinamento', style: TextStyle(fontSize: 20)),
             const SizedBox(height: 12),
             _buildFilterBar(context),
             const SizedBox(height: 16),
@@ -60,7 +62,7 @@ class _TipsScreenState extends State<TipsScreen> {
                   return ListView.separated(
                     padding: const EdgeInsets.only(bottom: 90),
                     itemCount: filtradas.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
                     itemBuilder: (_, index) {
                       final dica = filtradas[index];
                       return GestureDetector(
@@ -107,8 +109,7 @@ class _TipsScreenState extends State<TipsScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             ),
             child: Text(option, style: const TextStyle(fontSize: 14)),
           ),
@@ -119,8 +120,6 @@ class _TipsScreenState extends State<TipsScreen> {
 
   List<DicaTreinoModel> _filtrarDicas(List<DicaTreinoModel> dicas) {
     if (_selectedFilter == 'Todos') return dicas;
-    return dicas
-        .where((dica) => dica.categoria == _selectedFilter)
-        .toList();
+    return dicas.where((dica) => dica.categoria == _selectedFilter).toList();
   }
 }

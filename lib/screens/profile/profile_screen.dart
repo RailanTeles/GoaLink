@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goalink/core/circular_loading.dart';
 import 'package:goalink/models/usuario_model.dart';
-import 'package:goalink/screens/profile/widgets/perfil_header_widget.dart';
-import 'package:goalink/screens/profile/widgets/perfil_infos_widget.dart';
-import 'package:goalink/screens/profile/widgets/postagem_comentario_widget.dart';
-import 'package:goalink/services/postagem_service.dart';
+import 'package:goalink/screens/search/profiles/widgets/post_coment_widget.dart';
+import 'package:goalink/screens/search/profiles/widgets/profile_header_widget.dart';
+import 'package:goalink/screens/search/profiles/widgets/profile_infos_widget.dart';
+import 'package:goalink/services/usuario_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,61 +15,112 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final PostagemService _postagemService = PostagemService();
-
-  final UsuarioModel _usuario = UsuarioModel(
-    id: 'jogador_03',
-    tipo: 'jogador',
-    nome: 'Lian Pedro',
-    criadoEm: DateTime(2026, 4, 3),
-    dataNascimento: DateTime(2007, 6, 11),
-    altura: 1.60,
-    peso: 78.5,
-    posicao: 'Goleiro',
-    cidade: 'Feira de Santana',
-    pernaPreferida: 'Direita',
-    descricao: 'Adorum jogar uma bolinha, air',
-    fotoPerfil:
-        'https://i.ibb.co/XrNzzWdR/Whats-App-Image-2026-03-18-at-19-49-19.jpg',
-    redesSociais: const {
-      'instagram': 'https://www.instagram.com/lian_p17/',
-      'linkedin': 'lucas-andrade',
-      'facebook': 'lucas.andrade',
-    },
-  );
+  final UsuarioService _usuarioService = UsuarioService();
+  late Future<UsuarioModel> _futuroUsuario;
 
   @override
   void initState() {
     super.initState();
-    _postagemService.ensureLoaded();
+    _futuroUsuario = _usuarioService.getJogadorId('jogador_01');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 120),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              PerfilHeaderWidget(usuario: _usuario),
+    return FutureBuilder<UsuarioModel>(
+      future: _futuroUsuario,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(body: CircularLoading());
+        }
+
+        if (snapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Erro'),
+              backgroundColor: const Color(0xFF195E3B),
+            ),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                  const SizedBox(height: 16),
+                  const Text('Erro ao carregar perfil'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _futuroUsuario = _usuarioService.getJogadorId(
+                          'jogador_01',
+                        );
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF195E3B),
+                    ),
+                    child: const Text('Tentar novamente'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (!snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Perfil'),
+              backgroundColor: const Color(0xFF195E3B),
+            ),
+            body: const Center(child: Text('Usuário não encontrado')),
+          );
+        }
+
+        final usuario = snapshot.data!;
+
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            actions: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(14, 18, 14, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    PerfilInfosWidget(usuario: _usuario),
-                    const SizedBox(height: 24),
-                    PostagemComentarioWidget(usuario: _usuario),
-                  ],
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  onPressed: () => context.push('/settings'),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.white.withValues(alpha: 0.8),
+                    foregroundColor: Colors.black,
+                  ),
+                  icon: const Icon(Icons.settings_outlined),
                 ),
               ),
             ],
           ),
-        ),
-      ),
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: ProfileHeaderWidget(usuario: usuario)),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                sliver: SliverToBoxAdapter(
+                  child: ProfileInfos(usuario: usuario),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  right: 10,
+                  left: 10,
+                  bottom: 100,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: PostComentWidget(usuario: usuario),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

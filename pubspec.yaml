@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^14.0.0
+  cross_file: ^0.3.5+2
   image_picker: ^1.1.2
   shared_preferences: ^2.5.3
 

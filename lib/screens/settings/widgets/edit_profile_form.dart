@@ -4,6 +4,7 @@ import 'package:goalink/screens/settings/widgets/settings_dropdown_field.dart';
 import 'package:goalink/screens/settings/widgets/settings_primary_button.dart';
 import 'package:goalink/screens/settings/widgets/settings_text_field.dart';
 import 'package:goalink/services/profile_settings_service.dart';
+import 'package:goalink/services/usuario_service.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileForm extends StatefulWidget {
@@ -16,6 +17,7 @@ class EditProfileForm extends StatefulWidget {
 class _EditProfileFormState extends State<EditProfileForm> {
   late final List<TextEditingController> _controllers;
   final ImagePicker _imagePicker = ImagePicker();
+  final UsuarioService _usuarioService = UsuarioService();
   bool _isLoading = true;
   bool _isSaving = false;
   UsuarioModel? _currentProfile;
@@ -39,7 +41,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
   static const List<String> _preferredFeet = [
     'Direita',
     'Esquerda',
-    'Ambidestra',
+    'Ambidestro',
   ];
 
   @override
@@ -129,7 +131,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
   }
 
   Future<void> _loadProfile() async {
-    final profile = await ProfileSettingsService.instance.getProfile();
+    final profile = await _usuarioService.getJogadorId('jogador_01');
 
     _controllers[0].text = profile.nome;
     _controllers[1].text = profile.altura?.toString() ?? '';
@@ -145,11 +147,10 @@ class _EditProfileFormState extends State<EditProfileForm> {
     setState(() {
       _currentProfile = profile;
       _selectedPhotoPath = profile.fotoPerfil;
-      _selectedPosition =
-          _positions.contains(profile.posicao) ? profile.posicao : null;
-      _selectedPreferredFoot = _preferredFeet.contains(profile.pernaPreferida)
-          ? profile.pernaPreferida
+      _selectedPosition = _positions.contains(profile.posicao)
+          ? profile.posicao
           : null;
+      _selectedPreferredFoot = _normalizePreferredFoot(profile.pernaPreferida);
       _isLoading = false;
     });
   }
@@ -198,9 +199,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
       _isSaving = false;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Perfil salvo com sucesso.')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Perfil salvo com sucesso.')));
   }
 
   double? _parseDouble(String value) {
@@ -246,6 +247,27 @@ class _EditProfileFormState extends State<EditProfileForm> {
   String? _emptyToNull(String value) {
     final trimmed = value.trim();
     return trimmed.isEmpty ? null : trimmed;
+  }
+
+  String? _normalizePreferredFoot(String? value) {
+    if (value == null) {
+      return null;
+    }
+
+    final normalized = value.trim().toLowerCase();
+    if (normalized == 'direita') {
+      return 'Direita';
+    }
+
+    if (normalized == 'esquerda') {
+      return 'Esquerda';
+    }
+
+    if (normalized == 'ambidestra' || normalized == 'ambidestro') {
+      return 'Ambidestro';
+    }
+
+    return null;
   }
 
   String _fileName(String? path) {

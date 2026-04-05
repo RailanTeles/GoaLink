@@ -76,7 +76,7 @@ class TipsWidget extends StatelessWidget {
     return Image.network(
       dica.midiaUrl!,
       fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => _buildPlaceholder(),
+      errorBuilder: (_, _, _) => _buildPlaceholder(),
     );
   }
 

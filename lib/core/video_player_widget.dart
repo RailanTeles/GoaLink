@@ -12,8 +12,9 @@ class VideoPlayerWidget extends StatefulWidget {
 }
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _videoPlayerController;
+  VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
+  double _aspectRatio = 16 / 9;
 
   @override
   void initState() {
@@ -22,17 +23,29 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   Future<void> _initializePlayer() async {
-    _videoPlayerController = VideoPlayerController.networkUrl(
+    if (_videoPlayerController != null) {
+      return;
+    }
+
+    final controller = VideoPlayerController.networkUrl(
       Uri.parse(widget.videoUrl),
     );
 
-    await _videoPlayerController.initialize();
+    await controller.initialize();
+
+    if (!mounted) {
+      await controller.dispose();
+      return;
+    }
+
+    _videoPlayerController = controller;
+    _aspectRatio = controller.value.aspectRatio;
 
     _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController,
+      videoPlayerController: controller,
       autoPlay: false,
       looping: true,
-      aspectRatio: _videoPlayerController.value.aspectRatio,
+      aspectRatio: _aspectRatio,
       errorBuilder: (context, errorMessage) {
         return Center(
           child: Text(
@@ -48,25 +61,51 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     }
   }
 
+  void _disposePlayer() {
+    final chewie = _chewieController;
+    final controller = _videoPlayerController;
+    _chewieController = null;
+    _videoPlayerController = null;
+
+    chewie?.dispose();
+    controller?.dispose();
+  }
+
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController?.dispose();
+    _disposePlayer();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _chewieController != null &&
-            _chewieController!.videoPlayerController.value.isInitialized
-        ? Chewie(controller: _chewieController!)
-        : const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 20),
-              Text('Carregando vídeo...'),
-            ],
-          );
+    final isReady =
+        _chewieController != null &&
+        _chewieController!.videoPlayerController.value.isInitialized;
+
+    if (isReady) {
+      _aspectRatio = _chewieController!.videoPlayerController.value.aspectRatio;
+    }
+
+    return RepaintBoundary(
+      child: AspectRatio(
+        aspectRatio: _aspectRatio,
+        child: isReady
+            ? Chewie(controller: _chewieController!)
+            : const ColoredBox(
+                color: Colors.black,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 20),
+                      Text('Carregando vídeo...'),
+                    ],
+                  ),
+                ),
+              ),
+      ),
+    );
   }
 }

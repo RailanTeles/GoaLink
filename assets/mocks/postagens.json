@@ -9,16 +9,24 @@
   },
   {
     "id_postagem": "post_002",
-    "jogador_id": "jogador_02",
+    "jogador_id": "jogador_01",
     "midia_url": "https://media.w3.org/2010/05/sintel/trailer.mp4",
     "descricao": null,
     "criado_em": "2026-03-28T10:15:00Z"
   },
   {
     "id_postagem": "post_003",
-    "jogador_id": "jogador_05",
-    "midia_url": "https://media.w3.org/2010/05/bunny/trailer.mp4",
+    "jogador_id": "jogador_01",
+    "midia_url": "https://res.cloudinary.com/demo/video/upload/ar_1:1,c_fill/v1/samples/elephants.mp4",
     "descricao": "Alguém aí já jogou Ace Attorney? Comecei a jogar em inglês para treinar o idioma e a história te prende muito! 'OBJECTION!' ⚖️🗣️",
     "criado_em": "2026-04-01T08:30:00Z"
+  },
+  {
+    "id_postagem": "post_004",
+    "jogador_id": "jogador_02",
+    "midia_url": "https://res.cloudinary.com/demo/video/upload/ar_9:16,c_fill/v1/samples/elephants.mp4",
+    "is_video": true,
+    "descricao": "Adorando ser jogador!!",
+    "criado_em": "2026-04-05T19:50:00Z"
   }
 ]

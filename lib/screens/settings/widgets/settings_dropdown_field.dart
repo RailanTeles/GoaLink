@@ -31,7 +31,7 @@ class SettingsDropdownField extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           DropdownButtonFormField<String>(
-            value: value,
+            initialValue: value,
             decoration: InputDecoration(
               isDense: true,
               filled: true,
@@ -47,10 +47,8 @@ class SettingsDropdownField extends StatelessWidget {
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
             items: items
                 .map(
-                  (item) => DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  ),
+                  (item) =>
+                      DropdownMenuItem<String>(value: item, child: Text(item)),
                 )
                 .toList(),
             onChanged: onChanged,

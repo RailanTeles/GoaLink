@@ -44,14 +44,11 @@ class PostsModelWidget extends StatelessWidget {
             if (postagem.midiaUrl.isNotEmpty) ...[
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxHeight: 450,
-                    minHeight: 200,
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    color: Colors.black,
+                child: Container(
+                  width: double.infinity,
+                  color: Colors.black,
+                  child: AspectRatio(
+                    aspectRatio: 4 / 5,
                     child: VideoPlayerWidget(videoUrl: postagem.midiaUrl),
                   ),
                 ),

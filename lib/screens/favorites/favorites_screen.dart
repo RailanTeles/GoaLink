@@ -37,7 +37,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 75),
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: 75,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -68,7 +73,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   return ListView.separated(
                     padding: const EdgeInsets.only(bottom: 90),
                     itemCount: favoritos.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
                     itemBuilder: (_, index) =>
                         _buildFavoritoItem(favoritos[index]),
                   );
@@ -90,44 +95,41 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       // onTap: () => context.push('/jogador/${usuario.id}', extra: usuario),
       child: Row(
         children: [
-        CircleAvatar(
-          radius: 28,
-          backgroundColor: Colors.grey.shade300,
-          backgroundImage: usuario.fotoPerfil != null
-              ? NetworkImage(usuario.fotoPerfil!)
-              : null,
-          child: usuario.fotoPerfil == null
-              ? const Icon(Icons.person, size: 28, color: Colors.white)
-              : null,
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                usuario.nome,
-                style: const TextStyle(fontSize: 16),
-              ),
-              Text(
-                tipo,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.primary,
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: Colors.grey.shade300,
+            backgroundImage: usuario.fotoPerfil != null
+                ? NetworkImage(usuario.fotoPerfil!)
+                : null,
+            child: usuario.fotoPerfil == null
+                ? const Icon(Icons.person, size: 28, color: Colors.white)
+                : null,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(usuario.nome, style: const TextStyle(fontSize: 16)),
+                Text(
+                  tipo,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        IconButton(
-          onPressed: () => _toggleFavorito(usuario.id),
-          icon: Icon(
-            marcado ? Icons.star : Icons.star_border,
-            size: 36,
-            color: Theme.of(context).colorScheme.primary,
+          IconButton(
+            onPressed: () => _toggleFavorito(usuario.id),
+            icon: Icon(
+              marcado ? Icons.star : Icons.star_border,
+              size: 36,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
-        ),
-      ],
+        ],
       ),
     );
   }

@@ -75,9 +75,7 @@ class ExercicioWidget extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     exercicio.titulo.isNotEmpty ? exercicio.titulo : '',
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -109,7 +107,7 @@ class ExercicioWidget extends StatelessWidget {
     return Image.network(
       exercicio.midiaUrl!,
       fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => _buildPlaceholder(),
+      errorBuilder: (_, _, _) => _buildPlaceholder(),
     );
   }
 
@@ -144,14 +142,17 @@ class _VideoDialogState extends State<_VideoDialog> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
-    _controller.initialize().then((_) {
-      if (mounted) {
-        setState(() {});
-        _controller.play();
-      }
-    }).catchError((e) {
-      if (mounted) setState(() => _erro = true);
-    });
+    _controller
+        .initialize()
+        .then((_) {
+          if (mounted) {
+            setState(() {});
+            _controller.play();
+          }
+        })
+        .catchError((e) {
+          if (mounted) setState(() => _erro = true);
+        });
   }
 
   @override

@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final PostagemService _postagemService = PostagemService();
   List<UsuarioModel> listaJogadoresNovos = [];
   List<PostagemModel> listaPostagens = [];
+  Map<String, UsuarioModel> usuariosPorId = {};
 
   bool _isLoading = true;
 
@@ -30,8 +31,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _carregarDadosIniciais() async {
     try {
-      final usuarios = await _usuarioService.getJogadoresNovos();
-      final postagens = await _postagemService.getFeedPostagens();
+      final resultados = await Future.wait([
+        _usuarioService.getJogadoresNovos(),
+        _postagemService.getFeedPostagens(),
+        _usuarioService.getJogadores(),
+      ]);
+
+      final usuarios = resultados[0] as List<UsuarioModel>;
+      final postagens = resultados[1] as List<PostagemModel>;
+      final jogadores = resultados[2] as List<UsuarioModel>;
+      final mapaUsuarios = {
+        for (final jogador in jogadores) jogador.id: jogador,
+      };
 
       await Future.delayed(const Duration(seconds: 2));
 
@@ -39,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           listaJogadoresNovos = usuarios;
           listaPostagens = postagens;
+          usuariosPorId = mapaUsuarios;
           _isLoading = false;
         });
       }
@@ -74,7 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
             const SliverToBoxAdapter(child: SizedBox(height: 20)),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              sliver: PostagensWidget(listaPostagens: listaPostagens),
+              sliver: PostagensWidget(
+                listaPostagens: listaPostagens,
+                usuariosPorId: usuariosPorId,
+              ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 120)),
           ],

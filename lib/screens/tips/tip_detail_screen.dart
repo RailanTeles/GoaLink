@@ -31,14 +31,16 @@ class _TipDetailScreenState extends State<TipDetailScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 75),
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: 75,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.dica.titulo,
-              style: const TextStyle(fontSize: 20),
-            ),
+            Text(widget.dica.titulo, style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 12),
             _buildFilterBar(context),
             const SizedBox(height: 16),
@@ -68,7 +70,7 @@ class _TipDetailScreenState extends State<TipDetailScreen> {
                   return ListView.separated(
                     padding: const EdgeInsets.only(bottom: 90),
                     itemCount: filtrados.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
                     itemBuilder: (_, index) =>
                         ExercicioWidget(exercicio: filtrados[index]),
                   );
@@ -108,8 +110,7 @@ class _TipDetailScreenState extends State<TipDetailScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             ),
             child: Text(option, style: const TextStyle(fontSize: 14)),
           ),
@@ -120,8 +121,6 @@ class _TipDetailScreenState extends State<TipDetailScreen> {
 
   List<ExercicioModel> _filtrarExercicios(List<ExercicioModel> exercicios) {
     if (_selectedFilter == 'Todos') return exercicios;
-    return exercicios
-        .where((ex) => ex.categoria == _selectedFilter)
-        .toList();
+    return exercicios.where((ex) => ex.categoria == _selectedFilter).toList();
   }
 }
