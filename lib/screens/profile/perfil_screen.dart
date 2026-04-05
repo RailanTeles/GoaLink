@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/models/usuario_model.dart';
-import 'package:goalink/screens/profile/widgets/postagem_comentario_widget.dart';
 import 'package:goalink/screens/profile/widgets/perfil_header_widget.dart';
 import 'package:goalink/screens/profile/widgets/perfil_infos_widget.dart';
+import 'package:goalink/screens/profile/widgets/postagem_comentario_widget.dart';
 import 'package:goalink/services/postagem_service.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -47,36 +47,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                PerfilHeaderWidget(usuario: _usuario),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(14, 18, 14, 120),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PerfilInfosWidget(usuario: _usuario),
-                        const SizedBox(height: 24),
-                        PostagemComentarioWidget(usuario: _usuario),
-                      ],
-                    ),
-                  ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 120),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PerfilHeaderWidget(usuario: _usuario),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 18, 14, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PerfilInfosWidget(usuario: _usuario),
+                    const SizedBox(height: 24),
+                    PostagemComentarioWidget(usuario: _usuario),
+                  ],
                 ),
-              ],
-            ),
-            Positioned(
-              right: 12,
-              bottom: 18,
-              child: FloatingActionButton(
-                onPressed: () {},
-                backgroundColor: const Color(0xFF1E6B47),
-                child: const Icon(Icons.send_rounded, color: Colors.white),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

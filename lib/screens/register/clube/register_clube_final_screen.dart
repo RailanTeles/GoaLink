@@ -73,13 +73,7 @@ class _RegisterClubeFinalScreenState extends State<RegisterClubeFinalScreen> {
                         RegisterHeader(
                           title: 'Clube',
                           iconSize: 120,
-                          onBack: () {
-                            if (context.canPop()) {
-                              context.pop();
-                              return;
-                            }
-                            context.go('/cadastro/clube');
-                          },
+                          onBack: () => context.go('/cadastro/clube'),
                         ),
                         const SizedBox(height: 28),
                         RegisterFormPanel(

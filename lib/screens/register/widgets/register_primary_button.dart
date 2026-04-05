@@ -23,14 +23,15 @@ class RegisterPrimaryButton extends StatelessWidget {
           foregroundColor: Colors.black,
           elevation: 0,
           side: const BorderSide(color: Colors.white, width: 2),
-          padding: const EdgeInsets.symmetric(vertical: 18),
+          minimumSize: const Size.fromHeight(56),
+          padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
         child: Text(
           label,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
         ),
       ),
     );

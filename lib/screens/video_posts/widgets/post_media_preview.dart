@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:goalink/screens/video_posts/widgets/post_media_placeholder.dart';
+import 'package:video_player/video_player.dart';
 
 class PostMediaPreview extends StatefulWidget {
   const PostMediaPreview({
@@ -18,18 +21,28 @@ class PostMediaPreview extends StatefulWidget {
 
 class _PostMediaPreviewState extends State<PostMediaPreview> {
   VideoPlayerController? _videoController;
+  Uint8List? _imageBytes;
 
   @override
   void initState() {
     super.initState();
     if (widget.isVideo) {
-      _videoController = VideoPlayerController.networkUrl(
-        Uri.parse(widget.mediaPath),
-      )
+      final uri = Uri.tryParse(widget.mediaPath);
+      final resolvedUri = uri != null && uri.hasScheme
+          ? uri
+          : Uri.file(widget.mediaPath);
+      _videoController = VideoPlayerController.networkUrl(resolvedUri)
         ..initialize().then((_) {
           if (!mounted) return;
           setState(() {});
         });
+    } else {
+      XFile(widget.mediaPath).readAsBytes().then((bytes) {
+        if (!mounted) return;
+        setState(() {
+          _imageBytes = bytes;
+        });
+      });
     }
   }
 
@@ -84,8 +97,14 @@ class _PostMediaPreviewState extends State<PostMediaPreview> {
       );
     }
 
-    return Image.network(
-      widget.mediaPath,
+    if (_imageBytes == null) {
+      return const Center(
+        child: CircularProgressIndicator(color: Color(0xFF1E6B47)),
+      );
+    }
+
+    return Image.memory(
+      _imageBytes!,
       fit: BoxFit.cover,
       errorBuilder: (_, _, _) => const PostMediaPlaceholder(),
     );

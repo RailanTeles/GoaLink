@@ -17,6 +17,14 @@ class RegisterHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final compact = screenWidth < 420;
+    final resolvedIconSize = compact ? iconSize * 0.52 : iconSize;
+    final titleStyle = TextStyle(
+      fontSize: compact ? 24 : 34,
+      height: 1.05,
+      fontWeight: FontWeight.w800,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,32 +41,25 @@ class RegisterHeader extends StatelessWidget {
         SizedBox(height: topSpacing),
         Center(
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _TacticalIcon(size: iconSize),
-              const SizedBox(width: 14),
-              Text.rich(
-                TextSpan(
-                  style: const TextStyle(
-                    fontSize: 34,
-                    height: 1.05,
-                    fontWeight: FontWeight.w800,
+              _TacticalIcon(size: resolvedIconSize),
+              SizedBox(width: compact ? 8 : 14),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Cadastro',
+                    style: titleStyle.copyWith(color: theme.colorScheme.primary),
                   ),
-                  children: [
-                    TextSpan(
-                      text: 'Cadastro\n',
-                      style: TextStyle(color: theme.colorScheme.primary),
-                    ),
-                    TextSpan(
-                      text: title,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
+                  Text(
+                    title,
+                    style: titleStyle.copyWith(color: Colors.white),
+                  ),
+                ],
               ),
-              const SizedBox(width: 14),
-              _TacticalIcon(size: iconSize),
+              SizedBox(width: compact ? 8 : 14),
+              _TacticalIcon(size: resolvedIconSize),
             ],
           ),
         ),

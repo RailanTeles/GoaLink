@@ -13,6 +13,8 @@ class RegisterInputField extends StatelessWidget {
     this.maxLines = 1,
     this.minLines,
     this.inputFormatters,
+    this.readOnly = false,
+    this.onTap,
   });
 
   final String label;
@@ -24,6 +26,8 @@ class RegisterInputField extends StatelessWidget {
   final int maxLines;
   final int? minLines;
   final List<TextInputFormatter>? inputFormatters;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -34,43 +38,45 @@ class RegisterInputField extends StatelessWidget {
           label,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w400,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         TextField(
           controller: controller,
           keyboardType: keyboardType,
           obscureText: obscureText,
+          readOnly: readOnly,
+          onTap: onTap,
           maxLines: maxLines,
           minLines: minLines,
           inputFormatters: inputFormatters,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 18,
+            fontSize: 17,
             fontWeight: FontWeight.w600,
           ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: const TextStyle(
               color: Colors.white70,
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w500,
             ),
             filled: true,
             fillColor: Colors.black.withValues(alpha: 0.92),
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 22,
-              vertical: 20,
+              horizontal: 20,
+              vertical: 16,
             ),
             suffixIcon: suffixIcon,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(18),
               borderSide: const BorderSide(color: Colors.white, width: 2),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(18),
               borderSide: const BorderSide(color: Colors.white, width: 2),
             ),
           ),

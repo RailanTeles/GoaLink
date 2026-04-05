@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:goalink/screens/video_posts/posts_final.dart';
 import 'package:goalink/screens/video_posts/widgets/media_option_button.dart';
 import 'package:goalink/screens/video_posts/widgets/post_media_placeholder.dart';
 import 'package:goalink/screens/video_posts/widgets/posts_app_bar.dart';
 import 'package:goalink/screens/video_posts/widgets/posts_bottom_action.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PostsInicio extends StatefulWidget {
   const PostsInicio({super.key});
@@ -78,22 +78,22 @@ class _PostsInicioState extends State<PostsInicio> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            PostsAppBar(
-              onBack: () => context.go('/'),
-              onAdd: _selectMedia,
+      body: Column(
+        children: [
+          PostsAppBar(
+            onBack: () => context.go('/'),
+            onAdd: _selectMedia,
+          ),
+          const Expanded(
+            child: Center(
+              child: PostMediaPlaceholder(large: true),
             ),
-            Expanded(
-              child: const Center(child: PostMediaPlaceholder(large: true)),
-            ),
-            PostsBottomAction(
-              label: 'Selecionar Foto/Video',
-              onPressed: _selectMedia,
-            ),
-          ],
-        ),
+          ),
+          PostsBottomAction(
+            label: 'Selecionar Foto/Video',
+            onPressed: _selectMedia,
+          ),
+        ],
       ),
     );
   }

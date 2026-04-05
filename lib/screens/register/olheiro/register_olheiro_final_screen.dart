@@ -73,13 +73,7 @@ class _RegisterOlheiroFinalScreenState
                         RegisterHeader(
                           title: 'Olheiro',
                           iconSize: 120,
-                          onBack: () {
-                            if (context.canPop()) {
-                              context.pop();
-                              return;
-                            }
-                            context.go('/cadastro/olheiro');
-                          },
+                          onBack: () => context.go('/cadastro/olheiro'),
                         ),
                         const SizedBox(height: 28),
                         RegisterFormPanel(

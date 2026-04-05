@@ -109,14 +109,8 @@ class PerfilHeaderWidget extends StatelessWidget {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      _CircleButton(
-                        backgroundColor: Colors.white.withValues(alpha: 0.92),
-                        iconColor: Colors.black,
-                        icon: Icons.arrow_back_rounded,
-                        onTap: () => Navigator.of(context).maybePop(),
-                      ),
                       _CircleButton(
                         backgroundColor: const Color(0xFF1E6B47),
                         iconColor: Colors.white,

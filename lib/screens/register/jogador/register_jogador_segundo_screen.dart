@@ -18,6 +18,20 @@ class RegisterJogadorSegundoScreen extends StatefulWidget {
 
 class _RegisterJogadorSegundoScreenState
     extends State<RegisterJogadorSegundoScreen> {
+  static const List<String> _posicoes = [
+    'Goleiro',
+    'Zagueiro',
+    'Lateral direito',
+    'Lateral esquerdo',
+    'Volante',
+    'Meio-campo',
+    'Meia ofensivo',
+    'Ponta direita',
+    'Ponta esquerda',
+    'Atacante',
+    'Centroavante',
+  ];
+
   final _nomeController = TextEditingController();
   final _alturaController = TextEditingController();
   final _pesoController = TextEditingController();
@@ -50,6 +64,48 @@ class _RegisterJogadorSegundoScreenState
   }
 
   void _refreshForm() => setState(() {});
+
+  Future<void> _selectPosicao() async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: const Color(0xFF101010),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: ListView.separated(
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            itemCount: _posicoes.length,
+            separatorBuilder: (_, _) => Divider(
+              height: 1,
+              color: Colors.white.withValues(alpha: 0.08),
+            ),
+            itemBuilder: (context, index) {
+              final posicao = _posicoes[index];
+              return ListTile(
+                title: Text(
+                  posicao,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                trailing: _posicaoController.text == posicao
+                    ? Icon(
+                        Icons.check_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                onTap: () => Navigator.of(context).pop(posicao),
+              );
+            },
+          ),
+        );
+      },
+    );
+
+    if (selected == null) return;
+    _posicaoController.text = selected;
+  }
 
   @override
   void initState() {
@@ -96,13 +152,7 @@ class _RegisterJogadorSegundoScreenState
                           title: 'Jogador',
                           iconSize: 108,
                           topSpacing: 20,
-                          onBack: () {
-                            if (context.canPop()) {
-                              context.pop();
-                              return;
-                            }
-                            context.go('/cadastro');
-                          },
+                          onBack: () => context.go('/cadastro'),
                         ),
                         const SizedBox(height: 28),
                         RegisterFormPanel(
@@ -152,6 +202,13 @@ class _RegisterJogadorSegundoScreenState
                               RegisterInputField(
                                 label: 'Posição em campo',
                                 controller: _posicaoController,
+                                readOnly: true,
+                                onTap: _selectPosicao,
+                                hintText: 'Selecione uma posição',
+                                suffixIcon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: Colors.white70,
+                                ),
                               ),
                               const SizedBox(height: 28),
                               RegisterPrimaryButton(

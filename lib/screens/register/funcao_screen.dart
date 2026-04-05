@@ -42,11 +42,7 @@ class FuncaoScreen extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () {
-                      if (context.canPop()) {
-                        context.pop();
-                        return;
-                      }
-                      context.go('/cadastro');
+                      context.go('/login');
                     },
                     style: IconButton.styleFrom(
                       backgroundColor: Colors.white.withValues(alpha: 0.10),
@@ -94,24 +90,25 @@ class FuncaoScreen extends StatelessWidget {
                   _FuncaoButton(
                     assetPath: 'assets/images/icons/bola_de_futebol.svg',
                     label: 'Jogador',
+                    iconSize: 38,
                     onTap: () {
                       context.go('/cadastro');
                     },
                   ),
-                  const SizedBox(height: 34),
+                  const SizedBox(height: 26),
                   _FuncaoButton(
                     assetPath: 'assets/images/icons/equipamentodefutebol.svg',
                     label: 'Olheiro',
-                    iconSize: 48,
+                    iconSize: 42,
                     onTap: () {
                       context.go('/cadastro/olheiro');
                     },
                   ),
-                  const SizedBox(height: 34),
+                  const SizedBox(height: 26),
                   _FuncaoButton(
                     assetPath: 'assets/images/icons/clubedefutebol.svg',
                     label: 'Clube',
-                    iconSize: 54,
+                    iconSize: 46,
                     onTap: () {
                       context.go('/cadastro/clube');
                     },
@@ -163,7 +160,8 @@ class _FuncaoButton extends StatelessWidget {
             backgroundColor: const Color(0xFFE8E8E8),
             foregroundColor: Colors.black,
             elevation: 0,
-            padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 22),
+            minimumSize: const Size.fromHeight(82),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(22),
               side: BorderSide(color: green, width: 2),
@@ -172,8 +170,8 @@ class _FuncaoButton extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(
-                width: 54,
-                height: 54,
+                width: 48,
+                height: 48,
                 child: Center(
                   child: SvgPicture.asset(
                     assetPath,
@@ -191,13 +189,15 @@ class _FuncaoButton extends StatelessWidget {
                 child: Text(
                   label,
                   style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(width: 54),
+              const SizedBox(width: 48),
             ],
           ),
         ),

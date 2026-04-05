@@ -111,13 +111,7 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
                           title: 'Jogador',
                           topSpacing: 20,
                           iconSize: 110,
-                          onBack: () {
-                            if (context.canPop()) {
-                              context.pop();
-                              return;
-                            }
-                            context.go('/login');
-                          },
+                          onBack: () => context.go('/cadastro/funcao'),
                         ),
                         const SizedBox(height: 40),
                         RegisterInputField(

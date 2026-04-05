@@ -18,6 +18,12 @@ class RegisterJogadorFinalScreen extends StatefulWidget {
 
 class _RegisterJogadorFinalScreenState
     extends State<RegisterJogadorFinalScreen> {
+  static const List<String> _pernasPreferidas = [
+    'Direita',
+    'Esquerda',
+    'Ambidestro',
+  ];
+
   final _pernaPreferidaController = TextEditingController();
   final _descricaoController = TextEditingController();
   final _imagePicker = ImagePicker();
@@ -36,6 +42,48 @@ class _RegisterJogadorFinalScreenState
   }
 
   void _refreshForm() => setState(() {});
+
+  Future<void> _selectPernaPreferida() async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: const Color(0xFF101010),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: ListView.separated(
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            itemCount: _pernasPreferidas.length,
+            separatorBuilder: (_, _) => Divider(
+              height: 1,
+              color: Colors.white.withValues(alpha: 0.08),
+            ),
+            itemBuilder: (context, index) {
+              final perna = _pernasPreferidas[index];
+              return ListTile(
+                title: Text(
+                  perna,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                trailing: _pernaPreferidaController.text == perna
+                    ? Icon(
+                        Icons.check_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                onTap: () => Navigator.of(context).pop(perna),
+              );
+            },
+          ),
+        );
+      },
+    );
+
+    if (selected == null) return;
+    _pernaPreferidaController.text = selected;
+  }
 
   Future<void> _pickProfileImage() async {
     final pickedFile = await _imagePicker.pickImage(
@@ -91,18 +139,19 @@ class _RegisterJogadorFinalScreenState
                                 title: 'Jogador',
                                 iconSize: 118,
                                 topSpacing: 16,
-                                onBack: () {
-                                  if (context.canPop()) {
-                                    context.pop();
-                                    return;
-                                  }
-                                  context.go('/cadastro/jogador-2');
-                                },
+                                onBack: () => context.go('/cadastro/jogador-2'),
                               ),
                               const SizedBox(height: 28),
                               RegisterInputField(
                                 label: 'Perna Preferida',
                                 controller: _pernaPreferidaController,
+                                readOnly: true,
+                                onTap: _selectPernaPreferida,
+                                hintText: 'Selecione uma opção',
+                                suffixIcon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: Colors.white70,
+                                ),
                               ),
                               const SizedBox(height: 22),
                               RegisterInputField(
