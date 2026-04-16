@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../models/chat_model.dart';
+import '../models/chat_messagem_model.dart';
 import '../models/dica_treino_model.dart';
 import '../models/exercicio_model.dart';
 

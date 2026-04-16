@@ -1,16 +1,20 @@
 class PostagemModel {
   final String idPostagem;
   final String jogadorId;
+  final String jogadorNome;
+  final String? jogadorFotoUrl;
   final String midiaUrl;
-  final bool isVideo;
+  final String tipoMidia;
   final String? descricao;
   final DateTime criadoEm;
 
   PostagemModel({
     required this.idPostagem,
     required this.jogadorId,
+    required this.jogadorNome,
+    this.jogadorFotoUrl,
     required this.midiaUrl,
-    this.isVideo = false,
+    required this.tipoMidia,
     this.descricao,
     required this.criadoEm,
   });
@@ -19,8 +23,10 @@ class PostagemModel {
     return PostagemModel(
       idPostagem: json['id_postagem'] ?? '',
       jogadorId: json['jogador_id'] ?? '',
+      jogadorNome: json['jogador_nome'] ?? '',
+      jogadorFotoUrl: json['jogador_foto_url'],
       midiaUrl: json['midia_url'] ?? '',
-      isVideo: json['is_video'] ?? false,
+      tipoMidia: json['tipo_midia'] ?? '',
       descricao: json['descricao'],
       criadoEm: DateTime.parse(json['criado_em']),
     );
@@ -30,8 +36,10 @@ class PostagemModel {
     final dados = {
       'id_postagem': idPostagem,
       'jogador_id': jogadorId,
+      'jogador_nome': jogadorNome,
+      'jogador_foto_url': jogadorFotoUrl,
       'midia_url': midiaUrl,
-      'is_video': isVideo,
+      'tipo_midia': tipoMidia,
       'descricao': descricao,
       'criado_em': criadoEm.toIso8601String(),
     };
@@ -44,16 +52,20 @@ class PostagemModel {
   PostagemModel copyWith({
     String? idPostagem,
     String? jogadorId,
+    String? jogadorNome,
+    String? jogadorFotoUrl,
     String? midiaUrl,
-    bool? isVideo,
+    String? tipoMidia,
     String? descricao,
     DateTime? criadoEm,
   }) {
     return PostagemModel(
       idPostagem: idPostagem ?? this.idPostagem,
       jogadorId: jogadorId ?? this.jogadorId,
+      jogadorNome: jogadorNome ?? this.jogadorNome,
+      jogadorFotoUrl: jogadorFotoUrl ?? this.jogadorFotoUrl,
       midiaUrl: midiaUrl ?? this.midiaUrl,
-      isVideo: isVideo ?? this.isVideo,
+      tipoMidia: tipoMidia ?? this.tipoMidia,
       descricao: descricao ?? this.descricao,
       criadoEm: criadoEm ?? this.criadoEm,
     );

@@ -1,17 +1,17 @@
 class UsuarioModel {
   final String id;
   final String tipo;
+  final String email;
   final String nome;
+  final String? descricao;
+  final String? fotoUrl;
   final DateTime criadoEm;
   final DateTime? dataNascimento;
   final double? altura;
   final double? peso;
   final String? posicao;
   final String? cidade;
-  final String? cpf;
   final String? pernaPreferida;
-  final String? descricao;
-  final String? fotoPerfil;
   final Map<String, dynamic>? redesSociais;
   final String? clubeRepresentante;
   final String? jogadoresProcurados;
@@ -19,17 +19,17 @@ class UsuarioModel {
   UsuarioModel({
     required this.id,
     required this.tipo,
+    required this.email,
     required this.nome,
     required this.criadoEm,
+    this.descricao,
+    this.fotoUrl,
     this.dataNascimento,
     this.altura,
     this.peso,
     this.posicao,
     this.cidade,
-    this.cpf,
     this.pernaPreferida,
-    this.descricao,
-    this.fotoPerfil,
     this.redesSociais,
     this.clubeRepresentante,
     this.jogadoresProcurados,
@@ -39,6 +39,7 @@ class UsuarioModel {
     return UsuarioModel(
       id: json['id'] ?? '',
       tipo: json['tipo'] ?? '',
+      email: json['email'] ?? '',
       nome: json['nome'] ?? '',
       criadoEm: DateTime.parse(json['criado_em']),
       dataNascimento: json['data_nascimento'] != null
@@ -48,10 +49,9 @@ class UsuarioModel {
       peso: json['peso']?.toDouble(),
       posicao: json['posicao'],
       cidade: json['cidade'],
-      cpf: json['cpf'],
       pernaPreferida: json['perna_preferida'],
       descricao: json['descricao'],
-      fotoPerfil: json['foto_perfil'],
+      fotoUrl: json['foto_url'],
       redesSociais: json['redes_sociais'],
       clubeRepresentante: json['clube_representante'],
       jogadoresProcurados: json['jogadores_procurados'],
@@ -62,6 +62,7 @@ class UsuarioModel {
     final dados = {
       'id': id,
       'tipo': tipo,
+      'email': email,
       'nome': nome,
       'criado_em': criadoEm.toIso8601String(),
       'data_nascimento': dataNascimento?.toIso8601String(),
@@ -69,10 +70,9 @@ class UsuarioModel {
       'peso': peso,
       'posicao': posicao,
       'cidade': cidade,
-      'cpf': cpf,
       'perna_preferida': pernaPreferida,
       'descricao': descricao,
-      'foto_perfil': fotoPerfil,
+      'foto_url': fotoUrl,
       'redes_sociais': redesSociais,
       'clube_representante': clubeRepresentante,
       'jogadores_procurados': jogadoresProcurados,
@@ -87,18 +87,16 @@ class UsuarioModel {
     String? id,
     String? tipo,
     String? nome,
+    String? email,
     DateTime? criadoEm,
     DateTime? dataNascimento,
     double? altura,
     double? peso,
     String? posicao,
     String? cidade,
-    String? cpf,
     String? pernaPreferida,
     String? descricao,
-    String? fotoPerfil,
-    String? videoPerfil,
-    Map<String, dynamic>? contatos,
+    String? fotoUrl,
     Map<String, dynamic>? redesSociais,
     String? clubeRepresentante,
     String? jogadoresProcurados,
@@ -106,6 +104,7 @@ class UsuarioModel {
     return UsuarioModel(
       id: id ?? this.id,
       tipo: tipo ?? this.tipo,
+      email: email ?? this.email,
       nome: nome ?? this.nome,
       criadoEm: criadoEm ?? this.criadoEm,
       dataNascimento: dataNascimento ?? this.dataNascimento,
@@ -113,10 +112,9 @@ class UsuarioModel {
       peso: peso ?? this.peso,
       posicao: posicao ?? this.posicao,
       cidade: cidade ?? this.cidade,
-      cpf: cpf ?? this.cpf,
       pernaPreferida: pernaPreferida ?? this.pernaPreferida,
       descricao: descricao ?? this.descricao,
-      fotoPerfil: fotoPerfil ?? this.fotoPerfil,
+      fotoUrl: fotoUrl ?? this.fotoUrl,
       redesSociais: redesSociais ?? this.redesSociais,
       clubeRepresentante: clubeRepresentante ?? this.clubeRepresentante,
       jogadoresProcurados: jogadoresProcurados ?? this.jogadoresProcurados,
