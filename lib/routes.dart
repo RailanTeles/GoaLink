@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/app_scaffold.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:goalink/screens/chat/chat_detail_screen.dart';
 import 'package:goalink/screens/chat/chat_screen.dart';
 import 'package:goalink/screens/favorites/favorites_screen.dart';
@@ -27,7 +28,20 @@ import 'package:goalink/screens/video_posts/posts_final.dart';
 import 'package:goalink/screens/video_posts/posts_inicio.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/',
+  redirect: (context, state) {
+    final User? usuarioLogado = FirebaseAuth.instance.currentUser;
+
+    if (usuarioLogado == null) {
+      return '/login';
+    }
+
+    if (state.matchedLocation == '/login') {
+      return '/';
+    }
+
+    return null;
+  },
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {

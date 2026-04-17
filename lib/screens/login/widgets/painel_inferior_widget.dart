@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/core/input_personalizado.dart';
-import 'package:goalink/services/aurh_service.dart';
+import 'package:provider/provider.dart';
+import 'package:goalink/screens/login/login_view_model.dart';
 
 class PainelInferior extends StatefulWidget {
   const PainelInferior({super.key, required this.alturaContainer});
@@ -14,44 +15,36 @@ class PainelInferior extends StatefulWidget {
 class _PainelInferiorState extends State<PainelInferior> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
-  final _authService = AuthService();
-  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _senhaController.dispose();
+    super.dispose();
+  }
 
   Future<void> _handleLogin() async {
-    final emailDigitado = _emailController.text;
-    final senhaDigitada = _senhaController.text;
+    final viewModel = context.read<LoginViewModel>();
+    String? erro = await viewModel.fazerLogin(
+      _emailController.text,
+      _senhaController.text,
+    );
 
-    setState(() {
-      _isLoading = true;
-    });
+    if (!mounted) return;
 
-    try {
-      bool sucesso = await _authService.fazerLogin(
-        emailDigitado,
-        senhaDigitada,
+    if (erro == null) {
+      context.go('/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(erro), backgroundColor: Colors.red),
       );
-      if (sucesso) {
-        if (mounted) {
-          context.go('/');
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.select((LoginViewModel vm) => vm.isLoading);
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 1000),
       curve: Curves.easeOutQuart,
@@ -111,7 +104,7 @@ class _PainelInferiorState extends State<PainelInferior> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _isLoading ? null : _handleLogin,
+                        onPressed: isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black,
@@ -126,13 +119,15 @@ class _PainelInferiorState extends State<PainelInferior> {
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                         ),
-                        child: const Text(
-                          "Entrar",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text(
+                                "Entrar",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                     SizedBox(height: 10),

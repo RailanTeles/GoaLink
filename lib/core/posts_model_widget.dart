@@ -25,7 +25,7 @@ class PostsModelWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: .start,
               children: [
-                AvatarUsuario(urlFoto: usuario.fotoPerfil),
+                AvatarUsuario(urlFoto: usuario.fotoUrl),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
