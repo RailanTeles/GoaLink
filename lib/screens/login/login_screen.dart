@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:goalink/repositories/usuario_repository.dart';
+import 'package:goalink/screens/login/login_view_model.dart';
 import 'package:goalink/screens/login/widgets/painel_inferior_widget.dart';
+import 'package:goalink/services/auth_service.dart';
+import 'package:goalink/services/usuario_service.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,7 +30,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return ChangeNotifierProvider(
+      create: (_) => LoginViewModel(
+        UsuarioRepository(AuthService(), UsuarioService()),
+      ),
+      child: Stack(
       children: [
         Container(
           width: double.infinity,
@@ -96,6 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ],
+      ),
     );
   }
 }

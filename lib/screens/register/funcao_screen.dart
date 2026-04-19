@@ -92,7 +92,7 @@ class FuncaoScreen extends StatelessWidget {
                     label: 'Jogador',
                     iconSize: 38,
                     onTap: () {
-                      context.go('/cadastro');
+                      context.go('/cadastro/jogador');
                     },
                   ),
                   const SizedBox(height: 26),

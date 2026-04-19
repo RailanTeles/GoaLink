@@ -33,7 +33,7 @@ class _PainelInferiorState extends State<PainelInferior> {
     if (!mounted) return;
 
     if (erro == null) {
-      context.go('/home');
+      context.go('/');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(erro), backgroundColor: Colors.red),

@@ -1,98 +1,182 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:goalink/core/date_input_formatter.dart';
+import 'package:goalink/screens/register/jogador/register_jogador_view_model.dart';
 import 'package:goalink/screens/register/widgets/register_background.dart';
-import 'package:goalink/screens/register/widgets/register_error_banner.dart';
+import 'package:goalink/screens/register/widgets/register_form_panel.dart';
 import 'package:goalink/screens/register/widgets/register_header.dart';
 import 'package:goalink/screens/register/widgets/register_input_field.dart';
+import 'package:goalink/screens/register/widgets/register_photo_picker_button.dart';
 import 'package:goalink/screens/register/widgets/register_primary_button.dart';
 
 class RegisterJogadorScreen extends StatefulWidget {
   const RegisterJogadorScreen({super.key});
 
   @override
-  State<RegisterJogadorScreen> createState() => _RegisterScreenState();
+  State<RegisterJogadorScreen> createState() => _RegisterJogadorScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterJogadorScreen> {
+class _RegisterJogadorScreenState extends State<RegisterJogadorScreen> {
+  // ── Controllers ──────────────────────────────────────────────────────────────
   final _emailController = TextEditingController();
-  final _birthDateController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final _dataNascimentoController = TextEditingController();
+  final _senhaController = TextEditingController();
+  final _confirmarSenhaController = TextEditingController();
+  final _nomeController = TextEditingController();
+  final _alturaController = TextEditingController();
+  final _pesoController = TextEditingController();
+  final _cidadeController = TextEditingController();
+  final _posicaoController = TextEditingController();
+  final _pernaPreferidaController = TextEditingController();
+  final _descricaoController = TextEditingController();
 
-  bool _showPassword = false;
-  bool _showConfirmPassword = false;
-  bool _showErrors = false;
-
-  bool get _isFormValid {
-    final email = _emailController.text.trim();
-    final birthDate = _birthDateController.text.trim();
-    final password = _passwordController.text;
-    final confirmPassword = _confirmPasswordController.text;
-
-    return _isValidEmail(email) &&
-        _isValidBirthDate(birthDate) &&
-        password.length >= 6 &&
-        confirmPassword == password;
-  }
-
-  String? get _validationMessage {
-    return _isFormValid
-        ? null
-        : 'Preencha todos os campos corretamente para continuar.';
-  }
-
-  bool _isValidEmail(String email) {
-    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
-  }
-
-  bool _isValidBirthDate(String value) {
-    final match = RegExp(r'^(\d{2})\/(\d{2})\/(\d{4})$').firstMatch(value);
-    if (match == null) return false;
-
-    final day = int.tryParse(match.group(1)!);
-    final month = int.tryParse(match.group(2)!);
-    final year = int.tryParse(match.group(3)!);
-    if (day == null || month == null || year == null) return false;
-    if (month < 1 || month > 12 || day < 1) return false;
-
-    final date = DateTime.tryParse(
-      '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}',
-    );
-
-    return date != null &&
-        date.day == day &&
-        date.month == month &&
-        date.year == year &&
-        !date.isAfter(DateTime.now());
-  }
-
-  void _refreshForm() => setState(() {});
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController.addListener(_refreshForm);
-    _birthDateController.addListener(_refreshForm);
-    _passwordController.addListener(_refreshForm);
-    _confirmPasswordController.addListener(_refreshForm);
-  }
+  // ── Estados locais ──────────────────────────────────────────────────────────
+  bool _showSenha = false;
+  bool _showConfirmarSenha = false;
 
   @override
   void dispose() {
-    _emailController.removeListener(_refreshForm);
-    _birthDateController.removeListener(_refreshForm);
-    _passwordController.removeListener(_refreshForm);
-    _confirmPasswordController.removeListener(_refreshForm);
     _emailController.dispose();
-    _birthDateController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    _dataNascimentoController.dispose();
+    _senhaController.dispose();
+    _confirmarSenhaController.dispose();
+    _nomeController.dispose();
+    _alturaController.dispose();
+    _pesoController.dispose();
+    _cidadeController.dispose();
+    _posicaoController.dispose();
+    _pernaPreferidaController.dispose();
+    _descricaoController.dispose();
     super.dispose();
   }
 
+  // ── Bottom sheets ────────────────────────────────────────────────────────────
+  Future<void> _selecionarPosicao() async {
+    final selected = await _showPickerSheet(
+      context,
+      opcoes: RegisterJogadorViewModel.posicoes,
+      selecionado: _posicaoController.text,
+    );
+    if (selected != null) setState(() => _posicaoController.text = selected);
+  }
+
+  Future<void> _selecionarPerna() async {
+    final selected = await _showPickerSheet(
+      context,
+      opcoes: RegisterJogadorViewModel.pernasPreferidas,
+      selecionado: _pernaPreferidaController.text,
+    );
+    if (selected != null) {
+      setState(() => _pernaPreferidaController.text = selected);
+    }
+  }
+
+  Future<String?> _showPickerSheet(
+    BuildContext context, {
+    required List<String> opcoes,
+    required String selecionado,
+  }) {
+    return showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: const Color(0xFF101010),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: ListView.separated(
+          shrinkWrap: true,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          itemCount: opcoes.length,
+          separatorBuilder: (_, index) =>
+              Divider(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+          itemBuilder: (ctx, i) {
+            final opcao = opcoes[i];
+            return ListTile(
+              title: Text(opcao, style: const TextStyle(color: Colors.white)),
+              trailing: selecionado == opcao
+                  ? Icon(
+                      Icons.check_rounded,
+                      color: Theme.of(ctx).colorScheme.primary,
+                    )
+                  : null,
+              onTap: () => Navigator.of(ctx).pop(opcao),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // ── Foto de perfil ───────────────────────────────────────────────────────────
+  Future<void> _selecionarFoto() async {
+    final vm = context.read<RegisterJogadorViewModel>();
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (picked != null) vm.setFotoPerfil(picked);
+  }
+
+  Future<void> _handleCadastro() async {
+    final vm = context.read<RegisterJogadorViewModel>();
+    final erro = await vm.cadastrar(
+      email: _emailController.text,
+      dataNascimento: _dataNascimentoController.text,
+      senha: _senhaController.text,
+      confirmarSenha: _confirmarSenhaController.text,
+      nome: _nomeController.text,
+      altura: _alturaController.text,
+      peso: _pesoController.text,
+      cidade: _cidadeController.text,
+      posicao: _posicaoController.text,
+      pernaPreferida: _pernaPreferidaController.text,
+      descricao: _descricaoController.text,
+    );
+
+    if (!mounted) return;
+    if (erro == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cadastro realizado com sucesso!'),
+          backgroundColor: Colors.green.shade700,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
+      context.go('/login');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(erro),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+    }
+  }
+
+  // ── Build ────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.select(
+      (RegisterJogadorViewModel vm) => vm.isLoading,
+    );
+    final fotoPerfil = context.select(
+      (RegisterJogadorViewModel vm) => vm.fotoPerfil,
+    );
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: RegisterBackground(
@@ -103,89 +187,193 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RegisterHeader(
-                          title: 'Jogador',
-                          topSpacing: 20,
-                          iconSize: 110,
-                          onBack: () => context.go('/cadastro/funcao'),
-                        ),
-                        const SizedBox(height: 40),
-                        RegisterInputField(
-                          label: 'Email',
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: 24),
-                        RegisterInputField(
-                          label: 'Data de Nascimento',
-                          controller: _birthDateController,
-                          hintText: 'DD/MM/AAAA',
-                          keyboardType: TextInputType.datetime,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            _DateInputFormatter(),
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      // ── Header ─────────────────────────────────────────────
+                      RegisterHeader(
+                        title: 'Jogador',
+                        topSpacing: 20,
+                        iconSize: 110,
+                        onBack: () => context.go('/cadastro/funcao'),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // ── Seção 1: Acesso ────────────────────────────────────
+                      RegisterFormPanel(
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            _sectionTitle('Acesso'),
+                            const SizedBox(height: 18),
+                            RegisterInputField(
+                              label: 'Email',
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                            const SizedBox(height: 22),
+                            RegisterInputField(
+                              label: 'Data de Nascimento',
+                              controller: _dataNascimentoController,
+                              hintText: 'DD/MM/AAAA',
+                              keyboardType: TextInputType.datetime,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                DateInputFormatter(),
+                              ],
+                            ),
+                            const SizedBox(height: 22),
+                            RegisterInputField(
+                              label: 'Senha',
+                              controller: _senhaController,
+                              obscureText: !_showSenha,
+                              suffixIcon: IconButton(
+                                onPressed: () =>
+                                    setState(() => _showSenha = !_showSenha),
+                                icon: Icon(
+                                  _showSenha
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 22),
+                            RegisterInputField(
+                              label: 'Confirmar Senha',
+                              controller: _confirmarSenhaController,
+                              obscureText: !_showConfirmarSenha,
+                              suffixIcon: IconButton(
+                                onPressed: () => setState(
+                                  () => _showConfirmarSenha =
+                                      !_showConfirmarSenha,
+                                ),
+                                icon: Icon(
+                                  _showConfirmarSenha
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 24),
-                        RegisterInputField(
-                          label: 'Senha',
-                          controller: _passwordController,
-                          obscureText: !_showPassword,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() => _showPassword = !_showPassword);
-                            },
-                            icon: Icon(
-                              _showPassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: Colors.white70,
+                      ),
+                      const SizedBox(height: 20),
+
+                      // ── Seção 2: Perfil ────────────────────────────────────
+                      RegisterFormPanel(
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            _sectionTitle('Perfil'),
+                            const SizedBox(height: 18),
+                            RegisterInputField(
+                              label: 'Nome',
+                              controller: _nomeController,
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        RegisterInputField(
-                          label: 'Confirmar Senha',
-                          controller: _confirmPasswordController,
-                          obscureText: !_showConfirmPassword,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(
-                                () =>
-                                    _showConfirmPassword = !_showConfirmPassword,
-                              );
-                            },
-                            icon: Icon(
-                              _showConfirmPassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: Colors.white70,
+                            const SizedBox(height: 22),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: RegisterInputField(
+                                    label: 'Altura',
+                                    controller: _alturaController,
+                                    hintText: 'ex: 1,80',
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                        ),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9.,]'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: RegisterInputField(
+                                    label: 'Peso',
+                                    controller: _pesoController,
+                                    hintText: 'ex: 75',
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                        ),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9.,]'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                            const SizedBox(height: 22),
+                            RegisterInputField(
+                              label: 'Cidade',
+                              controller: _cidadeController,
+                            ),
+                            const SizedBox(height: 22),
+                            RegisterInputField(
+                              label: 'Posição em campo',
+                              controller: _posicaoController,
+                              readOnly: true,
+                              onTap: _selecionarPosicao,
+                              hintText: 'Selecione uma posição',
+                              suffixIcon: const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
                         ),
-                        const Spacer(),
-                        const SizedBox(height: 36),
-                        RegisterPrimaryButton(
-                          label: 'Seguinte',
-                          onPressed: () {
-                            setState(() {
-                              _showErrors = true;
-                            });
-                            if (_isFormValid) {
-                              context.go('/cadastro/jogador-2');
-                            }
-                          },
+                      ),
+                      const SizedBox(height: 20),
+
+                      // ── Seção 3: Detalhes ──────────────────────────────────
+                      RegisterFormPanel(
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            _sectionTitle('Detalhes'),
+                            const SizedBox(height: 18),
+                            RegisterInputField(
+                              label: 'Perna Preferida',
+                              controller: _pernaPreferidaController,
+                              readOnly: true,
+                              onTap: _selecionarPerna,
+                              hintText: 'Selecione uma opção',
+                              suffixIcon: const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: Colors.white70,
+                              ),
+                            ),
+                            const SizedBox(height: 22),
+                            RegisterInputField(
+                              label: 'Breve descrição sobre você',
+                              controller: _descricaoController,
+                              maxLines: 4,
+                              minLines: 4,
+                            ),
+                            const SizedBox(height: 22),
+                            RegisterPhotoPickerButton(
+                              nomeArquivo: fotoPerfil?.name,
+                              onTap: _selecionarFoto,
+                            ),
+                          ],
                         ),
-                        if (_showErrors && _validationMessage != null) ...[
-                          const SizedBox(height: 14),
-                          RegisterErrorBanner(message: _validationMessage!),
-                        ],
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // ── Botão submit ──────────────────────────────────────
+                      RegisterPrimaryButton(
+                        label: isLoading ? 'Criando conta...' : 'Criar Conta',
+                        onPressed: isLoading ? null : _handleCadastro,
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                   ),
                 ),
               );
@@ -195,31 +383,16 @@ class _RegisterScreenState extends State<RegisterJogadorScreen> {
       ),
     );
   }
-}
 
-class _DateInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final digitsOnly = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
-    final limited = digitsOnly.length > 8
-        ? digitsOnly.substring(0, 8)
-        : digitsOnly;
-
-    final buffer = StringBuffer();
-    for (var i = 0; i < limited.length; i++) {
-      buffer.write(limited[i]);
-      if ((i == 1 || i == 3) && i < limited.length - 1) {
-        buffer.write('/');
-      }
-    }
-
-    final formatted = buffer.toString();
-    return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
+  Widget _sectionTitle(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.primary,
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.2,
+      ),
     );
   }
 }

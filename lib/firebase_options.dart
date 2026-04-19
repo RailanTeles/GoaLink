@@ -53,4 +53,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'goalink-67254.firebasestorage.app',
     iosBundleId: 'com.example.goalink',
   );
+
 }

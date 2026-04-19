@@ -8,7 +8,7 @@ class RegisterPrimaryButton extends StatelessWidget {
   });
 
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +21,8 @@ class RegisterPrimaryButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: theme.colorScheme.primary,
           foregroundColor: Colors.black,
+          disabledForegroundColor: Colors.white,
+          disabledBackgroundColor: theme.colorScheme.primary.withValues(alpha: 0.55),
           elevation: 0,
           side: const BorderSide(color: Colors.white, width: 2),
           minimumSize: const Size.fromHeight(56),
