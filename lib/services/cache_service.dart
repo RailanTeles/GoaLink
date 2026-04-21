@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:goalink/models/postagem_model.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class CacheService {
   static const String _userBoxName = 'userBox';
   static const String _userKey = 'perfil_logado';
+  static const String _postagensBoxName = 'postagensBox';
+  static const String _postagensKey = 'postagens';
 
   static Future<void> inicializarCache() async {
     await Hive.initFlutter();
@@ -37,5 +40,26 @@ class CacheService {
     await box.delete(_userKey);
   }
 
-  // Caches relacionados ao feed
+  // Caches relacionados a postagens
+  Future<void> salvarPostagensLocal(List<PostagemModel> postagens) async {
+    var box = Hive.box(_postagensBoxName);
+    String postagensString = jsonEncode(
+      postagens.map((e) => e.toJson()).toList(),
+    );
+    await box.put(_postagensKey, postagensString);
+  }
+
+  Future<List<PostagemModel>> buscarPostagensLocal() async {
+    var box = Hive.box(_postagensBoxName);
+    String? postagensString = box.get(_postagensKey);
+
+    if (postagensString != null) {
+      List<PostagemModel> postagens = jsonDecode(
+        postagensString,
+      ).map((e) => PostagemModel.fromJson(e)).toList();
+      return postagens;
+    } else {
+      return [];
+    }
+  }
 }
