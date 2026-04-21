@@ -1,14 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/services/auth_service.dart';
+import 'package:goalink/services/cache_service.dart';
 import 'package:goalink/services/storage_service.dart';
 import 'package:goalink/services/usuario_service.dart';
 
 class UsuarioRepository {
   final UsuarioService _usuarioService;
   final AuthService _authService;
+  final CacheService _cacheService;
 
-  UsuarioRepository(this._authService, this._usuarioService);
+  UsuarioRepository(
+    this._authService,
+    this._usuarioService,
+    this._cacheService,
+  );
 
   Future<void> cadastrarUsuario(
     UsuarioModel usuario,
@@ -38,6 +44,16 @@ class UsuarioRepository {
   }
 
   Future<void> fazerLogin(String email, String senha) async {
-    await _authService.login(email, senha);
+    User? usuarioAuth = await _authService.login(email, senha);
+    if (usuarioAuth != null) {
+      UsuarioModel? usuario = await _authService.obterUsuarioUid(
+        usuarioAuth.uid,
+      );
+      if (usuario != null) {
+        await _cacheService.salvarPerfilLocal(usuario);
+      } else {
+        throw Exception('Usuário não encontrado no banco de dados.');
+      }
+    }
   }
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:goalink/repositories/usuario_repository.dart';
 import 'package:goalink/routes.dart';
+import 'package:goalink/services/auth_service.dart';
+import 'package:goalink/services/cache_service.dart';
+import 'package:goalink/services/usuario_service.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -11,7 +16,22 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const MyApp());
+  await CacheService.inicializarCache();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider<UsuarioRepository>(
+          create: (_) => UsuarioRepository(
+            AuthService(),
+            UsuarioService(),
+            CacheService(),
+          ),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

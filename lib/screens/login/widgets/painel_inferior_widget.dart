@@ -16,13 +16,6 @@ class _PainelInferiorState extends State<PainelInferior> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _senhaController.dispose();
-    super.dispose();
-  }
-
   Future<void> _handleLogin() async {
     final viewModel = context.read<LoginViewModel>();
     String? erro = await viewModel.fazerLogin(
@@ -42,13 +35,20 @@ class _PainelInferiorState extends State<PainelInferior> {
   }
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _senhaController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isLoading = context.select((LoginViewModel vm) => vm.isLoading);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 1000),
       curve: Curves.easeOutQuart,
-      width: double.infinity,
+      width: .infinity,
       height: widget.alturaContainer,
       alignment: Alignment.center,
       decoration: BoxDecoration(

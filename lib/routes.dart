@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/screens/login/login_view_model.dart';
+import 'package:goalink/services/cache_service.dart';
 import 'package:provider/provider.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
 import 'package:goalink/screens/login/login_screen.dart';
@@ -36,20 +39,20 @@ import 'package:goalink/services/usuario_service.dart';
 // import 'package:goalink/screens/video_posts/posts_inicio.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/login', // TODO: Mudar para '/' depois
-  // redirect: (context, state) {
-  //   final User? usuarioLogado = FirebaseAuth.instance.currentUser;
+  initialLocation: '/',
+  redirect: (context, state) {
+    final User? usuarioLogado = FirebaseAuth.instance.currentUser;
 
-  //   if (usuarioLogado == null) {
-  //     return '/login';
-  //   }
+    if (usuarioLogado == null) {
+      return '/login';
+    }
 
-  //   if (state.matchedLocation == '/login') {
-  //     return '/';
-  //   }
+    if (state.matchedLocation == '/login') {
+      return '/';
+    }
 
-  //   return null;
-  // },
+    return null;
+  },
   routes: [
     // StatefulShellRoute.indexedStack(
     //   builder: (context, state, navigationShell) {
@@ -110,7 +113,24 @@ final GoRouter router = GoRouter(
     //     ),
     //   ],
     // ),
-    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: '/login',
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ChangeNotifierProvider(
+            create: (_) => LoginViewModel(context.read<UsuarioRepository>()),
+            child: const LoginScreen(),
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+              child: child,
+            );
+          },
+        );
+      },
+    ),
     GoRoute(
       path: '/cadastro/funcao',
       pageBuilder: (context, state) {
@@ -133,7 +153,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: ChangeNotifierProvider(
             create: (_) => RegisterJogadorViewModel(
-              UsuarioRepository(AuthService(), UsuarioService()),
+              context.read<UsuarioRepository>(),
               StorageService(),
             ),
             child: const RegisterJogadorScreen(),
@@ -154,7 +174,11 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: ChangeNotifierProvider(
             create: (_) => RegisterOlheiroViewModel(
-              UsuarioRepository(AuthService(), UsuarioService()),
+              UsuarioRepository(
+                AuthService(),
+                UsuarioService(),
+                CacheService(),
+              ),
               StorageService(),
             ),
             child: const RegisterOlheiroScreen(),
@@ -175,7 +199,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: ChangeNotifierProvider(
             create: (_) => RegisterClubeViewModel(
-              UsuarioRepository(AuthService(), UsuarioService()),
+              context.read<UsuarioRepository>(),
               StorageService(),
             ),
             child: const RegisterClubeScreen(),
