@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
 import 'package:goalink/routes.dart';
 import 'package:goalink/services/auth_service.dart';
 import 'package:goalink/services/cache_service.dart';
+import 'package:goalink/services/postagem_service.dart';
 import 'package:goalink/services/usuario_service.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -27,6 +29,9 @@ void main() async {
             UsuarioService(),
             CacheService(),
           ),
+        ),
+        Provider<PostagemRepository>(
+          create: (_) => PostagemRepository(PostagemService(), CacheService()),
         ),
       ],
       child: const MyApp(),

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PostagemModel {
   final String idPostagem;
   final String jogadorId;
@@ -20,6 +22,14 @@ class PostagemModel {
   });
 
   factory PostagemModel.fromJson(Map<String, dynamic> json) {
+    DateTime dataProcessada;
+    var dataRaw = json['criado_em'];
+
+    if (dataRaw is String) {
+      dataProcessada = DateTime.parse(dataRaw);
+    } else {
+      dataProcessada = (dataRaw as Timestamp).toDate();
+    }
     return PostagemModel(
       idPostagem: json['id_postagem'] ?? '',
       jogadorId: json['jogador_id'] ?? '',
@@ -28,7 +38,7 @@ class PostagemModel {
       midiaUrl: json['midia_url'] ?? '',
       tipoMidia: json['tipo_midia'] ?? '',
       descricao: json['descricao'],
-      criadoEm: DateTime.parse(json['criado_em']),
+      criadoEm: dataProcessada,
     );
   }
 

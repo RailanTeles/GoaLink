@@ -13,6 +13,7 @@ class CacheService {
   static Future<void> inicializarCache() async {
     await Hive.initFlutter();
     await Hive.openBox(_userBoxName);
+    await Hive.openBox(_postagensBoxName);
   }
 
   // Caches relacionados ao perfil logado

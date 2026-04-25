@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:goalink/core/avatar_usuario.dart';
 import 'package:goalink/core/video_player_widget.dart';
 import 'package:goalink/models/postagem_model.dart';
-import 'package:goalink/models/usuario_model.dart';
 
 class PostsModelWidget extends StatelessWidget {
-  const PostsModelWidget({
-    super.key,
-    required this.usuario,
-    required this.postagem,
-  });
-  final UsuarioModel usuario;
+  const PostsModelWidget({super.key, required this.postagem});
   final PostagemModel postagem;
 
   @override
@@ -22,23 +17,26 @@ class PostsModelWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: .start,
           children: [
-            Row(
-              mainAxisAlignment: .start,
-              children: [
-                AvatarUsuario(urlFoto: usuario.fotoUrl),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    usuario.nome,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+            GestureDetector(
+              onTap: () => {context.push('/search/${postagem.jogadorId}')},
+              child: Row(
+                mainAxisAlignment: .start,
+                children: [
+                  AvatarUsuario(urlFoto: postagem.jogadorFotoUrl),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      postagem.jogadorNome,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 12),
             if (postagem.midiaUrl.isNotEmpty) ...[

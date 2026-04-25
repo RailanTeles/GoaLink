@@ -57,10 +57,10 @@ class _NovosJogadoresWidgetState extends State<NovosJogadoresWidget> {
                         child: SizedBox(
                           width: diametroDaFoto + 10,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: .center,
                             children: [
                               AvatarUsuario(
-                                urlFoto: usuario.fotoPerfil,
+                                urlFoto: usuario.fotoUrl,
                                 tamanho: 60,
                               ),
                               const SizedBox(height: 8),

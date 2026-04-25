@@ -18,4 +18,25 @@ class UsuarioService {
       throw Exception('Erro ao criar usuário: $e');
     }
   }
+
+  Future<List<UsuarioModel>> obterJogadoresNovos() async {
+    final trintaDiasAtras = DateTime.now()
+        .subtract(const Duration(days: 30))
+        .toIso8601String();
+    try {
+      final querySnapshot = await _firestore
+          .collection('usuarios')
+          .where('criado_em', isGreaterThan: trintaDiasAtras)
+          .where('tipo', isEqualTo: 'jogador')
+          .get();
+      if (querySnapshot.docs.isEmpty) {
+        return [];
+      }
+      return querySnapshot.docs
+          .map((doc) => UsuarioModel.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      throw Exception('Erro ao obter jogadores novos: $e');
+    }
+  }
 }

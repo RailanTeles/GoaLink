@@ -6,18 +6,22 @@ class PostagemRepository {
   final PostagemService postagemService;
   final CacheService cacheService;
 
-  PostagemRepository({
-    required this.postagemService,
-    required this.cacheService,
-  });
+  PostagemRepository(this.postagemService, this.cacheService);
 
   Future<List<PostagemModel>> obterFeedLocal() async {
     return await cacheService.buscarPostagensLocal();
   }
 
-  Future<List<PostagemModel>> obterFeedRemoto() async {
+  Future<List<PostagemModel>> obterFeedRemoto({
+    int quantidade = 5,
+    DateTime? dataUltimoPost,
+  }) async {
     List<PostagemModel> postagensNovas = await postagemService
-        .obterPostagensFeed();
+        .obterPostagensFeed(
+          quantidade: quantidade,
+          dataUltimoPost: dataUltimoPost,
+        );
+
     if (postagensNovas.isNotEmpty) {
       await cacheService.salvarPostagensLocal(postagensNovas);
     }

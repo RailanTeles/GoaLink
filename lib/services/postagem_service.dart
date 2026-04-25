@@ -10,13 +10,21 @@ class PostagemService {
 
   final String _collectionName = 'postagens';
 
-  Future<List<PostagemModel>> obterPostagensFeed({int quantidade = 5}) async {
+  Future<List<PostagemModel>> obterPostagensFeed({
+    int quantidade = 5,
+    DateTime? dataUltimoPost,
+  }) async {
     try {
-      final querySnapshot = await _firestore
+      var query = _firestore
           .collection(_collectionName)
           .orderBy('criado_em', descending: true)
-          .limit(quantidade)
-          .get();
+          .limit(quantidade);
+
+      if (dataUltimoPost != null) {
+        query = query.startAfter([Timestamp.fromDate(dataUltimoPost)]);
+      }
+
+      final querySnapshot = await query.get();
       if (querySnapshot.docs.isEmpty) {
         return [];
       }

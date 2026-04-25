@@ -56,4 +56,8 @@ class UsuarioRepository {
       }
     }
   }
+
+  Future<List<UsuarioModel>> obterJogadoresNovos() async {
+    return await _usuarioService.obterJogadoresNovos();
+  }
 }
