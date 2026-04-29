@@ -8,6 +8,22 @@ class UsuarioService {
     databaseId: 'default',
   );
 
+  Future<UsuarioModel?> obterUsuarioUid(String uid) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await _firestore
+          .collection('usuarios')
+          .doc(uid)
+          .get();
+      if (snapshot.exists && snapshot.data() != null) {
+        return UsuarioModel.fromJson(snapshot.data()!);
+      }
+
+      return null;
+    } catch (e) {
+      throw Exception('Erro ao buscar usuário: $e');
+    }
+  }
+
   Future<void> cadastrarUsuarioNoBanco(UsuarioModel usuario) async {
     try {
       await _firestore

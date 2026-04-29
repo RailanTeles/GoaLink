@@ -46,7 +46,7 @@ class UsuarioRepository {
   Future<void> fazerLogin(String email, String senha) async {
     User? usuarioAuth = await _authService.login(email, senha);
     if (usuarioAuth != null) {
-      UsuarioModel? usuario = await _authService.obterUsuarioUid(
+      UsuarioModel? usuario = await _usuarioService.obterUsuarioUid(
         usuarioAuth.uid,
       );
       if (usuario != null) {
