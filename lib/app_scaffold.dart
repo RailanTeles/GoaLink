@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/core/navbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:goalink/models/usuario_model.dart';
+import 'package:goalink/services/cache_service.dart';
 
 class AppScaffold extends StatelessWidget {
   const AppScaffold({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
+  CacheService get cacheService => CacheService();
 
   @override
   Widget build(BuildContext context) {
+    final Future<UsuarioModel?> usuario = cacheService.buscarPerfilLocal();
     return Scaffold(
       extendBody: true,
       appBar: const Navbar(),
@@ -23,15 +27,28 @@ class AppScaffold extends StatelessWidget {
               color: const Color(0xFF195E3B),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNavItem(0, "assets/images/icons/home.svg"),
-                _buildNavItem(1, "assets/images/icons/search.svg"),
-                _buildNavItem(2, "assets/images/icons/tips.svg"),
-                _buildNavItem(3, "assets/images/icons/chat_off.svg"),
-                _buildNavItem(4, "assets/images/icons/profile.svg"),
-              ],
+            child: FutureBuilder(
+              future: usuario,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox();
+                }
+                final usuarioModel = snapshot.data;
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildNavItem(0, "assets/images/icons/home.svg"),
+                    _buildNavItem(1, "assets/images/icons/search.svg"),
+                    if (usuarioModel?.tipo == "jogador") ...[
+                      _buildNavItem(2, "assets/images/icons/tips.svg"),
+                    ] else ...[
+                      _buildNavItem(5, "assets/images/icons/favorites.svg"),
+                    ],
+                    _buildNavItem(3, "assets/images/icons/chat_off.svg"),
+                    _buildNavItem(4, "assets/images/icons/profile.svg"),
+                  ],
+                );
+              },
             ),
           ),
         ),
