@@ -10,9 +10,9 @@ class PostagemService {
 
   final String _collectionName = 'postagens';
 
-  Future<List<PostagemModel>> obterPostagensFeed({
+  Future<List<QueryDocumentSnapshot>> obterPostagensFeed({
     int quantidade = 5,
-    DateTime? dataUltimoPost,
+    DocumentSnapshot? ultimoDoc,
   }) async {
     try {
       var query = _firestore
@@ -20,19 +20,34 @@ class PostagemService {
           .orderBy('criado_em', descending: true)
           .limit(quantidade);
 
-      if (dataUltimoPost != null) {
-        query = query.startAfter([Timestamp.fromDate(dataUltimoPost)]);
+      if (ultimoDoc != null) {
+        query = query.startAfterDocument(ultimoDoc);
       }
 
-      final querySnapshot = await query.get();
-      if (querySnapshot.docs.isEmpty) {
-        return [];
-      }
-      return querySnapshot.docs
-          .map((doc) => PostagemModel.fromJson(doc.data()))
-          .toList();
+      final snapshot = await query.get();
+      return snapshot.docs;
     } catch (e) {
       throw Exception('Erro ao obter postagens feed: $e');
+    }
+  }
+
+  Future<String> criarRefPostagem() async {
+    try {
+      final docRef = _firestore.collection(_collectionName).doc();
+      return docRef.id;
+    } catch (e) {
+      throw Exception('Erro ao criar referência de postagem: $e');
+    }
+  }
+
+  Future<void> criarPostagem(PostagemModel postagem) async {
+    try {
+      await _firestore
+          .collection(_collectionName)
+          .doc(postagem.idPostagem)
+          .set(postagem.toJson());
+    } catch (e) {
+      throw Exception('Erro ao criar postagem: $e');
     }
   }
 }

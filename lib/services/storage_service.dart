@@ -1,6 +1,8 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart' as p;
 
 class StorageService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -9,21 +11,55 @@ class StorageService {
     required String uid,
     required String caminhoLocal,
   }) async {
-    final ref = _storage.ref().child('$uid/foto.png');
+    try {
+      final String extensao = p.extension(caminhoLocal);
+      final ref = _storage.ref().child('$uid/perfil$extensao');
 
-    final uploadTask = await ref.putFile(
-      File(caminhoLocal),
-      SettableMetadata(contentType: 'image/png'),
-    );
+      final String? mimeType = lookupMimeType(caminhoLocal);
 
-    return await uploadTask.ref.getDownloadURL();
+      final uploadTask = await ref.putFile(
+        File(caminhoLocal),
+        SettableMetadata(contentType: mimeType ?? 'application/octet-stream'),
+      );
+
+      return await uploadTask.ref.getDownloadURL();
+    } catch (e) {
+      throw Exception('Erro ao enviar foto de perfil: $e');
+    }
   }
 
-  Future<void> deletarFotoPerfil(String uid) async {
+  Future<String> uploadMidiaPostagem({
+    required String idPostagem,
+    required String caminhoLocal,
+  }) async {
     try {
-      await _storage.ref().child('$uid/foto.png').delete();
-    } on FirebaseException catch (e) {
-      if (e.code != 'object-not-found') rethrow;
+      final String extensao = p.extension(caminhoLocal);
+      final String nomeArquivo = DateTime.now().millisecondsSinceEpoch
+          .toString();
+
+      // ✅ caminho: postagens/{idPostagem}/{nomeArquivo}{extensao}
+      final ref = _storage.ref().child(
+        'postagens/$idPostagem/$nomeArquivo$extensao',
+      );
+
+      final String? mimeType = lookupMimeType(caminhoLocal);
+      final uploadTask = await ref.putFile(
+        File(caminhoLocal),
+        SettableMetadata(contentType: mimeType ?? 'application/octet-stream'),
+      );
+
+      return await uploadTask.ref.getDownloadURL();
+    } catch (e) {
+      throw Exception('Erro ao enviar mídia da postagem: $e');
+    }
+  }
+
+  Future<void> deletarMidia(String urlMidia) async {
+    try {
+      final ref = _storage.refFromURL(urlMidia);
+      await ref.delete();
+    } catch (e) {
+      debugPrint('Aviso: não foi possível deletar mídia órfã: $e');
     }
   }
 }

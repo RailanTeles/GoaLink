@@ -26,7 +26,8 @@ class HomeViewModel extends ChangeNotifier {
       }
 
       jogadoresNovos = await _usuarioRepository.obterJogadoresNovos();
-      postagens = await _postagemRepository.obterFeedRemoto();
+
+      postagens = await _postagemRepository.obterFeedRemoto(reiniciar: true);
     } catch (e) {
       erro = e.toString().replaceAll('Exception: ', '');
     } finally {
@@ -36,22 +37,23 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> carregarMaisPosts() async {
-    if (isCarregandoMais || !temMaisPostsNoBanco || postagens.isEmpty) {
-      return;
-    }
+    if (isCarregandoMais || !temMaisPostsNoBanco || postagens.isEmpty) return;
+
     isCarregandoMais = true;
     notifyListeners();
+
     try {
-      DateTime dataDaUltima = postagens.last.criadoEm;
-      List<PostagemModel> novosPosts = await _postagemRepository
-          .obterFeedRemoto(quantidade: 5, dataUltimoPost: dataDaUltima);
+      final novosPosts = await _postagemRepository.obterFeedRemoto(
+        quantidade: 5,
+      );
+
       if (novosPosts.isEmpty) {
         temMaisPostsNoBanco = false;
       } else {
         postagens.addAll(novosPosts);
       }
     } catch (e) {
-      throw Exception('Erro ao carregar mais posts: $e');
+      erro = e.toString().replaceAll('Exception: ', '');
     } finally {
       isCarregandoMais = false;
       notifyListeners();

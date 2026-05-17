@@ -55,12 +55,12 @@ class CacheService {
     String? postagensString = box.get(_postagensKey);
 
     if (postagensString != null) {
-      List<PostagemModel> postagens = jsonDecode(
-        postagensString,
-      ).map((e) => PostagemModel.fromJson(e)).toList();
-      return postagens;
-    } else {
-      return [];
+      final List<dynamic> lista = jsonDecode(postagensString);
+      return lista
+          .map((e) => PostagemModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
+
+    return [];
   }
 }

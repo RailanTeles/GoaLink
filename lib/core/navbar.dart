@@ -25,7 +25,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
           leading: usuario?.tipo == "jogador"
               ? IconButton(
                   icon: const Icon(Icons.add_box, size: 28),
-                  onPressed: () => context.push('/posts/inicio'),
+                  onPressed: () => context.push('/addPosts'),
                 )
               : SizedBox(),
           actions: [

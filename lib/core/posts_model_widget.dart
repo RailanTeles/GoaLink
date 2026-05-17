@@ -13,14 +13,14 @@ class PostsModelWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24.0),
       child: SizedBox(
-        width: .infinity,
+        width: double.infinity,
         child: Column(
-          crossAxisAlignment: .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GestureDetector(
-              onTap: () => {context.push('/search/${postagem.jogadorId}')},
+              onTap: () => context.push('/search/${postagem.jogadorId}'),
               child: Row(
-                mainAxisAlignment: .start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   AvatarUsuario(urlFoto: postagem.jogadorFotoUrl),
                   const SizedBox(width: 10),
@@ -39,22 +39,9 @@ class PostsModelWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            if (postagem.midiaUrl.isNotEmpty) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: double.infinity,
-                  color: Colors.black,
-                  child: AspectRatio(
-                    aspectRatio: 4 / 5,
-                    child: VideoPlayerWidget(videoUrl: postagem.midiaUrl),
-                  ),
-                ),
-              ),
-            ],
+            if (postagem.midiaUrl.isNotEmpty) _buildMidia(),
             const SizedBox(height: 12),
-            if (postagem.descricao != null &&
-                postagem.descricao!.isNotEmpty) ...[
+            if (postagem.descricao != null && postagem.descricao!.isNotEmpty)
               Text(
                 postagem.descricao!,
                 style: const TextStyle(
@@ -62,9 +49,53 @@ class PostsModelWidget extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-            ],
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildMidia() {
+    final bool isVideo = postagem.tipoMidia == 'video';
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: double.infinity,
+        color: Colors.black,
+        child: isVideo ? _buildVideo() : _buildImagem(),
+      ),
+    );
+  }
+
+  Widget _buildVideo() {
+    return AspectRatio(
+      aspectRatio: 4 / 5,
+      child: VideoPlayerWidget(videoUrl: postagem.midiaUrl),
+    );
+  }
+
+  Widget _buildImagem() {
+    return AspectRatio(
+      aspectRatio: 4 / 5,
+      child: Image.network(
+        postagem.midiaUrl,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return const ColoredBox(
+            color: Colors.black,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return const ColoredBox(
+            color: Colors.black,
+            child: Center(
+              child: Icon(Icons.broken_image, color: Colors.white54, size: 48),
+            ),
+          );
+        },
       ),
     );
   }

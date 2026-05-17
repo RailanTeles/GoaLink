@@ -9,7 +9,7 @@ class PostsAppBar extends StatelessWidget {
   });
 
   final VoidCallback onBack;
-  final VoidCallback onAdd;
+  final VoidCallback? onAdd;
   final bool backToHome;
 
   @override
@@ -28,7 +28,7 @@ class PostsAppBar extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: SizedBox(
-          height: 74,
+          height: 70,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: Row(
@@ -44,21 +44,6 @@ class PostsAppBar extends StatelessWidget {
                   ),
                   iconSize: 28,
                   icon: const Icon(Icons.arrow_back),
-                ),
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: IconButton(
-                    onPressed: onAdd,
-                    padding: EdgeInsets.zero,
-                    iconSize: 28,
-                    color: green,
-                    icon: const Icon(Icons.add_rounded),
-                  ),
                 ),
               ],
             ),

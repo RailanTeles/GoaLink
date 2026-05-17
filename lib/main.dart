@@ -6,6 +6,7 @@ import 'package:goalink/routes.dart';
 import 'package:goalink/services/auth_service.dart';
 import 'package:goalink/services/cache_service.dart';
 import 'package:goalink/services/postagem_service.dart';
+import 'package:goalink/services/storage_service.dart';
 import 'package:goalink/services/usuario_service.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -31,7 +32,11 @@ void main() async {
           ),
         ),
         Provider<PostagemRepository>(
-          create: (_) => PostagemRepository(PostagemService(), CacheService()),
+          create: (_) => PostagemRepository(
+            PostagemService(),
+            CacheService(),
+            StorageService(),
+          ),
         ),
       ],
       child: const MyApp(),

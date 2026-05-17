@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/screens/home/home_view_model.dart';
 import 'package:goalink/screens/login/login_view_model.dart';
+import 'package:goalink/screens/video_posts/add_posts_screen.dart';
+import 'package:goalink/screens/video_posts/posts_view_model.dart';
 import 'package:goalink/services/cache_service.dart';
 import 'package:provider/provider.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
@@ -227,36 +229,27 @@ final GoRouter router = GoRouter(
         );
       },
     ),
-    // GoRoute(
-    //   path: '/posts/inicio',
-    //   builder: (context, state) => const PostsInicio(),
-    // ),
-    // GoRoute(
-    //   path: '/posts/final',
-    //   builder: (context, state) {
-    //     final extra = state.extra as PostsFinalArgs;
-    //     return PostsFinal(
-    //       mediaPath: extra.path,
-    //       isVideo: extra.isVideo,
-    //       initialPost: extra.initialPost,
-    //     );
-    //   },
-    // ),
-    // GoRoute(
-    //   path: '/cadastro',
-    //   pageBuilder: (context, state) {
-    //     return CustomTransitionPage(
-    //       key: state.pageKey,
-    //       child: const RegisterJogadorScreen(),
-    //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-    //         return FadeTransition(
-    //           opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-    //           child: child,
-    //         );
-    //       },
-    //     );
-    //   },
-    // ),
+    GoRoute(
+      path: '/addPosts',
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ChangeNotifierProvider(
+            create: (_) => PostsViewModel(
+              context.read<PostagemRepository>(),
+              CacheService(),
+            ),
+            child: const AddPostsScreen(),
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+              child: child,
+            );
+          },
+        );
+      },
+    ),
     // GoRoute(
     //   path: '/notifications',
     //   builder: (context, state) => const NotificationsScreen(),

@@ -47,22 +47,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Caso haja um erro
     if (vm.erro != null && vm.postagens.isEmpty) {
-      return RefreshIndicator(
-        onRefresh: _carregarDadosIniciais,
-        child: Center(
+      return Scaffold(
+        body: RefreshIndicator(
+          onRefresh: _carregarDadosIniciais,
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 9.0),
-                  child: Text(
-                    vm.erro!,
-                    textAlign: .center,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              SliverFillRemaining(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      vm.erro!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
