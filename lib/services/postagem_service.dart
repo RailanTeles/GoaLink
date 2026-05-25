@@ -50,4 +50,17 @@ class PostagemService {
       throw Exception('Erro ao criar postagem: $e');
     }
   }
+
+  Future<List<QueryDocumentSnapshot>> obterPostagensUsuario(String uid) async {
+    try {
+      var snapshot = await _firestore
+          .collection(_collectionName)
+          .where('jogador_id', isEqualTo: uid)
+          .orderBy('criado_em', descending: true)
+          .get();
+      return snapshot.docs;
+    } catch (e) {
+      throw Exception('Erro ao obter postagens do usuário: $e');
+    }
+  }
 }

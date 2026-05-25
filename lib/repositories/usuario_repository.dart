@@ -43,6 +43,25 @@ class UsuarioRepository {
     }
   }
 
+  Future<UsuarioModel> obterUsuarioLogado() async {
+    var usuarioLogado = await _cacheService.buscarPerfilLocal();
+    if (usuarioLogado != null &&
+        usuarioLogado.id == FirebaseAuth.instance.currentUser?.uid) {
+      return usuarioLogado;
+    }
+
+    var usuario = await _usuarioService.obterUsuarioUid(
+      FirebaseAuth.instance.currentUser!.uid,
+    );
+
+    if (usuario != null) {
+      await _cacheService.salvarPerfilLocal(usuario);
+      return usuario;
+    }
+
+    throw Exception('Usuário não encontrado no banco de dados.');
+  }
+
   Future<void> fazerLogin(String email, String senha) async {
     User? usuarioAuth = await _authService.login(email, senha);
     if (usuarioAuth != null) {

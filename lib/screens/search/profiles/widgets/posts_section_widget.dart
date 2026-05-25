@@ -1,74 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:goalink/core/circular_loading.dart';
 import 'package:goalink/core/posts_model_widget.dart';
 import 'package:goalink/models/postagem_model.dart';
-import 'package:goalink/models/usuario_model.dart';
-import 'package:goalink/services/postagem_service.dart';
 
 class PostsSectionWidget extends StatefulWidget {
-  const PostsSectionWidget({super.key, required this.usuario});
-  final UsuarioModel usuario;
+  const PostsSectionWidget({
+    super.key,
+    required this.listaPosts,
+    required this.myProfile,
+    this.isLoading = false,
+    this.erroPostagens,
+  });
+  final List<PostagemModel> listaPosts;
+  final bool myProfile;
+  final bool isLoading;
+  final String? erroPostagens;
 
   @override
   State<PostsSectionWidget> createState() => _PostsSectionWidgetState();
 }
 
 class _PostsSectionWidgetState extends State<PostsSectionWidget> {
-  final PostagemService postagemService = PostagemService();
-  late Future<List<PostagemModel>> _futuroListaPosts;
-
   @override
   void initState() {
     super.initState();
-    _futuroListaPosts = PostagemService().getPostagensByUserID(
-      widget.usuario.id,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<PostagemModel>>(
-      future: _futuroListaPosts,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-                strokeWidth: 4.0,
-              ),
-            ),
-          );
-        }
-        if (!snapshot.hasData || snapshot.data == null) {
-          return const SizedBox(
-            height: 300,
-            child: Center(
-              child: Text(
-                "Nenhuma postagem feita",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-          );
-        }
+    if (widget.isLoading) {
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: CircularLoading(),
+      );
+    }
 
-        final listaPosts = snapshot.data!;
+    if (widget.erroPostagens != null) {
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: Text(
+            widget.erroPostagens!,
+            textAlign: .center,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: .bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+      );
+    }
 
-        return ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: listaPosts.length,
-          itemBuilder: (context, index) {
-            final post = listaPosts[index];
-            return PostsModelWidget(postagem: post, usuario: widget.usuario);
-          },
-        );
+    if (widget.listaPosts.isEmpty) {
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: Text(
+            "Nenhuma postagem foi encontrada :(",
+            textAlign: .center,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: .bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: widget.listaPosts.length,
+      itemBuilder: (context, index) {
+        final post = widget.listaPosts[index];
+        return PostsModelWidget(postagem: post, isMyProfile: widget.myProfile);
       },
     );
   }

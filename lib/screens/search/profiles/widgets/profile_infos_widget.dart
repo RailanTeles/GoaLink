@@ -9,8 +9,7 @@ class ProfileInfos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final instaDynamic = usuario.redesSociais?['instagram'];
-    final linkInstagram = instaDynamic?.toString();
+    final listaRedesSociais = usuario.redesSociais ?? {};
     return SizedBox(
       width: .infinity,
       child: LayoutBuilder(
@@ -20,42 +19,96 @@ class ProfileInfos extends StatelessWidget {
             mainAxisAlignment: .start,
             crossAxisAlignment: .start,
             children: [
-              Wrap(
-                spacing: 16,
-                runSpacing: 20,
-                children: [
-                  if (usuario.cidade != null && usuario.cidade!.isNotEmpty)
-                    SizedBox(
-                      width: larguraItem,
-                      child: LabelInfo(
-                        icone: Icons.location_pin,
-                        textoTitulo: "Cidade",
-                        textoLabel: usuario.cidade!,
+              if (usuario.tipo == "jogador") ...[
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 20,
+                  children: [
+                    // Informações Primárias
+                    if (usuario.cidade != null && usuario.cidade!.isNotEmpty)
+                      SizedBox(
+                        width: larguraItem,
+                        child: LabelInfo(
+                          icone: Icons.location_pin,
+                          textoTitulo: "Cidade",
+                          textoLabel: usuario.cidade!,
+                        ),
                       ),
-                    ),
 
-                  if (usuario.posicao != null && usuario.posicao!.isNotEmpty)
-                    SizedBox(
-                      width: larguraItem,
-                      child: LabelInfo(
-                        icone: Icons.sports_soccer,
-                        textoTitulo: "Posição",
-                        textoLabel: usuario.posicao!,
+                    if (usuario.posicao != null && usuario.posicao!.isNotEmpty)
+                      SizedBox(
+                        width: larguraItem,
+                        child: LabelInfo(
+                          icone: Icons.sports_soccer,
+                          textoTitulo: "Posição",
+                          textoLabel: usuario.posicao!,
+                        ),
                       ),
-                    ),
 
-                  if (usuario.pernaPreferida != null &&
-                      usuario.pernaPreferida!.isNotEmpty)
-                    SizedBox(
-                      width: larguraItem,
-                      child: LabelInfo(
-                        icone: Icons.directions_run,
-                        textoTitulo: "Perna Preferida",
-                        textoLabel: usuario.pernaPreferida!,
+                    if (usuario.pernaPreferida != null &&
+                        usuario.pernaPreferida!.isNotEmpty)
+                      SizedBox(
+                        width: larguraItem,
+                        child: LabelInfo(
+                          icone: Icons.directions_run,
+                          textoTitulo: "Perna Preferida",
+                          textoLabel: usuario.pernaPreferida!,
+                        ),
                       ),
+                  ],
+                ),
+              ],
+
+              // Informações do Olheiro
+              if (usuario.tipo == "olheiro") ...[
+                if (usuario.clubeRepresentante != null &&
+                    usuario.clubeRepresentante!.isNotEmpty)
+                  SizedBox(
+                    width: larguraItem,
+                    child: LabelInfo(
+                      icone: Icons.shield,
+                      textoTitulo: "Agente/Empresa",
+                      textoLabel: usuario.clubeRepresentante!,
                     ),
-                ],
-              ),
+                  ),
+
+                if (usuario.jogadoresProcurados != null &&
+                    usuario.jogadoresProcurados!.isNotEmpty)
+                  SizedBox(
+                    width: larguraItem,
+                    child: LabelInfo(
+                      icone: Icons.group,
+                      textoTitulo: "Jogadores Procurados",
+                      textoLabel: usuario.jogadoresProcurados!,
+                    ),
+                  ),
+              ],
+
+              // Informações do clube
+              if (usuario.tipo == "clube") ...[
+                if (usuario.cidade != null && usuario.cidade!.isNotEmpty)
+                  SizedBox(
+                    width: larguraItem,
+                    child: LabelInfo(
+                      icone: Icons.location_pin,
+                      textoTitulo: "Cidade",
+                      textoLabel: usuario.cidade!,
+                    ),
+                  ),
+                if (usuario.jogadoresProcurados != null &&
+                    usuario.jogadoresProcurados!.isNotEmpty)
+                  SizedBox(
+                    width: larguraItem,
+                    child: LabelInfo(
+                      icone: Icons.group,
+                      textoTitulo: "Jogadores Procurados",
+                      textoLabel: usuario.jogadoresProcurados!,
+                    ),
+                  ),
+              ],
+
+              // Comum a todos -------------------------------
+              // Descrição
               if (usuario.descricao != null &&
                   usuario.descricao!.isNotEmpty) ...[
                 SizedBox(height: 20),
@@ -69,8 +122,9 @@ class ProfileInfos extends StatelessWidget {
                   ),
                 ),
               ],
-              if (usuario.redesSociais != null &&
-                  usuario.redesSociais!.isNotEmpty) ...[
+
+              // Redes Sociais
+              if (listaRedesSociais.isNotEmpty) ...[
                 SizedBox(height: 20),
                 Row(
                   children: [
@@ -90,20 +144,15 @@ class ProfileInfos extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Column(
-                  crossAxisAlignment: .start,
+                Wrap(
                   spacing: 16,
+                  runSpacing: 20,
                   children: [
-                    if (linkInstagram != null && linkInstagram.isNotEmpty) ...[
-                      SizedBox(
-                        width: constraints.maxWidth,
-                        child: SocialInfo(
-                          imagem: "assets/images/instagram.png",
-                          link: linkInstagram,
-                        ),
+                    for (var e in listaRedesSociais.entries)
+                      SocialInfo(
+                        imagem: "assets/images/${e.key}.png",
+                        link: e.value.toString(),
                       ),
-                    ],
                   ],
                 ),
               ],

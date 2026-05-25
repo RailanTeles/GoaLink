@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:goalink/models/usuario_model.dart';
+import 'package:goalink/models/avaliacao_model.dart';
+import 'package:goalink/models/postagem_model.dart';
 import 'package:goalink/screens/search/profiles/widgets/comments_section_widget.dart';
 import 'package:goalink/screens/search/profiles/widgets/posts_section_widget.dart';
 
 class PostComentWidget extends StatefulWidget {
-  const PostComentWidget({super.key, required this.usuario});
-  final UsuarioModel usuario;
+  const PostComentWidget({
+    super.key,
+    required this.postagens,
+    required this.avaliacoes,
+    this.isLoadingPostagens = false,
+    this.isLoadingAvaliacoes = false,
+    this.erroPostagens,
+    this.erroAvaliacoes,
+  });
+
+  final List<PostagemModel> postagens;
+  final List<AvaliacaoModel> avaliacoes;
+  final bool isLoadingPostagens;
+  final bool isLoadingAvaliacoes;
+  final String? erroPostagens;
+  final String? erroAvaliacoes;
 
   @override
   State<PostComentWidget> createState() => _PostComentWidgetState();
@@ -74,8 +89,15 @@ class _PostComentWidgetState extends State<PostComentWidget> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0, bottom: 90.0),
                 child: _selectedIndex == 0
-                    ? PostsSectionWidget(usuario: widget.usuario)
-                    : CommentsSectionWidget(usuario: widget.usuario),
+                    ? PostsSectionWidget(
+                        listaPosts: widget.postagens,
+                        myProfile: true,
+                        isLoading: widget.isLoadingPostagens,
+                        erroPostagens: widget.erroPostagens,
+                      )
+                    : CommentsSectionWidget(
+                        avaliacoes: widget.avaliacoes,
+                      ), // TODO: Implementar a seção de Comentários corretamente
               ),
             ],
           );

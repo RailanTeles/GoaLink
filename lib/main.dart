@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:goalink/repositories/avaliacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
 import 'package:goalink/routes.dart';
 import 'package:goalink/services/auth_service.dart';
+import 'package:goalink/services/avaliacao_service.dart';
 import 'package:goalink/services/cache_service.dart';
 import 'package:goalink/services/postagem_service.dart';
 import 'package:goalink/services/storage_service.dart';
@@ -37,6 +39,9 @@ void main() async {
             CacheService(),
             StorageService(),
           ),
+        ),
+        Provider<AvaliacoesRepository>(
+          create: (_) => AvaliacoesRepository(AvaliacaoService()),
         ),
       ],
       child: const MyApp(),

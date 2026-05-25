@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/repositories/avaliacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/screens/home/home_view_model.dart';
 import 'package:goalink/screens/login/login_view_model.dart';
+import 'package:goalink/screens/profile/profile_view_model.dart';
 import 'package:goalink/screens/video_posts/add_posts_screen.dart';
 import 'package:goalink/screens/video_posts/posts_view_model.dart';
 import 'package:goalink/services/cache_service.dart';
@@ -27,7 +29,7 @@ import 'package:goalink/screens/home/home_screen.dart';
 // import 'package:goalink/screens/favorites/favorites_screen.dart';
 // import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
 // import 'package:goalink/screens/notifications/notifications_screen.dart';
-// import 'package:goalink/screens/profile/profile_screen.dart';
+import 'package:goalink/screens/profile/profile_screen.dart';
 // import 'package:goalink/screens/search/profiles/profiles_screen.dart';
 // import 'package:goalink/screens/register/clube/register_clube_final_screen.dart';
 // import 'package:goalink/screens/register/jogador/register_jogador_final_screen.dart';
@@ -109,15 +111,24 @@ final GoRouter router = GoRouter(
         //     GoRoute(path: '/chat', builder: (c, s) => const ChatScreen()),
         //   ],
         // ),
-        // // Index 4: Perfil
-        // StatefulShellBranch(
-        //   routes: [
-        //     GoRoute(
-        //       path: '/myprofile',
-        //       builder: (c, s) => const ProfileScreen(),
-        //     ),
-        //   ],
-        // ),
+        // Index 4: Perfil
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/myprofile',
+              builder: (context, state) {
+                return ChangeNotifierProvider(
+                  create: (_) => ProfileViewModel(
+                    context.read<PostagemRepository>(),
+                    context.read<UsuarioRepository>(),
+                    context.read<AvaliacoesRepository>(),
+                  ),
+                  child: const ProfileScreen(),
+                );
+              },
+            ),
+          ],
+        ),
         // //Index 5: favorites
         // StatefulShellBranch(
         //   routes: [

@@ -5,8 +5,13 @@ import 'package:goalink/core/video_player_widget.dart';
 import 'package:goalink/models/postagem_model.dart';
 
 class PostsModelWidget extends StatelessWidget {
-  const PostsModelWidget({super.key, required this.postagem});
+  const PostsModelWidget({
+    super.key,
+    required this.postagem,
+    this.isMyProfile = false,
+  });
   final PostagemModel postagem;
+  final bool isMyProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -15,28 +20,40 @@ class PostsModelWidget extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
-            GestureDetector(
-              onTap: () => context.push('/search/${postagem.jogadorId}'),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  AvatarUsuario(urlFoto: postagem.jogadorFotoUrl),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      postagem.jogadorNome,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => context.push('/search/${postagem.jogadorId}'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        AvatarUsuario(urlFoto: postagem.jogadorFotoUrl),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            postagem.jogadorNome,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                if (isMyProfile)
+                  IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed:
+                        () {}, // TODO: Aplicar menu popUp para apagar post
+                  ),
+              ],
             ),
             const SizedBox(height: 12),
             if (postagem.midiaUrl.isNotEmpty) _buildMidia(),

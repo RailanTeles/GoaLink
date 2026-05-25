@@ -51,6 +51,16 @@ class PostagemRepository {
     return postagens;
   }
 
+  Future<List<PostagemModel>> obterPostagensUsuarioPorId(String uid) async {
+    final docs = await postagemService.obterPostagensUsuario(uid);
+
+    final postagens = docs.map((doc) {
+      return PostagemModel.fromJson(doc.data() as Map<String, dynamic>);
+    }).toList();
+
+    return postagens;
+  }
+
   Future<void> fazerPostagem(
     UsuarioModel usuario,
     String caminhoArquivo,
@@ -58,31 +68,24 @@ class PostagemRepository {
   ) async {
     final String refUid = await postagemService.criarRefPostagem();
     String? urlMidia;
-    try {
-      urlMidia = await storageService.uploadMidiaPostagem(
-        idPostagem: refUid,
-        caminhoLocal: caminhoArquivo,
-      );
-      String? mimeCompleto = lookupMimeType(caminhoArquivo);
+    urlMidia = await storageService.uploadMidiaPostagem(
+      idPostagem: refUid,
+      caminhoLocal: caminhoArquivo,
+    );
+    String? mimeCompleto = lookupMimeType(caminhoArquivo);
 
-      String tipoMidia = mimeCompleto?.split('/')[0] ?? 'image';
+    String tipoMidia = mimeCompleto?.split('/')[0] ?? 'image';
 
-      final postagem = PostagemModel(
-        idPostagem: refUid,
-        jogadorId: usuario.id,
-        jogadorNome: usuario.nome,
-        jogadorFotoUrl: usuario.fotoUrl,
-        midiaUrl: urlMidia,
-        tipoMidia: tipoMidia,
-        descricao: descricao,
-        criadoEm: DateTime.now(),
-      );
-      await postagemService.criarPostagem(postagem);
-    } catch (e) {
-      if (urlMidia != null) {
-        await storageService.deletarMidia(urlMidia);
-      }
-      throw Exception('Erro ao fazer postagem: $e');
-    }
+    final postagem = PostagemModel(
+      idPostagem: refUid,
+      jogadorId: usuario.id,
+      jogadorNome: usuario.nome,
+      jogadorFotoUrl: usuario.fotoUrl,
+      midiaUrl: urlMidia,
+      tipoMidia: tipoMidia,
+      descricao: descricao,
+      criadoEm: DateTime.now(),
+    );
+    await postagemService.criarPostagem(postagem);
   }
 }

@@ -9,21 +9,20 @@ class ProfileHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (usuario.fotoPerfil != null && usuario.fotoPerfil!.isNotEmpty)
+      onTap: (usuario.fotoUrl != null && usuario.fotoUrl!.isNotEmpty)
           ? () => _mostrarFotoTelaCheia(context)
           : null,
       child: Stack(
         children: [
           Container(
             height: 280,
-            width: double.infinity,
+            width: .infinity,
             decoration: BoxDecoration(color: Colors.grey.shade300),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child:
-                  (usuario.fotoPerfil != null && usuario.fotoPerfil!.isNotEmpty)
+              child: (usuario.fotoUrl != null && usuario.fotoUrl!.isNotEmpty)
                   ? Image.network(
-                      usuario.fotoPerfil!,
+                      usuario.fotoUrl!,
                       width: double.infinity,
                       height: 280,
                       fit: BoxFit.cover,
@@ -131,7 +130,7 @@ class ProfileHeaderWidget extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.network(usuario.fotoPerfil!, fit: BoxFit.contain),
+                child: Image.network(usuario.fotoUrl!, fit: BoxFit.contain),
               ),
               Positioned(
                 top: 0,

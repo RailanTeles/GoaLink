@@ -11,7 +11,17 @@ class SocialInfo extends StatelessWidget {
     return Row(
       mainAxisAlignment: .start,
       children: [
-        Image.asset(imagem, width: 20),
+        Image.asset(
+          imagem,
+          width: 20,
+          errorBuilder: (context, error, stackTrace) {
+            return Icon(
+              Icons.link,
+              size: 20,
+              color: Theme.of(context).primaryColor,
+            );
+          },
+        ),
         const SizedBox(width: 10),
         Expanded(
           child: InkWell(
