@@ -88,4 +88,9 @@ class PostagemRepository {
     );
     await postagemService.criarPostagem(postagem);
   }
+
+  Future<void> deletarPostagem(PostagemModel postagem) async {
+    await postagemService.deletarPostagem(postagem.idPostagem);
+    await storageService.deletarMidia(postagem.midiaUrl);
+  }
 }

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 
@@ -37,7 +36,6 @@ class StorageService {
       final String nomeArquivo = DateTime.now().millisecondsSinceEpoch
           .toString();
 
-      // ✅ caminho: postagens/{idPostagem}/{nomeArquivo}{extensao}
       final ref = _storage.ref().child(
         'postagens/$idPostagem/$nomeArquivo$extensao',
       );
@@ -59,7 +57,7 @@ class StorageService {
       final ref = _storage.refFromURL(urlMidia);
       await ref.delete();
     } catch (e) {
-      debugPrint('Aviso: não foi possível deletar mídia órfã: $e');
+      throw Exception('Erro ao deletar mídia: $e');
     }
   }
 }

@@ -51,6 +51,14 @@ class PostagemService {
     }
   }
 
+  Future<void> deletarPostagem(String idPostagem) async {
+    try {
+      await _firestore.collection(_collectionName).doc(idPostagem).delete();
+    } catch (e) {
+      throw Exception('Erro ao deletar postagem: $e');
+    }
+  }
+
   Future<List<QueryDocumentSnapshot>> obterPostagensUsuario(String uid) async {
     try {
       var snapshot = await _firestore

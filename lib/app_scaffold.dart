@@ -16,7 +16,9 @@ class AppScaffold extends StatelessWidget {
     final Future<UsuarioModel?> usuario = cacheService.buscarPerfilLocal();
     return Scaffold(
       extendBody: true,
-      appBar: const Navbar(),
+      appBar: navigationShell.currentIndex == 1
+          ? null
+          : const Navbar(), //  TODO: Tocar o index para 4 quando acabar
       body: SafeArea(bottom: false, child: navigationShell),
       bottomNavigationBar: SafeArea(
         child: Padding(

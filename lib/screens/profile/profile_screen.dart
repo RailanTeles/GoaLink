@@ -102,32 +102,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: ProfileHeaderWidget(usuario: usuario)),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-            sliver: SliverToBoxAdapter(child: ProfileInfos(usuario: usuario)),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.only(
-              top: 10,
-              right: 10,
-              left: 10,
-              bottom: 100,
+      body: RefreshIndicator(
+        onRefresh: () async => vm.carregarDadosIniciais(),
+        color: Theme.of(context).colorScheme.secondary,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: ProfileHeaderWidget(usuario: usuario)),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+              sliver: SliverToBoxAdapter(child: ProfileInfos(usuario: usuario)),
             ),
-            sliver: SliverToBoxAdapter(
-              child: PostComentWidget(
-                avaliacoes: vm.avaliacoes,
-                postagens: vm.postagens,
-                isLoadingPostagens: vm.isLoadingPostagens,
-                isLoadingAvaliacoes: vm.isLoadingAvaliacoes,
-                erroPostagens: vm.erroPostagens,
-                erroAvaliacoes: vm.erroAvaliacoes,
+            SliverPadding(
+              padding: const EdgeInsets.only(
+                top: 10,
+                right: 10,
+                left: 10,
+                bottom: 100,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: PostComentWidget(
+                  controller: vm,
+                  onDelete: vm.deletarPostagem,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
