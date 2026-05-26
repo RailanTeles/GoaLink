@@ -19,6 +19,7 @@ class ProfileViewModel extends ChangeNotifier implements PostComentController {
   bool _isLoadingPostagens = true;
   bool _isLoadingAvaliacoes = true;
   bool _isLoadingDeletarPostagem = false;
+  bool _deletouComSucesso = false;
   String? _erro;
   String? _erroPostagens;
   String? _erroAvaliacoes;
@@ -41,6 +42,7 @@ class ProfileViewModel extends ChangeNotifier implements PostComentController {
   String? get erroAvaliacoes => _erroAvaliacoes;
   String? get erroDeletarPostagem => _erroDeletarPostagem;
   bool get isLoadingDeletarPostagem => _isLoadingDeletarPostagem;
+  bool get deletouComSucesso => _deletouComSucesso;
 
   ProfileViewModel(
     this._postagemRepository,
@@ -104,10 +106,12 @@ class ProfileViewModel extends ChangeNotifier implements PostComentController {
 
   Future<void> deletarPostagem(PostagemModel postagem) async {
     _isLoadingDeletarPostagem = true;
+    _erroDeletarPostagem = null;
     notifyListeners();
     try {
       await _postagemRepository.deletarPostagem(postagem);
       _postagens.remove(postagem);
+      _deletouComSucesso = true;
     } catch (e) {
       _erroDeletarPostagem = e.toString().replaceAll('Exception: ', '');
     } finally {

@@ -1,21 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:goalink/core/contracts/post_coment_controller.dart';
 import 'package:goalink/models/postagem_model.dart';
+import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/screens/search/profiles/widgets/comments_section_widget.dart';
 import 'package:goalink/screens/search/profiles/widgets/posts_section_widget.dart';
 
 class PostComentWidget extends StatefulWidget {
-  const PostComentWidget({super.key, required this.controller, this.onDelete});
+  const PostComentWidget({
+    super.key,
+    required this.controller,
+    this.onDelete,
+    required this.usuario,
+  });
 
   final PostComentController controller;
   final Future<void> Function(PostagemModel)? onDelete;
+  final UsuarioModel usuario;
 
   @override
   State<PostComentWidget> createState() => _PostComentWidgetState();
 }
 
 class _PostComentWidgetState extends State<PostComentWidget> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.usuario.tipo == "jogador" ? 0 : 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = widget.controller;
@@ -31,27 +45,28 @@ class _PostComentWidgetState extends State<PostComentWidget> {
               Row(
                 mainAxisAlignment: .spaceEvenly,
                 children: [
-                  SizedBox(
-                    width: tamanhoBotao,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 0;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                      ),
-                      child: Text(
-                        "Postagens",
-                        style: TextStyle(
-                          color: _selectedIndex == 0
-                              ? Theme.of(context).colorScheme.secondary
-                              : Colors.white,
+                  if (widget.usuario.tipo == "jogador")
+                    SizedBox(
+                      width: tamanhoBotao,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedIndex = 0;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                        ),
+                        child: Text(
+                          "Postagens",
+                          style: TextStyle(
+                            color: _selectedIndex == 0
+                                ? Theme.of(context).colorScheme.secondary
+                                : Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   SizedBox(
                     width: tamanhoBotao,
                     child: ElevatedButton(

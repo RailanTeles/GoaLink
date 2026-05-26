@@ -20,7 +20,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _carregarDadosIniciais();
+      context.read<ProfileViewModel>().addListener(_onViewModelChange);
     });
+  }
+
+  void _onViewModelChange() {
+    final vm = context.read<ProfileViewModel>();
+    if (vm.erroDeletarPostagem != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(vm.erroDeletarPostagem!),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    if (vm.deletouComSucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Postagem deletada com sucesso!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    context.read<ProfileViewModel>().removeListener(_onViewModelChange);
+    super.dispose();
   }
 
   void _carregarDadosIniciais() async {
@@ -123,6 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: PostComentWidget(
                   controller: vm,
                   onDelete: vm.deletarPostagem,
+                  usuario: usuario,
                 ),
               ),
             ),
