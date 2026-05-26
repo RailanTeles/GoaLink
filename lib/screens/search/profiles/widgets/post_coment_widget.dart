@@ -101,7 +101,9 @@ class _PostComentWidgetState extends State<PostComentWidget> {
                       )
                     : CommentsSectionWidget(
                         avaliacoes: c.avaliacoes,
-                      ), // TODO: Implementar a seção de Comentários corretamente
+                        isLoadingAvaliacoes: c.isLoadingAvaliacoes,
+                        erroAvaliacoes: c.erroAvaliacoes,
+                      ),
               ),
             ],
           );

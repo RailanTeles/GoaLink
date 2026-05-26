@@ -29,7 +29,7 @@ class PostsSectionWidget extends StatelessWidget {
           erroPostagens!,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Theme.of(context).colorScheme.primary,
           ),

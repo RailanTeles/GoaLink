@@ -10,7 +10,10 @@ class AvaliacoesRepository {
     final docs = await _avaliacaoService.obterAvaliacoesUsuario(uid);
 
     final avaliacoes = docs.map((doc) {
-      return AvaliacaoModel.fromJson(doc.data() as Map<String, dynamic>);
+      final data = doc.data() as Map<String, dynamic>;
+      data['id'] = doc.id;
+
+      return AvaliacaoModel.fromJson(data);
     }).toList();
 
     return avaliacoes;
