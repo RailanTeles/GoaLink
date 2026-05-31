@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<User?> criarInstanciaUsuario(String email, String senha) async {
     try {
@@ -33,6 +33,41 @@ class AuthService {
 
   Future<User> obterUsuarioLogado() async {
     return _auth.currentUser!;
+  }
+
+  Future<void> alterarSenha(String senhaAntiga, String senhaNova) async {
+    try {
+      await _auth.currentUser!.reauthenticateWithCredential(
+        EmailAuthProvider.credential(
+          email: _auth.currentUser!.email!,
+          password: senhaAntiga,
+        ),
+      );
+      await _auth.currentUser!.updatePassword(senhaNova);
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_traduzirErroFirebase(e.code));
+    }
+  }
+
+  Future<void> deletarConta() async {
+    try {
+      await _auth.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_traduzirErroFirebase(e.code));
+    }
+  }
+
+  Future<void> verificarSenha(String senha) async {
+    try {
+      await _auth.currentUser!.reauthenticateWithCredential(
+        EmailAuthProvider.credential(
+          email: _auth.currentUser!.email!,
+          password: senha,
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_traduzirErroFirebase(e.code));
+    }
   }
 
   String _traduzirErroFirebase(String codigo) {

@@ -6,6 +6,8 @@ import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/screens/home/home_view_model.dart';
 import 'package:goalink/screens/login/login_view_model.dart';
 import 'package:goalink/screens/profile/profile_view_model.dart';
+import 'package:goalink/screens/settings/settings_screen.dart';
+import 'package:goalink/screens/settings/settings_view_model.dart';
 import 'package:goalink/screens/video_posts/add_posts_screen.dart';
 import 'package:goalink/screens/video_posts/posts_view_model.dart';
 import 'package:goalink/services/cache_service.dart';
@@ -19,29 +21,10 @@ import 'package:goalink/screens/register/jogador/register_jogador_screen.dart';
 import 'package:goalink/screens/register/jogador/register_jogador_view_model.dart';
 import 'package:goalink/screens/register/olheiro/register_olheiro_screen.dart';
 import 'package:goalink/screens/register/olheiro/register_olheiro_view_model.dart';
-import 'package:goalink/services/auth_service.dart';
 import 'package:goalink/services/storage_service.dart';
-import 'package:goalink/services/usuario_service.dart';
 import 'package:goalink/app_scaffold.dart';
 import 'package:goalink/screens/home/home_screen.dart';
-// import 'package:goalink/screens/chat/chat_detail_screen.dart';
-// import 'package:goalink/screens/chat/chat_screen.dart';
-// import 'package:goalink/screens/favorites/favorites_screen.dart';
-// import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
-// import 'package:goalink/screens/notifications/notifications_screen.dart';
 import 'package:goalink/screens/profile/profile_screen.dart';
-// import 'package:goalink/screens/search/profiles/profiles_screen.dart';
-// import 'package:goalink/screens/register/clube/register_clube_final_screen.dart';
-// import 'package:goalink/screens/register/jogador/register_jogador_final_screen.dart';
-// import 'package:goalink/screens/register/jogador/register_jogador_segundo_screen.dart';
-// import 'package:goalink/screens/register/olheiro/register_olheiro_final_screen.dart';
-// import 'package:goalink/screens/search/search_screen.dart';
-// import 'package:goalink/screens/settings/settings_screen.dart';
-// import 'package:goalink/screens/tips/tips_screen.dart';
-// import 'package:goalink/screens/tips/tip_detail_screen.dart';
-// import 'package:goalink/models/dica_treino_model.dart';
-// import 'package:goalink/screens/video_posts/posts_final.dart';
-// import 'package:goalink/screens/video_posts/posts_inicio.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -201,11 +184,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: ChangeNotifierProvider(
             create: (_) => RegisterOlheiroViewModel(
-              UsuarioRepository(
-                AuthService(),
-                UsuarioService(),
-                CacheService(),
-              ),
+              context.read<UsuarioRepository>(),
               StorageService(),
             ),
             child: const RegisterOlheiroScreen(),
@@ -265,10 +244,24 @@ final GoRouter router = GoRouter(
     //   path: '/notifications',
     //   builder: (context, state) => const NotificationsScreen(),
     // ),
-    // GoRoute(
-    //   path: '/settings',
-    //   builder: (context, state) => const SettingsScreen(),
-    // ),
+    GoRoute(
+      path: '/settings',
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ChangeNotifierProvider(
+            create: (_) => SettingsViewModel(context.read<UsuarioRepository>()),
+            child: const SettingsScreen(),
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+              child: child,
+            );
+          },
+        );
+      },
+    ),
     // GoRoute(
     //   path: '/chat/conversation/:chatId',
     //   builder: (context, state) {

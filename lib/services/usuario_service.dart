@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:goalink/models/usuario_model.dart';
 
 class UsuarioService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
+  late final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
     app: Firebase.app(),
     databaseId: 'default',
   );
@@ -32,6 +32,25 @@ class UsuarioService {
           .set(usuario.toJson());
     } catch (e) {
       throw Exception('Erro ao criar usuário: $e');
+    }
+  }
+
+  Future<void> atualizarUsuario(UsuarioModel usuario) async {
+    try {
+      await _firestore
+          .collection('usuarios')
+          .doc(usuario.id)
+          .update(usuario.toJson());
+    } catch (e) {
+      throw Exception('Erro ao atualizar usuário: $e');
+    }
+  }
+
+  Future<void> deletarUsuario(String uid) async {
+    try {
+      await _firestore.collection('usuarios').doc(uid).delete();
+    } catch (e) {
+      throw Exception('Erro ao deletar usuário: $e');
     }
   }
 

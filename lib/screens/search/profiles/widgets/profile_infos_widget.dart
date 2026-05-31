@@ -126,23 +126,29 @@ class ProfileInfos extends StatelessWidget {
               // Redes Sociais
               if (listaRedesSociais.isNotEmpty) ...[
                 SizedBox(height: 20),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.computer_sharp,
-                      color: Theme.of(context).primaryColor,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 5),
-                    Expanded(
-                      child: Text(
-                        "Redes Sociais",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey, fontWeight: .bold),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.computer_sharp,
+                        color: Theme.of(context).primaryColor,
+                        size: 20,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 5),
+                      Expanded(
+                        child: Text(
+                          "Redes Sociais",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: .bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Wrap(
                   spacing: 16,

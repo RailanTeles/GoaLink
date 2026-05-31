@@ -63,4 +63,9 @@ class CacheService {
 
     return [];
   }
+
+  Future<void> limparCachePostagens() async {
+    var box = Hive.box(_postagensBoxName);
+    await box.delete(_postagensKey);
+  }
 }

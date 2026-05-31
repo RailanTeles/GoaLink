@@ -4,7 +4,7 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 
 class StorageService {
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  late final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<String> uploadFotoPerfil({
     required String uid,
@@ -12,7 +12,7 @@ class StorageService {
   }) async {
     try {
       final String extensao = p.extension(caminhoLocal);
-      final ref = _storage.ref().child('$uid/perfil$extensao');
+      final ref = _storage.ref().child('perfis/$uid/perfil$extensao');
 
       final String? mimeType = lookupMimeType(caminhoLocal);
 
@@ -24,6 +24,27 @@ class StorageService {
       return await uploadTask.ref.getDownloadURL();
     } catch (e) {
       throw Exception('Erro ao enviar foto de perfil: $e');
+    }
+  }
+
+  Future<String> editarFotoPerfil({
+    required String uid,
+    required String caminhoLocal,
+  }) async {
+    try {
+      final String extensao = p.extension(caminhoLocal);
+      final ref = _storage.ref().child('perfis/$uid/perfil$extensao');
+
+      final String? mimeType = lookupMimeType(caminhoLocal);
+
+      final uploadTask = await ref.putFile(
+        File(caminhoLocal),
+        SettableMetadata(contentType: mimeType ?? 'application/octet-stream'),
+      );
+
+      return await uploadTask.ref.getDownloadURL();
+    } catch (e) {
+      throw Exception('Erro ao editar foto de perfil: $e');
     }
   }
 

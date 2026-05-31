@@ -1,6 +1,5 @@
 {
-    "cmake.ignoreCMakeListsMissing": true,
-    "java.import.exclusions": [
-        "**/android/**"
-    ]
+  "cmake.ignoreCMakeListsMissing": true,
+  "java.import.exclusions": ["**/android/**"],
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

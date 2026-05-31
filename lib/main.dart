@@ -7,6 +7,9 @@ import 'package:goalink/routes.dart';
 import 'package:goalink/services/auth_service.dart';
 import 'package:goalink/services/avaliacao_service.dart';
 import 'package:goalink/services/cache_service.dart';
+import 'package:goalink/services/chat_mensagem_service.dart';
+import 'package:goalink/services/favorito_service.dart';
+import 'package:goalink/services/notificacao_service.dart';
 import 'package:goalink/services/postagem_service.dart';
 import 'package:goalink/services/storage_service.dart';
 import 'package:goalink/services/usuario_service.dart';
@@ -29,8 +32,14 @@ void main() async {
         Provider<UsuarioRepository>(
           create: (_) => UsuarioRepository(
             AuthService(),
+            PostagemService(),
             UsuarioService(),
             CacheService(),
+            StorageService(),
+            AvaliacaoService(),
+            ChatMensagemService(),
+            FavoritoService(),
+            NotificacaoService(),
           ),
         ),
         Provider<PostagemRepository>(

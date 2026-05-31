@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:goalink/screens/settings/settings_view_model.dart';
 import 'package:goalink/screens/settings/widgets/settings_primary_button.dart';
 import 'package:goalink/screens/settings/widgets/settings_text_field.dart';
-import 'package:goalink/services/profile_settings_service.dart';
+import 'package:provider/provider.dart';
 
 class ChangePasswordForm extends StatefulWidget {
   const ChangePasswordForm({super.key});
@@ -14,7 +15,21 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _isSaving = false;
+
+  Future<void> _handleAlterarSenha() async {
+    final vm = context.read<SettingsViewModel>();
+    await vm.alterarSenha(
+      _oldPasswordController.text,
+      _newPasswordController.text,
+      _confirmPasswordController.text,
+    );
+
+    if (vm.erroSnackBar == null && vm.sucessoSnackBar != null) {
+      _oldPasswordController.clear();
+      _newPasswordController.clear();
+      _confirmPasswordController.clear();
+    }
+  }
 
   @override
   void dispose() {
@@ -26,6 +41,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<SettingsViewModel>();
     return Column(
       children: [
         SettingsTextField(
@@ -45,55 +61,10 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
         ),
         const SizedBox(height: 4),
         SettingsPrimaryButton(
-          label: _isSaving ? 'Salvando...' : 'Alterar Senha',
-          onPressed: _isSaving ? null : _savePassword,
+          label: vm.isSalvingPassword ? 'Alterando...' : 'Alterar Senha',
+          onPressed: vm.isSalvingPassword ? null : _handleAlterarSenha,
         ),
       ],
     );
-  }
-
-  Future<void> _savePassword() async {
-    final oldPassword = _oldPasswordController.text.trim();
-    final newPassword = _newPasswordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
-
-    if (oldPassword.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
-      _showMessage('Preencha todos os campos.');
-      return;
-    }
-
-    if (newPassword != confirmPassword) {
-      _showMessage('A nova senha e a confirmacao nao coincidem.');
-      return;
-    }
-
-    setState(() => _isSaving = true);
-
-    final changed = await ProfileSettingsService.instance.changePassword(
-      oldPassword: oldPassword,
-      newPassword: newPassword,
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() => _isSaving = false);
-
-    if (!changed) {
-      _showMessage('A senha antiga informada esta incorreta.');
-      return;
-    }
-
-    _oldPasswordController.clear();
-    _newPasswordController.clear();
-    _confirmPasswordController.clear();
-    _showMessage('Senha alterada com sucesso.');
-  }
-
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }

@@ -1,37 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-class AvaliacaoService {
+class NotificacaoService {
   late final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
     app: Firebase.app(),
     databaseId: 'default',
   );
 
-  final String _collectionName = 'avaliacoes';
+  final String _collectionName = 'notificacoes';
 
-  Future<List<QueryDocumentSnapshot>> obterAvaliacoesUsuario(String uid) async {
-    try {
-      var snapshot = await _firestore
-          .collection(_collectionName)
-          .where('avaliado_id', isEqualTo: uid)
-          .orderBy('criado_em', descending: true)
-          .get();
-      return snapshot.docs;
-    } catch (e) {
-      throw Exception('Erro ao obter avaliações do usuário: $e');
-    }
-  }
-
-  Future<void> deletarAvaliacoesUsuario(String uid) async {
+  Future<void> deletarNotificacoesUsuario(String uid) async {
     try {
       final resultados = await Future.wait([
         _firestore
             .collection(_collectionName)
-            .where('jogador_id', isEqualTo: uid)
+            .where('usuario_id', isEqualTo: uid)
             .get(),
         _firestore
             .collection(_collectionName)
-            .where('autor_id', isEqualTo: uid)
+            .where('remetente_id', isEqualTo: uid)
             .get(),
       ]);
 
@@ -51,7 +38,7 @@ class AvaliacaoService {
       }
       await batch.commit();
     } catch (e) {
-      throw Exception('Erro ao deletar avaliações do usuário: $e');
+      throw Exception('Erro ao deletar notificações do usuário: $e');
     }
   }
 }

@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:goalink/models/postagem_model.dart';
 
 class PostagemService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
+  late final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
     app: Firebase.app(),
     databaseId: 'default',
   );
@@ -69,6 +69,64 @@ class PostagemService {
       return snapshot.docs;
     } catch (e) {
       throw Exception('Erro ao obter postagens do usuário: $e');
+    }
+  }
+
+  Future<void> sincronizarDadosDoAutor(
+    String uid,
+    String novoNome,
+    String? novaFotoUrl,
+  ) async {
+    try {
+      final query = await _firestore
+          .collection('postagens')
+          .where('jogador_id', isEqualTo: uid)
+          .get();
+
+      if (query.docs.isEmpty) return;
+
+      WriteBatch batch = _firestore.batch();
+
+      for (var doc in query.docs) {
+        Map<String, dynamic> dadosAtualizados = {
+          'jogador_nome': novoNome,
+          'jogador_foto_url': novaFotoUrl,
+        };
+
+        batch.update(doc.reference, dadosAtualizados);
+      }
+
+      await batch.commit();
+    } catch (e) {
+      throw Exception('Erro ao sincronizar autor nas postagens: $e');
+    }
+  }
+
+  Future<List<String>> deletarPostagensUsuario(String uid) async {
+    try {
+      final query = await _firestore
+          .collection(_collectionName)
+          .where('jogador_id', isEqualTo: uid)
+          .get();
+
+      if (query.docs.isEmpty) return [];
+
+      final List<String> urlsParaDeletar = query.docs
+          .map((doc) => doc.data()['midia_url'] as String?)
+          .where((url) => url != null && url.isNotEmpty)
+          .cast<String>()
+          .toList();
+
+      WriteBatch batch = _firestore.batch();
+
+      for (var doc in query.docs) {
+        batch.delete(doc.reference);
+      }
+
+      await batch.commit();
+      return urlsParaDeletar;
+    } catch (e) {
+      throw Exception('Erro ao deletar postagens do usuário: $e');
     }
   }
 }

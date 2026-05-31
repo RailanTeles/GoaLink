@@ -5,10 +5,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -16,15 +13,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -52,6 +43,33 @@ class DefaultFirebaseOptions {
     projectId: 'goalink-67254',
     storageBucket: 'goalink-67254.firebasestorage.app',
     iosBundleId: 'com.example.goalink',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBvacMXZ19gm2UATHfjd0lWgvJ7xy18o4g',
+    appId: '1:15014301618:web:28058dc4ad9616e13e1eab',
+    messagingSenderId: '15014301618',
+    projectId: 'goalink-67254',
+    authDomain: 'goalink-67254.firebaseapp.com',
+    storageBucket: 'goalink-67254.firebasestorage.app',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyChR3twULqZTJb2ulEq-LfdeH4WGDxHvc8',
+    appId: '1:15014301618:ios:a8b2aab08e4c31843e1eab',
+    messagingSenderId: '15014301618',
+    projectId: 'goalink-67254',
+    storageBucket: 'goalink-67254.firebasestorage.app',
+    iosBundleId: 'com.example.goalink',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBvacMXZ19gm2UATHfjd0lWgvJ7xy18o4g',
+    appId: '1:15014301618:web:2251f7bfaee93a523e1eab',
+    messagingSenderId: '15014301618',
+    projectId: 'goalink-67254',
+    authDomain: 'goalink-67254.firebaseapp.com',
+    storageBucket: 'goalink-67254.firebasestorage.app',
   );
 
 }

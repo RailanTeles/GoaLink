@@ -119,7 +119,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              onPressed: () => context.push('/settings'),
+              onPressed: () async {
+                await context.push('/settings');
+                vm.carregarDadosIniciais();
+              },
               style: IconButton.styleFrom(
                 backgroundColor: Colors.white.withValues(alpha: 0.8),
                 foregroundColor: Colors.black,
