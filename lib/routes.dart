@@ -26,271 +26,295 @@ import 'package:goalink/app_scaffold.dart';
 import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/profile/profile_screen.dart';
 
-final GoRouter router = GoRouter(
-  initialLocation: '/',
-  redirect: (context, state) {
-    final User? usuarioLogado = FirebaseAuth.instance.currentUser;
+GoRouter criarRouter() {
+  return GoRouter(
+    initialLocation: '/',
+    redirect: (context, state) {
+      final User? usuarioLogado = FirebaseAuth.instance.currentUser;
 
-    if (usuarioLogado == null) {
-      return '/login';
-    }
+      if (usuarioLogado == null) {
+        return '/login';
+      }
 
-    if (state.matchedLocation == '/login') {
-      return '/';
-    }
+      if (state.matchedLocation == '/login') {
+        return '/';
+      }
 
-    return null;
-  },
-  routes: [
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return AppScaffold(navigationShell: navigationShell);
-      },
-      branches: [
-        // Index 0: Home
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) {
-                return ChangeNotifierProvider(
-                  create: (_) => HomeViewModel(
-                    context.read<PostagemRepository>(),
-                    context.read<UsuarioRepository>(),
-                  ),
-                  child: const HomeScreen(),
-                );
-              },
-            ),
-          ],
-        ),
-        // Index 1: Search
-        // StatefulShellBranch(
-        //   routes: [
-        //     GoRoute(path: '/search', builder: (c, s) => const SearchScreen()),
-        //   ],
-        // ),
-        // // Index 2: Tips
-        // StatefulShellBranch(
-        //   routes: [
-        //     GoRoute(
-        //       path: '/tips',
-        //       builder: (c, s) => const TipsScreen(),
-        //       routes: [
-        //         GoRoute(
-        //           path: 'detalhe',
-        //           builder: (c, s) {
-        //             final dica = s.extra as DicaTreinoModel;
-        //             return TipDetailScreen(dica: dica);
-        //           },
-        //         ),
-        //       ],
-        //     ),
-        //   ],
-        // ),
-        // // Index 3: Chat
-        // StatefulShellBranch(
-        //   routes: [
-        //     GoRoute(path: '/chat', builder: (c, s) => const ChatScreen()),
-        //   ],
-        // ),
-        // Index 4: Perfil
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/myprofile',
-              builder: (context, state) {
-                return ChangeNotifierProvider(
-                  create: (_) => ProfileViewModel(
-                    context.read<PostagemRepository>(),
-                    context.read<UsuarioRepository>(),
-                    context.read<AvaliacoesRepository>(),
-                  ),
-                  child: const ProfileScreen(),
-                );
-              },
-            ),
-          ],
-        ),
-        // //Index 5: favorites
-        // StatefulShellBranch(
-        //   routes: [
-        //     GoRoute(
-        //       path: '/favorites',
-        //       builder: (c, s) => const FavoritesScreen(),
-        //     ),
-        //   ],
-        // ),
-      ],
-    ),
-    GoRoute(
-      path: '/login',
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ChangeNotifierProvider(
-            create: (_) => LoginViewModel(context.read<UsuarioRepository>()),
-            child: const LoginScreen(),
+      return null;
+    },
+    routes: [
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return AppScaffold(navigationShell: navigationShell);
+        },
+        branches: [
+          // Index 0: Home
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) {
+                  return ChangeNotifierProvider(
+                    create: (_) => HomeViewModel(
+                      context.read<PostagemRepository>(),
+                      context.read<UsuarioRepository>(),
+                    ),
+                    child: const HomeScreen(),
+                  );
+                },
+              ),
+            ],
           ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-              child: child,
-            );
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/cadastro/funcao',
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: const FuncaoScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-              child: child,
-            );
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/cadastro/jogador',
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ChangeNotifierProvider(
-            create: (_) => RegisterJogadorViewModel(
-              context.read<UsuarioRepository>(),
-              StorageService(),
+          // Index 1: Search
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(path: '/search', builder: (c, s) => const SearchScreen()),
+          //   ],
+          // ),
+          // // Index 2: Tips
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: '/tips',
+          //       builder: (c, s) => const TipsScreen(),
+          //       routes: [
+          //         GoRoute(
+          //           path: 'detalhe',
+          //           builder: (c, s) {
+          //             final dica = s.extra as DicaTreinoModel;
+          //             return TipDetailScreen(dica: dica);
+          //           },
+          //         ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
+          // // Index 3: Chat
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(path: '/chat', builder: (c, s) => const ChatScreen()),
+          //   ],
+          // ),
+          // Index 4: Perfil
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/myprofile',
+                builder: (context, state) {
+                  return ChangeNotifierProvider(
+                    create: (_) => ProfileViewModel(
+                      context.read<PostagemRepository>(),
+                      context.read<UsuarioRepository>(),
+                      context.read<AvaliacoesRepository>(),
+                    ),
+                    child: const ProfileScreen(),
+                  );
+                },
+              ),
+            ],
+          ),
+          // //Index 5: favorites
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: '/favorites',
+          //       builder: (c, s) => const FavoritesScreen(),
+          //     ),
+          //   ],
+          // ),
+        ],
+      ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) => LoginViewModel(context.read<UsuarioRepository>()),
+              child: const LoginScreen(),
             ),
-            child: const RegisterJogadorScreen(),
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-              child: child,
-            );
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/cadastro/olheiro',
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ChangeNotifierProvider(
-            create: (_) => RegisterOlheiroViewModel(
-              context.read<UsuarioRepository>(),
-              StorageService(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/cadastro/funcao',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const FuncaoScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/cadastro/jogador',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) => RegisterJogadorViewModel(
+                context.read<UsuarioRepository>(),
+                StorageService(),
+              ),
+              child: const RegisterJogadorScreen(),
             ),
-            child: const RegisterOlheiroScreen(),
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-              child: child,
-            );
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/cadastro/clube',
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ChangeNotifierProvider(
-            create: (_) => RegisterClubeViewModel(
-              context.read<UsuarioRepository>(),
-              StorageService(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/cadastro/olheiro',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) => RegisterOlheiroViewModel(
+                context.read<UsuarioRepository>(),
+                StorageService(),
+              ),
+              child: const RegisterOlheiroScreen(),
             ),
-            child: const RegisterClubeScreen(),
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-              child: child,
-            );
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: '/addPosts',
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ChangeNotifierProvider(
-            create: (_) => PostsViewModel(
-              context.read<PostagemRepository>(),
-              CacheService(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/cadastro/clube',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) => RegisterClubeViewModel(
+                context.read<UsuarioRepository>(),
+                StorageService(),
+              ),
+              child: const RegisterClubeScreen(),
             ),
-            child: const AddPostsScreen(),
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-              child: child,
-            );
-          },
-        );
-      },
-    ),
-    // GoRoute(
-    //   path: '/notifications',
-    //   builder: (context, state) => const NotificationsScreen(),
-    // ),
-    GoRoute(
-      path: '/settings',
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: ChangeNotifierProvider(
-            create: (_) => SettingsViewModel(context.read<UsuarioRepository>()),
-            child: const SettingsScreen(),
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-              child: child,
-            );
-          },
-        );
-      },
-    ),
-    // GoRoute(
-    //   path: '/chat/conversation/:chatId',
-    //   builder: (context, state) {
-    //     final chatId = state.pathParameters['chatId']!;
-    //     return ChatDetailScreen(chatId: chatId);
-    //   },
-    // ),
-    // GoRoute(
-    //   path: '/recuperar-senha',
-    //   pageBuilder: (context, state) {
-    //     return CustomTransitionPage(
-    //       key: state.pageKey,
-    //       child: const RecuperarSenha(),
-    //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-    //         return FadeTransition(
-    //           opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-    //           child: child,
-    //         );
-    //       },
-    //     );
-    //   },
-    // ),
-    // // Rota para perfil de outros usuários
-    // GoRoute(
-    //   path: '/search/:id',
-    //   builder: (context, state) {
-    //     final id = state.pathParameters['id']!;
-    //     return ProfilesScreen(usuarioId: id);
-    //   },
-    // ),
-  ],
-);
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/addPosts',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) => PostsViewModel(
+                context.read<PostagemRepository>(),
+                CacheService(),
+              ),
+              child: const AddPostsScreen(),
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
+      // GoRoute(
+      //   path: '/notifications',
+      //   builder: (context, state) => const NotificationsScreen(),
+      // ),
+      GoRoute(
+        path: '/settings',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) =>
+                  SettingsViewModel(context.read<UsuarioRepository>()),
+              child: const SettingsScreen(),
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
+      // GoRoute(
+      //   path: '/chat/conversation/:chatId',
+      //   builder: (context, state) {
+      //     final chatId = state.pathParameters['chatId']!;
+      //     return ChatDetailScreen(chatId: chatId);
+      //   },
+      // ),
+      // GoRoute(
+      //   path: '/recuperar-senha',
+      //   pageBuilder: (context, state) {
+      //     return CustomTransitionPage(
+      //       key: state.pageKey,
+      //       child: const RecuperarSenha(),
+      //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      //         return FadeTransition(
+      //           opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+      //           child: child,
+      //         );
+      //       },
+      //     );
+      //   },
+      // ),
+      // // Rota para perfil de outros usuários
+      // GoRoute(
+      //   path: '/search/:id',
+      //   builder: (context, state) {
+      //     final id = state.pathParameters['id']!;
+      //     return ProfilesScreen(usuarioId: id);
+      //   },
+      // ),
+    ],
+  );
+}

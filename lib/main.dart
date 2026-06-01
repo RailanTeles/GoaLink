@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
@@ -58,12 +62,38 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late GoRouter _router;
+  late StreamSubscription<User?> _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _router = criarRouter();
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      setState(() {
+        _router = criarRouter();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      key: ValueKey(_router.hashCode),
       title: 'GoaLink',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -89,7 +119,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "MavenPro",
         useMaterial3: true,
       ),
-      routerConfig: router,
+      routerConfig: _router,
     );
   }
 }
