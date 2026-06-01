@@ -36,6 +36,16 @@ class CacheService {
     return null;
   }
 
+  UsuarioModel? buscarPerfilLocalSync() {
+    var box = Hive.box(_userBoxName);
+    String? usuarioString = box.get(_userKey);
+    if (usuarioString != null) {
+      Map<String, dynamic> json = jsonDecode(usuarioString);
+      return UsuarioModel.fromJson(json);
+    }
+    return null;
+  }
+
   Future<void> limparCachePerfilLogado() async {
     var box = Hive.box(_userBoxName);
     await box.delete(_userKey);

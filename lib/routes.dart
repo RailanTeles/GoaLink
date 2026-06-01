@@ -31,12 +31,22 @@ GoRouter criarRouter() {
     initialLocation: '/',
     redirect: (context, state) {
       final User? usuarioLogado = FirebaseAuth.instance.currentUser;
+      final location = state.matchedLocation;
 
-      if (usuarioLogado == null) {
+      final rotasPublicas = [
+        '/login',
+        '/cadastro/funcao',
+        '/cadastro/jogador',
+        '/cadastro/olheiro',
+        '/cadastro/clube',
+        '/recuperar-senha',
+      ];
+
+      if (usuarioLogado == null && !rotasPublicas.contains(location)) {
         return '/login';
       }
 
-      if (state.matchedLocation == '/login') {
+      if (usuarioLogado != null && location == '/login') {
         return '/';
       }
 

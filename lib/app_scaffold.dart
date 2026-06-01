@@ -1,25 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/core/navbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/services/cache_service.dart';
+import 'dart:async';
 
-class AppScaffold extends StatelessWidget {
+class AppScaffold extends StatefulWidget {
   const AppScaffold({super.key, required this.navigationShell});
-
   final StatefulNavigationShell navigationShell;
-  CacheService get cacheService => CacheService();
+
+  @override
+  State<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends State<AppScaffold> {
+  late StreamSubscription<User?> _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Future<UsuarioModel?> usuario = cacheService.buscarPerfilLocal();
+    final usuarioModel = CacheService().buscarPerfilLocalSync();
+
     return Scaffold(
       extendBody: true,
-      appBar: navigationShell.currentIndex == 1
+      appBar: widget.navigationShell.currentIndex == 1
           ? null
-          : const Navbar(), //  TODO: Tocar o index para 4 quando acabar
-      body: SafeArea(bottom: false, child: navigationShell),
+          : Navbar(tipoUsuario: usuarioModel?.tipo),
+      body: SafeArea(bottom: false, child: widget.navigationShell),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
@@ -29,28 +50,19 @@ class AppScaffold extends StatelessWidget {
               color: const Color(0xFF195E3B),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: FutureBuilder(
-              future: usuario,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox();
-                }
-                final usuarioModel = snapshot.data;
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildNavItem(0, "assets/images/icons/home.svg"),
-                    _buildNavItem(1, "assets/images/icons/search.svg"),
-                    if (usuarioModel?.tipo == "jogador") ...[
-                      _buildNavItem(2, "assets/images/icons/tips.svg"),
-                    ] else ...[
-                      _buildNavItem(5, "assets/images/icons/favorites.svg"),
-                    ],
-                    _buildNavItem(3, "assets/images/icons/chat_off.svg"),
-                    _buildNavItem(4, "assets/images/icons/profile.svg"),
-                  ],
-                );
-              },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildNavItem(0, "assets/images/icons/home.svg"),
+                _buildNavItem(1, "assets/images/icons/search.svg"),
+                if (usuarioModel?.tipo == "jogador") ...[
+                  _buildNavItem(2, "assets/images/icons/tips.svg"),
+                ] else ...[
+                  _buildNavItem(5, "assets/images/icons/favorites.svg"),
+                ],
+                _buildNavItem(3, "assets/images/icons/chat_off.svg"),
+                _buildNavItem(4, "assets/images/icons/profile.svg"),
+              ],
             ),
           ),
         ),
@@ -59,15 +71,14 @@ class AppScaffold extends StatelessWidget {
   }
 
   Widget _buildNavItem(int index, String urlImage) {
-    final isSelected = navigationShell.currentIndex == index;
+    final isSelected = widget.navigationShell.currentIndex == index;
     final corAtiva = const Color(0xFF022412);
     final corInativa = Colors.white;
     final corAtual = isSelected ? corAtiva : corInativa;
-
     return GestureDetector(
-      onTap: () => navigationShell.goBranch(
+      onTap: () => widget.navigationShell.goBranch(
         index,
-        initialLocation: index == navigationShell.currentIndex,
+        initialLocation: index == widget.navigationShell.currentIndex,
       ),
       child: Container(
         padding: const EdgeInsets.all(12),

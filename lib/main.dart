@@ -77,10 +77,17 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _router = criarRouter();
-    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
-      setState(() {
-        _router = criarRouter();
-      });
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((
+      user,
+    ) async {
+      if (user != null) {
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+      if (mounted) {
+        setState(() {
+          _router = criarRouter();
+        });
+      }
     });
   }
 
