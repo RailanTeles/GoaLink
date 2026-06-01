@@ -169,60 +169,69 @@ class _AddPostsScreenState extends State<AddPostsScreen> {
       children: [
         PostsAppBar(onBack: _handleBack, onAdd: null),
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(22, 18, 22, 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 240,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 1.2),
-                    color: const Color(0xFFD8DEE4),
-                  ),
-                  child: PostMediaPreview(
-                    mediaPath: _mediaPath!,
-                    isVideo: _isVideo,
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(22, 18, 22, 18),
+                  child: Column(
+                    mainAxisAlignment: .center,
+                    crossAxisAlignment: .center,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 240,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black, width: 1.2),
+                          color: const Color(0xFFD8DEE4),
+                        ),
+                        child: PostMediaPreview(
+                          mediaPath: _mediaPath!,
+                          isVideo: _isVideo,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _comentarioController,
+                        minLines: 2,
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                          hintText: 'Insira comentário',
+                          hintStyle: const TextStyle(
+                            color: Color(0xFF787878),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF1E6B47),
+                              width: 1.6,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF1E6B47),
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _comentarioController,
-                  minLines: 2,
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    hintText: 'Insira comentário',
-                    hintStyle: const TextStyle(
-                      color: Color(0xFF787878),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF1E6B47),
-                        width: 1.6,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF1E6B47),
-                        width: 2,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
+
         PostsBottomAction(
           label: 'Enviar Postagem',
           onPressed: isSaving ? null : _savePost,
