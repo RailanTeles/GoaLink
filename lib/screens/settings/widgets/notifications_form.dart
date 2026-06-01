@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:goalink/models/notification_preferences_model.dart';
+import 'package:goalink/screens/settings/settings_view_model.dart';
 import 'package:goalink/screens/settings/widgets/settings_primary_button.dart';
-import 'package:goalink/services/profile_settings_service.dart';
+import 'package:provider/provider.dart';
 
 class NotificationsForm extends StatefulWidget {
   const NotificationsForm({super.key});
@@ -14,24 +14,21 @@ class _NotificationsFormState extends State<NotificationsForm> {
   bool _clubInterest = false;
   bool _messages = false;
   bool _updates = false;
-  bool _isLoading = true;
-  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    final vm = context.read<SettingsViewModel>();
+    final prefs = vm.usuario?.preferenciasNotificacao ?? {};
+
+    _clubInterest = prefs['interesseClubes'] ?? false;
+    _messages = prefs['mensagens'] ?? false;
+    _updates = prefs['atualizacoes'] ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
-        child: Center(child: CircularProgressIndicator()),
-      );
-    }
-
+    final vm = context.watch<SettingsViewModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -61,50 +58,38 @@ class _NotificationsFormState extends State<NotificationsForm> {
         ),
         const SizedBox(height: 12),
         SettingsPrimaryButton(
-          label: _isSaving ? 'Salvando...' : 'Confirmar',
-          onPressed: _isSaving ? null : _saveSettings,
+          label: vm.isSalvingPreferences ? 'Salvando...' : 'Confirmar',
+          onPressed: vm.isSalvingPreferences ? null : _saveSettings,
         ),
       ],
     );
   }
 
-  Future<void> _loadSettings() async {
-    final settings =
-        await ProfileSettingsService.instance.getNotificationPreferences();
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _clubInterest = settings.interesseClubes;
-      _messages = settings.mensagens;
-      _updates = settings.atualizacoes;
-      _isLoading = false;
-    });
-  }
-
   Future<void> _saveSettings() async {
-    setState(() => _isSaving = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final vm = context.read<SettingsViewModel>();
 
-    final settings = NotificationPreferencesModel(
-      interesseClubes: _clubInterest,
-      mensagens: _messages,
-      atualizacoes: _updates,
+    final sucesso = await vm.atualizarPreferenciasNotificacao(
+      _clubInterest,
+      _messages,
+      _updates,
     );
 
-    await ProfileSettingsService.instance.saveNotificationPreferences(settings);
+    if (!mounted) return;
 
-    if (!mounted) {
-      return;
+    messenger.clearSnackBars();
+    if (sucesso) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(vm.sucessoSnackBar!),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(content: Text(vm.erroSnackBar!), backgroundColor: Colors.red),
+      );
     }
-
-    setState(() => _isSaving = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Preferências de notificação salvas com sucesso.'),
-      ),
-    );
   }
 }
 

@@ -8,6 +8,7 @@ class SettingsViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool _isSalving = false;
   bool _isSalvingPassword = false;
+  bool _isSalvingPreferences = false;
   String? _erro;
   String? _erroSnackBar;
   String? _sucessoSnackBar;
@@ -16,6 +17,7 @@ class SettingsViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isSalving => _isSalving;
   bool get isSalvingPassword => _isSalvingPassword;
+  bool get isSalvingPreferences => _isSalvingPreferences;
   String? get erro => _erro;
   String? get erroSnackBar => _erroSnackBar;
   String? get sucessoSnackBar => _sucessoSnackBar;
@@ -178,6 +180,42 @@ class SettingsViewModel extends ChangeNotifier {
       return false;
     } finally {
       _isSalving = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> atualizarPreferenciasNotificacao(
+    bool interesseClubes,
+    bool mensagens,
+    bool atualizacoes,
+  ) async {
+    _erroSnackBar = null;
+    _sucessoSnackBar = null;
+    _isSalvingPreferences = true;
+    notifyListeners();
+
+    try {
+      Map<String, dynamic> preferencias = {
+        'interesseClubes': interesseClubes,
+        'mensagens': mensagens,
+        'atualizacoes': atualizacoes,
+      };
+
+      UsuarioModel usuarioEditado = _usuario!.copyWith(
+        preferenciasNotificacao: preferencias,
+      );
+
+      await _usuarioRepository.atualizarUsuario(usuarioEditado, null, false);
+
+      _usuario = usuarioEditado;
+      _sucessoSnackBar = "Preferências de notificação salvas com sucesso!";
+      return true;
+    } catch (e) {
+      _erroSnackBar =
+          "Erro ao salvar notificações: ${e.toString().replaceAll('Exception: ', '')}";
+      return false;
+    } finally {
+      _isSalvingPreferences = false;
       notifyListeners();
     }
   }

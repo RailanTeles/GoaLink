@@ -15,6 +15,7 @@ class UsuarioModel {
   final Map<String, dynamic>? redesSociais;
   final String? clubeRepresentante;
   final String? jogadoresProcurados;
+  final Map<String, dynamic>? preferenciasNotificacao;
 
   UsuarioModel({
     required this.id,
@@ -33,6 +34,7 @@ class UsuarioModel {
     this.redesSociais,
     this.clubeRepresentante,
     this.jogadoresProcurados,
+    this.preferenciasNotificacao,
   });
 
   factory UsuarioModel.fromJson(Map<String, dynamic> json) {
@@ -55,6 +57,7 @@ class UsuarioModel {
       redesSociais: json['redes_sociais'],
       clubeRepresentante: json['clube_representante'],
       jogadoresProcurados: json['jogadores_procurados'],
+      preferenciasNotificacao: json['preferencias_notificacao'],
     );
   }
 
@@ -76,6 +79,7 @@ class UsuarioModel {
       'redes_sociais': redesSociais,
       'clube_representante': clubeRepresentante,
       'jogadores_procurados': jogadoresProcurados,
+      'preferencias_notificacao': preferenciasNotificacao,
     };
 
     dados.removeWhere((chave, valor) => valor == null);
@@ -100,6 +104,7 @@ class UsuarioModel {
     Map<String, dynamic>? redesSociais,
     String? clubeRepresentante,
     String? jogadoresProcurados,
+    Map<String, dynamic>? preferenciasNotificacao,
   }) {
     return UsuarioModel(
       id: id ?? this.id,
@@ -118,6 +123,8 @@ class UsuarioModel {
       redesSociais: redesSociais ?? this.redesSociais,
       clubeRepresentante: clubeRepresentante ?? this.clubeRepresentante,
       jogadoresProcurados: jogadoresProcurados ?? this.jogadoresProcurados,
+      preferenciasNotificacao:
+          preferenciasNotificacao ?? this.preferenciasNotificacao,
     );
   }
 }

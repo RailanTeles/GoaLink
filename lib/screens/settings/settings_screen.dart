@@ -4,9 +4,8 @@ import 'package:goalink/core/circular_loading.dart';
 import 'package:goalink/screens/settings/settings_view_model.dart';
 import 'package:goalink/screens/settings/widgets/change_password_form.dart';
 import 'package:goalink/screens/settings/widgets/delete_account_form.dart';
-// import 'package:goalink/screens/settings/widgets/delete_account_form.dart';
 import 'package:goalink/screens/settings/widgets/edit_profile_form.dart';
-// import 'package:goalink/screens/settings/widgets/notifications_form.dart';
+import 'package:goalink/screens/settings/widgets/notifications_form.dart';
 import 'package:goalink/screens/settings/widgets/settings_expansion_tile.dart';
 import 'package:goalink/screens/settings/widgets/settings_primary_button.dart';
 import 'package:provider/provider.dart';
@@ -169,11 +168,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
               SizedBox(height: 14),
-              // SettingsExpansionTile(
-              //   title: 'Notificações',
-              //   leadingIcon: Icons.notifications_none,
-              //   children: [NotificationsForm()],
-              // ),
+              SettingsExpansionTile(
+                title: 'Notificações',
+                leadingIcon: Icons.notifications_none,
+                children: [NotificationsForm()],
+              ),
             ],
           ),
         ),
