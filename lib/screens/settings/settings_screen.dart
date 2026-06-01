@@ -24,29 +24,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _obterUsuario();
-      context.read<SettingsViewModel>().addListener(_onViewModelChange);
     });
   }
 
   Future<void> _obterUsuario() async {
     await context.read<SettingsViewModel>().obterUsuario();
-  }
-
-  void _onViewModelChange() {
-    final vm = context.read<SettingsViewModel>();
-    if (vm.erroSnackBar != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(vm.erroSnackBar!), backgroundColor: Colors.red),
-      );
-    }
-    if (vm.sucessoSnackBar != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(vm.sucessoSnackBar!),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
   }
 
   @override
@@ -158,17 +140,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     label: 'Sair da conta',
                     backgroundColor: Color(0xFFD32F2F),
                     onPressed: () async {
-                      final sucesso = await context
-                          .read<SettingsViewModel>()
-                          .sair();
-                      if (sucesso && context.mounted) {
-                        context.go('/login');
-                      } else if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                      final messenger = ScaffoldMessenger.of(context);
+                      final router = GoRouter.of(context);
+                      final vm = context.read<SettingsViewModel>();
+
+                      final sucesso = await vm.sair();
+                      if (!mounted) return;
+                      messenger.clearSnackBars();
+
+                      if (sucesso) {
+                        messenger.showSnackBar(
+                          const SnackBar(
+                            content: Text('Logout realizado com sucesso!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        router.go('/login');
+                      } else {
+                        messenger.showSnackBar(
                           SnackBar(
-                            content: Text(
-                              context.read<SettingsViewModel>().erroSnackBar!,
-                            ),
+                            content: Text(vm.erroSnackBar ?? 'Erro ao sair'),
+                            backgroundColor: Colors.red,
                           ),
                         );
                       }

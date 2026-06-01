@@ -15,22 +15,30 @@ class PainelInferior extends StatefulWidget {
 class _PainelInferiorState extends State<PainelInferior> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
+  late final LoginViewModel vm;
+
+  @override
+  void initState() {
+    super.initState();
+    vm = context.read<LoginViewModel>();
+  }
 
   Future<void> _handleLogin() async {
-    final viewModel = context.read<LoginViewModel>();
-    String? erro = await viewModel.fazerLogin(
-      _emailController.text,
-      _senhaController.text,
-    );
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+
+    await vm.fazerLogin(_emailController.text, _senhaController.text);
 
     if (!mounted) return;
 
-    if (erro == null) {
-      context.go('/');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(erro), backgroundColor: Colors.red),
+    if (vm.erroSnackBar != null) {
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(content: Text(vm.erroSnackBar!), backgroundColor: Colors.red),
       );
+    } else {
+      messenger.clearSnackBars();
+      router.refresh();
     }
   }
 

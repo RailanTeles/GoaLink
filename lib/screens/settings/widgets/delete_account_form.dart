@@ -87,8 +87,13 @@ class _DeleteAccountFormState extends State<DeleteAccountForm> {
           onPressed: viewModel.isSalving
               ? null
               : () async {
+                  FocusScope.of(context).unfocus();
+
+                  final messenger = ScaffoldMessenger.of(context);
+                  final router = GoRouter.of(context);
+
                   if (_passwordController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    messenger.showSnackBar(
                       const SnackBar(
                         content: Text(
                           'Por favor, digite sua senha antes de continuar.',
@@ -99,20 +104,23 @@ class _DeleteAccountFormState extends State<DeleteAccountForm> {
                   }
 
                   final confirmar = await _mostrarDialogoConfirmacao(context);
-
                   if (confirmar != true) return;
 
-                  if (!context.mounted) return;
                   final sucesso = await viewModel.deletarConta(
                     _passwordController.text,
                   );
 
-                  if (sucesso && context.mounted) {
-                    context.go('/login');
-                  } else if (viewModel.erroSnackBar != null &&
-                      context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(viewModel.erroSnackBar!)),
+                  if (!mounted) return;
+
+                  messenger.clearSnackBars();
+                  if (sucesso) {
+                    router.go('/login');
+                  } else {
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text(viewModel.erroSnackBar!),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 },

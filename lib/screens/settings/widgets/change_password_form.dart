@@ -17,17 +17,36 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
   final _confirmPasswordController = TextEditingController();
 
   Future<void> _handleAlterarSenha() async {
+    FocusScope.of(context).unfocus();
+
+    final messenger = ScaffoldMessenger.of(context);
     final vm = context.read<SettingsViewModel>();
-    await vm.alterarSenha(
+    final sucesso = await vm.alterarSenha(
       _oldPasswordController.text,
       _newPasswordController.text,
       _confirmPasswordController.text,
     );
 
-    if (vm.erroSnackBar == null && vm.sucessoSnackBar != null) {
+    if (!mounted) return;
+
+    messenger.clearSnackBars();
+    if (sucesso) {
       _oldPasswordController.clear();
       _newPasswordController.clear();
       _confirmPasswordController.clear();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(vm.sucessoSnackBar!),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(vm.erroSnackBar ?? 'Erro desconhecido'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 

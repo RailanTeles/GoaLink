@@ -36,7 +36,7 @@ class SettingsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> editarUsuario(
+  Future<bool> editarUsuario(
     String nome,
     String? altura,
     String? peso,
@@ -99,16 +99,18 @@ class SettingsViewModel extends ChangeNotifier {
 
       _usuario = usuarioEditado;
       _sucessoSnackBar = "Perfil atualizado com sucesso!";
+      return true;
     } catch (e) {
       _erroSnackBar =
           "Erro ao editar Perfil: ${e.toString().replaceAll('Exception: ', '')}";
+      return false;
     } finally {
       _isSalving = false;
       notifyListeners();
     }
   }
 
-  Future<void> alterarSenha(
+  Future<bool> alterarSenha(
     String senhaAntiga,
     String senhaNova,
     String confirmarSenha,
@@ -119,7 +121,7 @@ class SettingsViewModel extends ChangeNotifier {
     if (senhaNova != confirmarSenha) {
       _erroSnackBar = "A nova senha e a confirmação de senha não coincidem.";
       notifyListeners();
-      return;
+      return false;
     }
 
     _isSalvingPassword = true;
@@ -127,9 +129,11 @@ class SettingsViewModel extends ChangeNotifier {
     try {
       await _usuarioRepository.alterarSenha(senhaAntiga, senhaNova);
       _sucessoSnackBar = "Senha alterada com sucesso!";
+      return true;
     } catch (e) {
       _erroSnackBar =
           "Erro ao Alterar Senha: ${e.toString().replaceAll('Exception: ', '')}";
+      return false;
     } finally {
       _isSalvingPassword = false;
       notifyListeners();

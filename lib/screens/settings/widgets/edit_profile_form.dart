@@ -187,13 +187,16 @@ class _EditProfileFormState extends State<EditProfileForm> {
     return redes.isEmpty ? null : redes;
   }
 
-  void _saveProfile() {
+  void _saveProfile() async {
     FocusScope.of(context).unfocus();
     final nome = _nomeController.text.trim();
     final tipo = widget.usuario.tipo;
 
+    final messenger = ScaffoldMessenger.of(context);
+    final vm = context.read<SettingsViewModel>();
+
     if (nome.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(
           content: Text('O nome é obrigatório!'),
           backgroundColor: Colors.red,
@@ -202,7 +205,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       return;
     }
 
-    context.read<SettingsViewModel>().editarUsuario(
+    final sucesso = await vm.editarUsuario(
       nome,
       tipo == 'jogador' ? _alturaController.text.trim() : null,
       tipo == 'jogador' ? _pesoController.text.trim() : null,
@@ -214,13 +217,32 @@ class _EditProfileFormState extends State<EditProfileForm> {
       tipo == 'jogador' ? _selectedPreferredFoot : null,
       _descricaoController.text.trim(),
       _selectedPhotoPath,
-      _processarRedesSociais(), // Envia o Map montado!
+      _processarRedesSociais(),
       tipo == 'olheiro' ? _clubeRepresentanteController.text.trim() : null,
       (tipo == 'olheiro' || tipo == 'clube')
           ? _jogadoresProcuradosController.text.trim()
           : null,
       _removerFoto,
     );
+
+    if (!mounted) return;
+
+    messenger.clearSnackBars();
+    if (sucesso) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(vm.sucessoSnackBar!),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(vm.erroSnackBar ?? 'Erro desconhecido'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
