@@ -1,9 +1,7 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
@@ -30,26 +28,31 @@ void main() async {
 
   await CacheService.inicializarCache();
 
+  final cacheService = CacheService();
+  final usuarioRepository = UsuarioRepository(
+    AuthService(),
+    PostagemService(),
+    UsuarioService(),
+    cacheService,
+    StorageService(),
+    AvaliacaoService(),
+    ChatMensagemService(),
+    FavoritoService(),
+    NotificacaoService(),
+  );
+
   runApp(
     MultiProvider(
       providers: [
-        Provider<UsuarioRepository>(
-          create: (_) => UsuarioRepository(
-            AuthService(),
-            PostagemService(),
-            UsuarioService(),
-            CacheService(),
-            StorageService(),
-            AvaliacaoService(),
-            ChatMensagemService(),
-            FavoritoService(),
-            NotificacaoService(),
-          ),
+        Provider<UsuarioRepository>.value(value: usuarioRepository),
+        Provider<CacheService>.value(value: cacheService),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (_) => AuthProvider(usuarioRepository, cacheService),
         ),
         Provider<PostagemRepository>(
           create: (_) => PostagemRepository(
             PostagemService(),
-            CacheService(),
+            cacheService,
             StorageService(),
           ),
         ),
@@ -71,29 +74,28 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late GoRouter _router;
-  late StreamSubscription<User?> _authSubscription;
+  late final AuthProvider _authProvider;
+  late final VoidCallback _authListener;
 
   @override
-  void initState() {
-    super.initState();
-    _router = criarRouter();
-    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((
-      user,
-    ) async {
-      if (user != null) {
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _authProvider = context.read<AuthProvider>();
+    _router = criarRouter(_authProvider);
+    
+    _authListener = () {
       if (mounted) {
         setState(() {
-          _router = criarRouter();
+          _router = criarRouter(_authProvider);
         });
       }
-    });
+    };
+    _authProvider.addListener(_authListener);
   }
 
   @override
   void dispose() {
-    _authSubscription.cancel();
+    _authProvider.removeListener(_authListener);
     super.dispose();
   }
 
@@ -104,7 +106,7 @@ class _MyAppState extends State<MyApp> {
       title: 'GoaLink',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: .fromSeed(
+        colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF195E3B),
           secondary: const Color(0xFF022412),
         ),
@@ -112,12 +114,10 @@ class _MyAppState extends State<MyApp> {
           labelStyle: const TextStyle(color: Colors.white),
           prefixIconColor: Colors.white,
           suffixIconColor: Colors.white54,
-
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),
             borderSide: const BorderSide(color: Colors.white, width: 2.0),
           ),
-
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),
             borderSide: BorderSide(color: const Color(0xFF195E3B), width: 2.0),

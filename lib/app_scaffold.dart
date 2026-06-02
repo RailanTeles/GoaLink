@@ -1,46 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/core/navbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:goalink/services/cache_service.dart';
-import 'dart:async';
+import 'package:goalink/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
-class AppScaffold extends StatefulWidget {
+class AppScaffold extends StatelessWidget {
   const AppScaffold({super.key, required this.navigationShell});
   final StatefulNavigationShell navigationShell;
 
   @override
-  State<AppScaffold> createState() => _AppScaffoldState();
-}
-
-class _AppScaffoldState extends State<AppScaffold> {
-  late StreamSubscription<User?> _authSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((_) {
-      if (mounted) setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _authSubscription.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final usuarioModel = CacheService().buscarPerfilLocalSync();
+    final authProvider = context.watch<AuthProvider>();
+    final usuarioModel = authProvider.usuario;
 
     return Scaffold(
       extendBody: true,
-      appBar: widget.navigationShell.currentIndex == 1
+      appBar: navigationShell.currentIndex == 1
           ? null
           : Navbar(tipoUsuario: usuarioModel?.tipo),
-      body: SafeArea(bottom: false, child: widget.navigationShell),
+      body: SafeArea(bottom: false, child: navigationShell),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
@@ -71,14 +50,14 @@ class _AppScaffoldState extends State<AppScaffold> {
   }
 
   Widget _buildNavItem(int index, String urlImage) {
-    final isSelected = widget.navigationShell.currentIndex == index;
+    final isSelected = navigationShell.currentIndex == index;
     final corAtiva = const Color(0xFF022412);
     final corInativa = Colors.white;
     final corAtual = isSelected ? corAtiva : corInativa;
     return GestureDetector(
-      onTap: () => widget.navigationShell.goBranch(
+      onTap: () => navigationShell.goBranch(
         index,
-        initialLocation: index == widget.navigationShell.currentIndex,
+        initialLocation: index == navigationShell.currentIndex,
       ),
       child: Container(
         padding: const EdgeInsets.all(12),

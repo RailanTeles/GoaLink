@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/screens/home/home_view_model.dart';
@@ -10,7 +10,6 @@ import 'package:goalink/screens/settings/settings_screen.dart';
 import 'package:goalink/screens/settings/settings_view_model.dart';
 import 'package:goalink/screens/video_posts/add_posts_screen.dart';
 import 'package:goalink/screens/video_posts/posts_view_model.dart';
-import 'package:goalink/services/cache_service.dart';
 import 'package:provider/provider.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
 import 'package:goalink/screens/login/login_screen.dart';
@@ -22,15 +21,17 @@ import 'package:goalink/screens/register/jogador/register_jogador_view_model.dar
 import 'package:goalink/screens/register/olheiro/register_olheiro_screen.dart';
 import 'package:goalink/screens/register/olheiro/register_olheiro_view_model.dart';
 import 'package:goalink/services/storage_service.dart';
+import 'package:goalink/services/cache_service.dart';
 import 'package:goalink/app_scaffold.dart';
 import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/profile/profile_screen.dart';
 
-GoRouter criarRouter() {
+GoRouter criarRouter(AuthProvider authProvider) {
   return GoRouter(
     initialLocation: '/',
+    refreshListenable: authProvider,
     redirect: (context, state) {
-      final User? usuarioLogado = FirebaseAuth.instance.currentUser;
+      final isAuthenticated = authProvider.isAuthenticated;
       final location = state.matchedLocation;
 
       final rotasPublicas = [
@@ -42,11 +43,11 @@ GoRouter criarRouter() {
         '/recuperar-senha',
       ];
 
-      if (usuarioLogado == null && !rotasPublicas.contains(location)) {
+      if (!isAuthenticated && !rotasPublicas.contains(location)) {
         return '/login';
       }
 
-      if (usuarioLogado != null && location == '/login') {
+      if (isAuthenticated && location == '/login') {
         return '/';
       }
 
@@ -253,7 +254,7 @@ GoRouter criarRouter() {
             child: ChangeNotifierProvider(
               create: (_) => PostsViewModel(
                 context.read<PostagemRepository>(),
-                CacheService(),
+                context.read<CacheService>(),
               ),
               child: const AddPostsScreen(),
             ),

@@ -13,8 +13,12 @@ class LoginViewModel extends ChangeNotifier {
   LoginViewModel(this._repository);
 
   Future<String?> fazerLogin(String email, String senha) async {
+    _erroSnackBar = null;
+
     if (email.isEmpty || senha.isEmpty) {
-      return 'Preencha todos os campos.';
+      _isLoading = false;
+      notifyListeners();
+      return null;
     }
     _isLoading = true;
     notifyListeners();
@@ -22,12 +26,11 @@ class LoginViewModel extends ChangeNotifier {
       await _repository.fazerLogin(email, senha);
       return null;
     } catch (e) {
-      return e.toString().replaceAll('Exception: ', '');
+      _erroSnackBar = e.toString().replaceAll('Exception: ', '');
+      return _erroSnackBar;
     } finally {
       _isLoading = false;
-      try {
-        notifyListeners(); // pode falhar se widget já foi destruído
-      } catch (_) {}
+      notifyListeners();
     }
   }
 }
