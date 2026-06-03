@@ -70,6 +70,25 @@ class AuthService {
     }
   }
 
+  Future<void> recuperarSenha(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'user-not-found':
+          return;
+        case 'invalid-email':
+          throw Exception('O formato do e-mail é inválido.');
+        case 'too-many-requests':
+          throw Exception('Muitas tentativas. Tente novamente mais tarde.');
+        default:
+          throw Exception('Erro ao enviar e-mail: ${e.message}');
+      }
+    } catch (e) {
+      throw Exception('Ocorreu um erro inesperado.');
+    }
+  }
+
   String _traduzirErroFirebase(String codigo) {
     switch (codigo) {
       case 'weak-password':

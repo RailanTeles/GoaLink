@@ -118,6 +118,10 @@ class UsuarioRepository {
     throw Exception('Usuário não encontrado no banco de dados.');
   }
 
+  Future<void> recuperarSenha(String email) async {
+    await _authService.recuperarSenha(email.trim());
+  }
+
   Future<void> atualizarUsuario(
     UsuarioModel usuario,
     String? fotoLocalPath,

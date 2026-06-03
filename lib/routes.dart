@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
+import 'package:goalink/screens/forgot_password/forgot_password_view_model.dart';
+import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
 import 'package:goalink/screens/home/home_view_model.dart';
 import 'package:goalink/screens/login/login_view_model.dart';
 import 'package:goalink/screens/profile/profile_view_model.dart';
@@ -303,21 +305,28 @@ GoRouter criarRouter(AuthProvider authProvider) {
       //     return ChatDetailScreen(chatId: chatId);
       //   },
       // ),
-      // GoRoute(
-      //   path: '/recuperar-senha',
-      //   pageBuilder: (context, state) {
-      //     return CustomTransitionPage(
-      //       key: state.pageKey,
-      //       child: const RecuperarSenha(),
-      //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      //         return FadeTransition(
-      //           opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-      //           child: child,
-      //         );
-      //       },
-      //     );
-      //   },
-      // ),
+      GoRoute(
+        path: '/recuperar-senha',
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) =>
+                  ForgotPasswordViewModel(context.read<UsuarioRepository>()),
+              child: const RecuperarSenha(),
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
       // // Rota para perfil de outros usuários
       // GoRoute(
       //   path: '/search/:id',

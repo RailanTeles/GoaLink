@@ -61,27 +61,33 @@ class ProfileInfos extends StatelessWidget {
 
               // Informações do Olheiro
               if (usuario.tipo == "olheiro") ...[
-                if (usuario.clubeRepresentante != null &&
-                    usuario.clubeRepresentante!.isNotEmpty)
-                  SizedBox(
-                    width: larguraItem,
-                    child: LabelInfo(
-                      icone: Icons.shield,
-                      textoTitulo: "Agente/Empresa",
-                      textoLabel: usuario.clubeRepresentante!,
-                    ),
-                  ),
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 20,
+                  children: [
+                    if (usuario.clubeRepresentante != null &&
+                        usuario.clubeRepresentante!.isNotEmpty)
+                      SizedBox(
+                        width: larguraItem,
+                        child: LabelInfo(
+                          icone: Icons.shield,
+                          textoTitulo: "Agente/Empresa",
+                          textoLabel: usuario.clubeRepresentante!,
+                        ),
+                      ),
 
-                if (usuario.jogadoresProcurados != null &&
-                    usuario.jogadoresProcurados!.isNotEmpty)
-                  SizedBox(
-                    width: larguraItem,
-                    child: LabelInfo(
-                      icone: Icons.group,
-                      textoTitulo: "Jogadores Procurados",
-                      textoLabel: usuario.jogadoresProcurados!,
-                    ),
-                  ),
+                    if (usuario.jogadoresProcurados != null &&
+                        usuario.jogadoresProcurados!.isNotEmpty)
+                      SizedBox(
+                        width: larguraItem,
+                        child: LabelInfo(
+                          icone: Icons.group,
+                          textoTitulo: "Jogadores Procurados",
+                          textoLabel: usuario.jogadoresProcurados!,
+                        ),
+                      ),
+                  ],
+                ),
               ],
 
               // Informações do clube

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/core/input_personalizado.dart';
+import 'package:goalink/screens/forgot_password/forgot_password_view_model.dart';
+import 'package:provider/provider.dart';
 
 class PainelInferior extends StatefulWidget {
   const PainelInferior({super.key, required this.alturaContainer});
@@ -25,9 +27,47 @@ class _PainelInferiorState extends State<PainelInferior> {
     });
   }
 
+  Future<void> _handleResetarSenha() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    final vm = context.read<ForgotPasswordViewModel>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    if (_emailController.text.isEmpty) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, digite seu e-mail.'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    await vm.recuperarSenha(_emailController.text);
+
+    if (!mounted) return;
+    messenger.clearSnackBars();
+
+    if (vm.sucessoSnackBar != null) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(vm.sucessoSnackBar!),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+
+    if (vm.erroSnackBar != null) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(vm.erroSnackBar!), backgroundColor: Colors.red),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final alturaTeclado = MediaQuery.of(context).viewInsets.bottom;
+    final vm = context.watch<ForgotPasswordViewModel>();
 
     return Padding(
       padding: EdgeInsets.only(bottom: alturaTeclado),
@@ -117,9 +157,7 @@ class _PainelInferiorState extends State<PainelInferior> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          context.go("/login");
-                        },
+                        onPressed: _handleResetarSenha,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black,
@@ -128,9 +166,9 @@ class _PainelInferiorState extends State<PainelInferior> {
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                         ),
-                        child: const Text(
-                          "Enviar",
-                          style: TextStyle(
+                        child: Text(
+                          vm.isLoading ? "Enviando..." : "Enviar",
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
