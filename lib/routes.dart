@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
+import 'package:goalink/repositories/notificacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/screens/forgot_password/forgot_password_view_model.dart';
 import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
 import 'package:goalink/screens/home/home_view_model.dart';
 import 'package:goalink/screens/login/login_view_model.dart';
+import 'package:goalink/screens/notifications/notifications_screen.dart';
+import 'package:goalink/screens/notifications/notifications_view_model.dart';
 import 'package:goalink/screens/profile/profile_view_model.dart';
 import 'package:goalink/screens/settings/settings_screen.dart';
 import 'package:goalink/screens/settings/settings_view_model.dart';
@@ -272,10 +275,30 @@ GoRouter criarRouter(AuthProvider authProvider) {
           );
         },
       ),
-      // GoRoute(
-      //   path: '/notifications',
-      //   builder: (context, state) => const NotificationsScreen(),
-      // ),
+      GoRoute(
+        path: '/notifications',
+        // builder: (context, state) => const NotificationsScreen(),
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) => NotificationsViewModel(
+                context.read<NotificacoesRepository>(),
+              ),
+              child: const NotificationsScreen(),
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
       GoRoute(
         path: '/settings',
         pageBuilder: (context, state) {

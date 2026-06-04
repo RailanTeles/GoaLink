@@ -1,157 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goalink/core/avatar_usuario.dart';
 import 'package:goalink/models/notificacao_model.dart';
 
 class NotificationCard extends StatelessWidget {
   const NotificationCard({super.key, required this.notification});
-
   final NotificacaoModel notification;
 
-  static const Color _cardColor = Color(0xFFA9C3AB);
-  static const Color _textColor = Color(0xFF163322);
-  static const Color _accentColor = Color(0xFF11452A);
-  static const Color _timeColor = Color(0xFF2A4B38);
+  void _onTap(BuildContext context) {
+    if (notification.tipo == 'atualizacoes' ||
+        notification.tipo == 'interesseClubes') {
+      context.push("/search/${notification.remetenteId}");
+    } else if (notification.tipo == 'mensagens') {
+      context.push('/chat/conversation/${notification.remetenteId}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final nome = notification.nomeRemetente ?? 'Usuário';
-    final acao = notification.acao ?? notification.conteudo;
-    final avatarUrl = notification.avatarUrl;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: _cardColor,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+    final horaFormatada =
+        "${notification.criadoEm.hour.toString().padLeft(2, '0')}:${notification.criadoEm.minute.toString().padLeft(2, '0')}";
+    return GestureDetector(
+      onTap: () => _onTap(context),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: notification.lida
+              ? const Color(0xFFE8ECE9)
+              : const Color(0xFF7FA28C),
+          borderRadius: BorderRadius.circular(24),
+        ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _NotificationAvatar(imageUrl: avatarUrl),
+            AvatarUsuario(urlFoto: notification.remetenteFotoUrl, tamanho: 64),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.notifications,
-                        size: 14,
-                        color: _accentColor,
-                      ),
+                  Text(
+                    notification.remetenteNome ?? 'Usuário',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 2),
-                  RichText(
-                    text: TextSpan(
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: _textColor,
-                        height: 1.35,
-                        fontSize: 14,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: nome,
-                          style: const TextStyle(fontWeight: FontWeight.w700),
-                        ),
-                        TextSpan(text: ' $acao'),
-                      ],
+                  Text(
+                    notification.conteudo,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black.withValues(alpha: 0.8),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text(
-                      _formatTime(notification.criadoEm),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: _timeColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                      ),
-                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: 8),
+            // Lado direito: Ícone (topo) e Hora (base)
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (!notification.lida)
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 12.0),
+                    child: Icon(
+                      Icons.notifications_active,
+                      color: Colors.black,
+                      size: 22,
+                    ),
+                  )
+                else
+                  const SizedBox(
+                    height: 34,
+                  ), // Mantém o alinhamento quando não há ícone
+
+                Text(
+                  horaFormatada,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  String _formatTime(DateTime dateTime) {
-    final localTime = dateTime.toLocal();
-    final hour = localTime.hour.toString().padLeft(2, '0');
-    final minute = localTime.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
-}
-
-class _NotificationAvatar extends StatelessWidget {
-  const _NotificationAvatar({this.imageUrl});
-
-  final String? imageUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 52,
-      height: 52,
-      padding: const EdgeInsets.all(3),
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-      ),
-      child: ClipOval(
-        child: ColoredBox(
-          color: const Color(0xFFD7E4D7),
-          child: SizedBox.expand(
-            child: _buildAvatarContent(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAvatarContent() {
-    if (imageUrl == null || imageUrl!.isEmpty) {
-      return const Icon(Icons.person, color: Color(0xFF11452A), size: 28);
-    }
-
-    if (imageUrl!.startsWith('http')) {
-      return Image.network(
-        imageUrl!,
-        fit: BoxFit.cover,
-        alignment: Alignment.topCenter,
-        errorBuilder: (_, _, _) {
-          return const Icon(Icons.person, color: Color(0xFF11452A), size: 28);
-        },
-      );
-    }
-
-    return Image.asset(
-      imageUrl!,
-      fit: BoxFit.cover,
-      alignment: Alignment.topCenter,
-      errorBuilder: (_, _, _) {
-        return const Icon(Icons.person, color: Color(0xFF11452A), size: 28);
-      },
     );
   }
 }

@@ -5,9 +5,10 @@ class NotificacaoModel {
   final String conteudo;
   final bool lida;
   final DateTime criadoEm;
-  final String remetenteId;
-  final String remetenteNome;
+  final String? remetenteId;
+  final String? remetenteNome;
   final String? remetenteFotoUrl;
+  final String? referenciaId;
 
   NotificacaoModel({
     required this.idNotificacao,
@@ -16,9 +17,10 @@ class NotificacaoModel {
     required this.conteudo,
     required this.lida,
     required this.criadoEm,
-    required this.remetenteId,
-    required this.remetenteNome,
+    this.remetenteId,
+    this.remetenteNome,
     this.remetenteFotoUrl,
+    this.referenciaId,
   });
 
   factory NotificacaoModel.fromJson(Map<String, dynamic> json) {
@@ -29,9 +31,10 @@ class NotificacaoModel {
       conteudo: json['conteudo'] ?? '',
       lida: json['lida'] ?? false,
       criadoEm: DateTime.parse(json['criado_em']),
-      remetenteId: json['remetente_id'] ?? '',
-      remetenteNome: json['remetente_nome'] ?? '',
+      remetenteId: json['remetente_id'],
+      remetenteNome: json['remetente_nome'],
       remetenteFotoUrl: json['remetente_foto_url'],
+      referenciaId: json['referencia_id'],
     );
   }
 
@@ -46,6 +49,7 @@ class NotificacaoModel {
       'remetente_id': remetenteId,
       'remetente_nome': remetenteNome,
       'remetente_foto_url': remetenteFotoUrl,
+      'referencia_id': referenciaId,
     };
   }
 }

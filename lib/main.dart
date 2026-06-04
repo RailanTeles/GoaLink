@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
+import 'package:goalink/repositories/notificacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
 import 'package:goalink/routes.dart';
@@ -59,6 +60,9 @@ void main() async {
         Provider<AvaliacoesRepository>(
           create: (_) => AvaliacoesRepository(AvaliacaoService()),
         ),
+        Provider<NotificacoesRepository>(
+          create: (_) => NotificacoesRepository(NotificacaoService()),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -82,7 +86,7 @@ class _MyAppState extends State<MyApp> {
     super.didChangeDependencies();
     _authProvider = context.read<AuthProvider>();
     _router = criarRouter(_authProvider);
-    
+
     _authListener = () {
       if (mounted) {
         setState(() {

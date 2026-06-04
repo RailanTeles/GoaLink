@@ -41,4 +41,37 @@ class NotificacaoService {
       throw Exception('Erro ao deletar notificações do usuário: $e');
     }
   }
+
+  Future<List<QueryDocumentSnapshot>> obterNotificacoesUsuario(
+    String uid,
+  ) async {
+    try {
+      var snapshot = await _firestore
+          .collection(_collectionName)
+          .where('usuario_id', isEqualTo: uid)
+          .orderBy('criado_em', descending: true)
+          .limit(60)
+          .get();
+
+      return snapshot.docs;
+    } catch (e) {
+      throw Exception('Erro ao obter notificação do usuário: $e');
+    }
+  }
+
+  Future<void> marcarNotificacoesComoLidas(List<String> ids) async {
+    try {
+      WriteBatch batch = _firestore.batch();
+
+      for (var id in ids) {
+        batch.update(_firestore.collection(_collectionName).doc(id), {
+          'lida': true,
+        });
+      }
+
+      await batch.commit();
+    } catch (e) {
+      throw Exception('Erro ao marcar notificações como lidas: $e');
+    }
+  }
 }

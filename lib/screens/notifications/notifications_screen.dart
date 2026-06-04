@@ -1,168 +1,104 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:goalink/models/notificacao_model.dart';
+import 'package:goalink/core/circular_loading.dart';
+import 'package:goalink/screens/notifications/notifications_view_model.dart';
 import 'package:goalink/screens/notifications/widgets/notification_card.dart';
-import 'package:goalink/services/notificacao_service.dart';
+import 'package:provider/provider.dart';
 
-class NotificationsScreen extends StatelessWidget {
+class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
-  static const Color _headerColor = Color(0xFF185B38);
-  static const Color _screenColor = Color(0xFFF4F7F2);
-  static const Color _titleColor = Color(0xFFE8F2EA);
-  static final NotificacaoService _notificacaoService = NotificacaoService();
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _carregarDadosIniciais();
+    });
+  }
+
+  Future<void> _carregarDadosIniciais() async {
+    final vm = context.read<NotificationsViewModel>();
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    await vm.carregarNotificacoes(uid);
+
+    await vm.marcarComoLidas();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<NotificationsViewModel>();
     return Scaffold(
-      backgroundColor: _screenColor,
-      body: SafeArea(
-        top: false,
-        bottom: true,
-        child: Column(
-          children: [
-            _NotificationsHeader(
-              onBackPressed: () => Navigator.of(context).pop(),
-            ),
-            Expanded(
-              child: FutureBuilder<List<NotificacaoModel>>(
-                future: _notificacaoService.getNotificacoes(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: _headerColor),
-                    );
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Text(
-                          'Nao foi possivel carregar as notificacoes.',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
-                  }
-
-                  final notifications = snapshot.data ?? [];
-
-                  return LayoutBuilder(
-                    builder: (context, constraints) {
-                      final horizontalPadding = constraints.maxWidth < 360
-                          ? 12.0
-                          : 18.0;
-
-                      return ListView.builder(
-                        padding: EdgeInsets.fromLTRB(
-                          horizontalPadding,
-                          18,
-                          horizontalPadding,
-                          24,
-                        ),
-                        itemCount: notifications.length,
-                        itemBuilder: (context, index) {
-                          final notification = notifications[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 14),
-                            child: NotificationCard(notification: notification),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
+      appBar: AppBar(
+        title: Text('Notificações'),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        toolbarHeight: 70,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
         ),
       ),
+      body: _buildBodyContent(vm),
     );
   }
-}
 
-class _NotificationsHeader extends StatelessWidget {
-  const _NotificationsHeader({required this.onBackPressed});
+  Widget _buildBodyContent(NotificationsViewModel vm) {
+    if (vm.isLoading) {
+      return const Center(child: CircularLoading());
+    }
 
-  final VoidCallback onBackPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(
-        18,
-        MediaQuery.paddingOf(context).top + 14,
-        18,
-        18,
-      ),
-      decoration: const BoxDecoration(
-        color: NotificationsScreen._headerColor,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Notifica\u00e7\u00f5es',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: NotificationsScreen._titleColor,
-              fontWeight: FontWeight.w700,
+    if (vm.erro != null) {
+      return RefreshIndicator(
+        onRefresh: _carregarDadosIniciais,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Center(
+                child: Text(
+                  '${vm.erro}',
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              _HeaderIconButton(
-                icon: Icons.arrow_back,
-                onTap: onBackPressed,
-              ),
-              const Spacer(),
-              const _HeaderIconBadge(icon: Icons.notifications_rounded),
-            ],
+        ),
+      );
+    }
+
+    if (vm.notificacoes?.isEmpty == true) {
+      return const Center(
+        child: Text(
+          'Nenhuma notificação encontrada',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Colors.grey,
           ),
-        ],
-      ),
-    );
-  }
-}
+        ),
+      );
+    }
 
-class _HeaderIconButton extends StatelessWidget {
-  const _HeaderIconButton({required this.icon, this.onTap});
+    return ListView.builder(
+      itemCount: vm.notificacoes!.length,
+      padding: const EdgeInsets.all(8.0),
+      itemBuilder: (context, index) {
+        final notification = vm.notificacoes![index];
 
-  final IconData icon;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: SizedBox(
-        width: 42,
-        height: 42,
-        child: Icon(icon, color: Colors.white, size: 28),
-      ),
-    );
-  }
-}
-
-class _HeaderIconBadge extends StatelessWidget {
-  const _HeaderIconBadge({required this.icon});
-
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 42,
-      height: 42,
-      decoration: BoxDecoration(
-        color: const Color(0xFF0E2D1C),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Icon(icon, color: Colors.white, size: 22),
+        return NotificationCard(notification: notification);
+      },
     );
   }
 }
