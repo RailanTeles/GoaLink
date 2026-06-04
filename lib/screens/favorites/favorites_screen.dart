@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:goalink/models/usuario_model.dart';
-import 'package:goalink/services/interacao_service.dart';
+import 'package:goalink/core/circular_loading.dart';
+import 'package:goalink/screens/favorites/favorite_card_widget.dart';
+import 'package:goalink/screens/favorites/favorite_view_model.dart';
+import 'package:provider/provider.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -10,126 +13,122 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  final _interacaoService = InteracaoService();
-  late Future<List<UsuarioModel>> _favoritosFuture;
-  final Set<String> _desmarcados = {};
-
   @override
   void initState() {
     super.initState();
-    _favoritosFuture = _interacaoService.getUsuariosFavoritados('clube_01');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _carregarDadosIniciais();
+    });
   }
 
-  void _toggleFavorito(String idUsuario) {
-    setState(() {
-      if (_desmarcados.contains(idUsuario)) {
-        _desmarcados.remove(idUsuario);
-        // TODO: chamar backend para favoritar
-      } else {
-        _desmarcados.add(idUsuario);
-        // TODO: chamar backend para desfavoritar
-      }
-    });
+  Future<void> _carregarDadosIniciais() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    await context.read<FavoriteViewModel>().obterFavoritos(uid);
+  }
+
+  Future<void> _handleRemoverFavorito(String docId) async {
+    final vm = context.read<FavoriteViewModel>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    await vm.removerFavorito(docId);
+    if (vm.erroSnackBar != null) {
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('Erro ao remover favorito.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      body: Padding(
-        padding: const EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: 75,
+    final vm = context.watch<FavoriteViewModel>();
+
+    if (vm.isLoading) {
+      return const CircularLoading();
+    }
+
+    if (vm.erro != null) {
+      return Scaffold(
+        body: RefreshIndicator(
+          onRefresh: _carregarDadosIniciais,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverFillRemaining(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      vm.erro!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Favoritos', style: TextStyle(fontSize: 20)),
-            const SizedBox(height: 16),
-            Expanded(
-              child: FutureBuilder<List<UsuarioModel>>(
-                future: _favoritosFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+      );
+    }
 
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Erro ao carregar favoritos.'),
-                    );
-                  }
-
-                  final favoritos = snapshot.data ?? [];
-
-                  if (favoritos.isEmpty) {
-                    return const Center(
-                      child: Text('Sem favoritos no momento.'),
-                    );
-                  }
-
-                  return ListView.separated(
-                    padding: const EdgeInsets.only(bottom: 90),
-                    itemCount: favoritos.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 12),
-                    itemBuilder: (_, index) =>
-                        _buildFavoritoItem(favoritos[index]),
-                  );
-                },
+    if (vm.favoritos!.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: _carregarDadosIniciais,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverFillRemaining(
+              child: Center(
+                child: Text(
+                  'Nenhum favorito encontrado.',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.grey,
+                  ),
+                ),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  Widget _buildFavoritoItem(UsuarioModel usuario) {
-    final tipo = usuario.tipo[0].toUpperCase() + usuario.tipo.substring(1);
-    final marcado = !_desmarcados.contains(usuario.id);
-
-    return GestureDetector(
-      // TODO: descomentar quando a rota de perfil do jogador estiver pronta
-      // onTap: () => context.push('/jogador/${usuario.id}', extra: usuario),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: Colors.grey.shade300,
-            backgroundImage: usuario.fotoPerfil != null
-                ? NetworkImage(usuario.fotoPerfil!)
-                : null,
-            child: usuario.fotoPerfil == null
-                ? const Icon(Icons.person, size: 28, color: Colors.white)
-                : null,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(usuario.nome, style: const TextStyle(fontSize: 16)),
-                Text(
-                  tipo,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      body: RefreshIndicator(
+        onRefresh: _carregarDadosIniciais,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: 120,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final favorito = vm.favoritos![index];
+                  return FavoriteCard(
+                    favorito: favorito,
+                    isRemovendo: vm.isRemovendo(favorito.id),
+                    onRemove: () => _handleRemoverFavorito(favorito.id),
+                  );
+                }, childCount: vm.favoritos!.length),
+              ),
             ),
-          ),
-          IconButton(
-            onPressed: () => _toggleFavorito(usuario.id),
-            icon: Icon(
-              marcado ? Icons.star : Icons.star_border,
-              size: 36,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

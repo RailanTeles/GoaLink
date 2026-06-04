@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/repositories/favorito_repository.dart';
+import 'package:goalink/screens/favorites/favorite_view_model.dart';
+import 'package:goalink/screens/favorites/favorites_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'package:goalink/app_scaffold.dart';
 import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
 import 'package:goalink/repositories/notificacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
+import 'package:goalink/repositories/usuario_repository.dart';
 import 'package:goalink/screens/forgot_password/forgot_password_view_model.dart';
 import 'package:goalink/screens/forgot_password/recuperar_senha.dart';
+import 'package:goalink/screens/home/home_screen.dart';
 import 'package:goalink/screens/home/home_view_model.dart';
+import 'package:goalink/screens/login/login_screen.dart';
 import 'package:goalink/screens/login/login_view_model.dart';
 import 'package:goalink/screens/notifications/notifications_screen.dart';
 import 'package:goalink/screens/notifications/notifications_view_model.dart';
+import 'package:goalink/screens/profile/profile_screen.dart';
 import 'package:goalink/screens/profile/profile_view_model.dart';
-import 'package:goalink/screens/settings/settings_screen.dart';
-import 'package:goalink/screens/settings/settings_view_model.dart';
-import 'package:goalink/screens/video_posts/add_posts_screen.dart';
-import 'package:goalink/screens/video_posts/posts_view_model.dart';
-import 'package:provider/provider.dart';
-import 'package:goalink/repositories/usuario_repository.dart';
-import 'package:goalink/screens/login/login_screen.dart';
-import 'package:goalink/screens/register/funcao_screen.dart';
 import 'package:goalink/screens/register/clube/register_clube_screen.dart';
 import 'package:goalink/screens/register/clube/register_clube_view_model.dart';
+import 'package:goalink/screens/register/funcao_screen.dart';
 import 'package:goalink/screens/register/jogador/register_jogador_screen.dart';
 import 'package:goalink/screens/register/jogador/register_jogador_view_model.dart';
 import 'package:goalink/screens/register/olheiro/register_olheiro_screen.dart';
 import 'package:goalink/screens/register/olheiro/register_olheiro_view_model.dart';
-import 'package:goalink/services/storage_service.dart';
+import 'package:goalink/screens/settings/settings_screen.dart';
+import 'package:goalink/screens/settings/settings_view_model.dart';
+import 'package:goalink/screens/video_posts/add_posts_screen.dart';
+import 'package:goalink/screens/video_posts/posts_view_model.dart';
 import 'package:goalink/services/cache_service.dart';
-import 'package:goalink/app_scaffold.dart';
-import 'package:goalink/screens/home/home_screen.dart';
-import 'package:goalink/screens/profile/profile_screen.dart';
+import 'package:goalink/services/storage_service.dart';
 
 GoRouter criarRouter(AuthProvider authProvider) {
   return GoRouter(
@@ -130,14 +134,20 @@ GoRouter criarRouter(AuthProvider authProvider) {
             ],
           ),
           // //Index 5: favorites
-          // StatefulShellBranch(
-          //   routes: [
-          //     GoRoute(
-          //       path: '/favorites',
-          //       builder: (c, s) => const FavoritesScreen(),
-          //     ),
-          //   ],
-          // ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/favorites',
+                builder: (context, state) {
+                  return ChangeNotifierProvider(
+                    create: (_) =>
+                        FavoriteViewModel(context.read<FavoritoRepository>()),
+                    child: const FavoritesScreen(),
+                  );
+                },
+              ),
+            ],
+          ),
         ],
       ),
       GoRoute(

@@ -9,6 +9,28 @@ class FavoritoService {
 
   final String _collectionName = 'favoritos';
 
+  Future<List<DocumentSnapshot>> obterFavoritos(String uidInteressado) async {
+    try {
+      final resultado = await _firestore
+          .collection(_collectionName)
+          .where('interessado_id', isEqualTo: uidInteressado)
+          .orderBy('criado_em', descending: true)
+          .get();
+
+      return resultado.docs;
+    } catch (e) {
+      throw Exception('Erro ao obter favoritos: $e');
+    }
+  }
+
+  Future<void> deletarFavorito(String docId) async {
+    try {
+      await _firestore.collection(_collectionName).doc(docId).delete();
+    } catch (e) {
+      throw Exception("Erro ao remover do favorito: $e");
+    }
+  }
+
   Future<void> deletarFavoritosUsuario(String uid) async {
     try {
       final resultados = await Future.wait([

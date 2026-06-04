@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
+import 'package:goalink/repositories/favorito_repository.dart';
 import 'package:goalink/repositories/notificacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
 import 'package:goalink/repositories/usuario_repository.dart';
@@ -62,6 +63,9 @@ void main() async {
         ),
         Provider<NotificacoesRepository>(
           create: (_) => NotificacoesRepository(NotificacaoService()),
+        ),
+        Provider<FavoritoRepository>(
+          create: (_) => FavoritoRepository(FavoritoService()),
         ),
       ],
       child: const MyApp(),
