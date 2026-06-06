@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/repositories/dica_treino_exercicio_repository.dart';
 import 'package:goalink/repositories/favorito_repository.dart';
 import 'package:goalink/screens/favorites/favorite_view_model.dart';
 import 'package:goalink/screens/favorites/favorites_screen.dart';
+import 'package:goalink/screens/tips/exercice_screen.dart';
+import 'package:goalink/screens/tips/exercice_view_model.dart';
+import 'package:goalink/screens/tips/tips_screen.dart';
+import 'package:goalink/screens/tips/tips_view_model.dart';
 import 'package:provider/provider.dart';
-
 import 'package:goalink/app_scaffold.dart';
 import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
@@ -92,23 +96,46 @@ GoRouter criarRouter(AuthProvider authProvider) {
           //   ],
           // ),
           // // Index 2: Tips
-          // StatefulShellBranch(
-          //   routes: [
-          //     GoRoute(
-          //       path: '/tips',
-          //       builder: (c, s) => const TipsScreen(),
-          //       routes: [
-          //         GoRoute(
-          //           path: 'detalhe',
-          //           builder: (c, s) {
-          //             final dica = s.extra as DicaTreinoModel;
-          //             return TipDetailScreen(dica: dica);
-          //           },
-          //         ),
-          //       ],
-          //     ),
-          //   ],
-          // ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/tips',
+                builder: (context, state) {
+                  return ChangeNotifierProvider(
+                    create: (_) => TipsViewModel(
+                      context.read<DicaTreinoExercicioRepository>(),
+                    ),
+                    child: const TipsScreen(),
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: "exercices/:id",
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: ChangeNotifierProvider(
+                          create: (_) => ExercicioViewModel(
+                            context.read<DicaTreinoExercicioRepository>(),
+                          ),
+                          child: ExerciceScreen(
+                            idDica: state.pathParameters['id']!,
+                          ),
+                        ),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
           // // Index 3: Chat
           // StatefulShellBranch(
           //   routes: [

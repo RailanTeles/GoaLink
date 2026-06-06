@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/core/circular_loading.dart';
 import 'package:goalink/models/dica_treino_model.dart';
-import 'package:goalink/screens/tips/widgets/tips_widget.dart';
-import 'package:goalink/services/comunicacao_service.dart';
+import 'package:goalink/screens/tips/tips_view_model.dart';
+import 'package:provider/provider.dart';
 
 class TipsScreen extends StatefulWidget {
   const TipsScreen({super.key});
@@ -12,114 +13,211 @@ class TipsScreen extends StatefulWidget {
 }
 
 class _TipsScreenState extends State<TipsScreen> {
-  final _comService = ComunicacaoService();
-  late Future<List<DicaTreinoModel>> _dicasFuture;
-  String _selectedFilter = 'Todos';
-
   @override
   void initState() {
     super.initState();
-    _dicasFuture = _comService.getDicasTreino();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TipsViewModel>().obterDicas();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<TipsViewModel>();
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
-      body: Padding(
-        padding: const EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: 75,
+      body: _buildBodyContent(vm),
+    );
+  }
+
+  Widget _buildBodyContent(TipsViewModel vm) {
+    if (vm.isLoading) {
+      return const Center(child: CircularLoading());
+    }
+
+    if (vm.error != null) {
+      return RefreshIndicator(
+        onRefresh: vm.obterDicas,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Center(
+              child: Text(
+                '${vm.error}',
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
-        child: Column(
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Barra de Filtros
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: _buildFilterBar(context, vm),
+        ),
+        // Lista de Dicas
+        Expanded(
+          child: vm.dicasFiltradas.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Nenhuma dica encontrada para este filtro.',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : ListView.separated(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 90,
+                  ),
+                  itemCount: vm.dicasFiltradas.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
+                  itemBuilder: (_, index) {
+                    final dica = vm.dicasFiltradas[index];
+                    return _TipsWidget(
+                      dica: dica,
+                    ); // Widget construído logo abaixo
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterBar(BuildContext context, TipsViewModel vm) {
+    final options = ['Todos', 'Técnico', 'Físico'];
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: options.map((option) {
+          final selecionado = vm.filtroAtual == option;
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: ChoiceChip(
+              label: Text(option),
+              selected: selecionado,
+              onSelected: (_) => vm.alterarFiltro(option),
+              selectedColor: Theme.of(context).colorScheme.primary,
+              labelStyle: TextStyle(
+                color: selecionado ? Colors.white : Colors.black87,
+                fontWeight: selecionado ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _TipsWidget extends StatelessWidget {
+  final DicaTreinoModel dica;
+
+  const _TipsWidget({required this.dica});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push('/tips/exercices/${dica.idDica}'),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey.shade200),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Dicas de Treinamento', style: TextStyle(fontSize: 20)),
-            const SizedBox(height: 12),
-            _buildFilterBar(context),
-            const SizedBox(height: 16),
+            // Imagem
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: SizedBox(
+                width: 90,
+                height: 90,
+                child: dica.midiaUrl != null && dica.midiaUrl!.isNotEmpty
+                    ? Image.network(
+                        dica.midiaUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) =>
+                            const Icon(Icons.image_not_supported),
+                      )
+                    : Container(
+                        color: Colors.grey.shade200,
+                        child: const Icon(
+                          Icons.sports_soccer,
+                          color: Colors.grey,
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Textos
             Expanded(
-              child: FutureBuilder<List<DicaTreinoModel>>(
-                future: _dicasFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    return const Center(child: Text('Erro ao carregar dicas.'));
-                  }
-
-                  final dicas = snapshot.data ?? [];
-                  final filtradas = _filtrarDicas(dicas);
-
-                  if (filtradas.isEmpty) {
-                    return const Center(child: Text('Sem dicas disponíveis.'));
-                  }
-
-                  return ListView.separated(
-                    padding: const EdgeInsets.only(bottom: 90),
-                    itemCount: filtradas.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 12),
-                    itemBuilder: (_, index) {
-                      final dica = filtradas[index];
-                      return GestureDetector(
-                        onTap: () async {
-                          final filtroRetornado = await context.push<String>(
-                            '/tips/detalhe',
-                            extra: dica,
-                          );
-                          if (filtroRetornado != null) {
-                            setState(() => _selectedFilter = filtroRetornado);
-                          }
-                        },
-                        child: TipsWidget(dica: dica),
-                      );
-                    },
-                  );
-                },
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Text(
+                    dica.titulo,
+                    style: const TextStyle(fontSize: 18, fontWeight: .bold),
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    dica.descricao,
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                    maxLines: 3,
+                    overflow: .ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      dica.categoria,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildFilterBar(BuildContext context) {
-    final options = ['Todos', 'Técnico', 'Físico'];
-    return Row(
-      children: options.map((option) {
-        final selecionado = _selectedFilter == option;
-        return Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: OutlinedButton(
-            onPressed: () => setState(() => _selectedFilter = option),
-            style: OutlinedButton.styleFrom(
-              backgroundColor: selecionado
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.white,
-              foregroundColor: selecionado ? Colors.white : Colors.black87,
-              side: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
-                width: 1.5,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            ),
-            child: Text(option, style: const TextStyle(fontSize: 14)),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  List<DicaTreinoModel> _filtrarDicas(List<DicaTreinoModel> dicas) {
-    if (_selectedFilter == 'Todos') return dicas;
-    return dicas.where((dica) => dica.categoria == _selectedFilter).toList();
   }
 }

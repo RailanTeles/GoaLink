@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
+import 'package:goalink/repositories/dica_treino_exercicio_repository.dart';
 import 'package:goalink/repositories/favorito_repository.dart';
 import 'package:goalink/repositories/notificacoes_repository.dart';
 import 'package:goalink/repositories/postagem_repository.dart';
@@ -12,6 +13,7 @@ import 'package:goalink/services/auth_service.dart';
 import 'package:goalink/services/avaliacao_service.dart';
 import 'package:goalink/services/cache_service.dart';
 import 'package:goalink/services/chat_mensagem_service.dart';
+import 'package:goalink/services/dica_treino_exercicio_service.dart';
 import 'package:goalink/services/favorito_service.dart';
 import 'package:goalink/services/notificacao_service.dart';
 import 'package:goalink/services/postagem_service.dart';
@@ -66,6 +68,10 @@ void main() async {
         ),
         Provider<FavoritoRepository>(
           create: (_) => FavoritoRepository(FavoritoService()),
+        ),
+        Provider<DicaTreinoExercicioRepository>(
+          create: (_) =>
+              DicaTreinoExercicioRepository(DicaTreinoExercicioService()),
         ),
       ],
       child: const MyApp(),

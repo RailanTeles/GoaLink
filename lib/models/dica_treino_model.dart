@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DicaTreinoModel {
   final String idDica;
   final String titulo;
@@ -22,7 +24,7 @@ class DicaTreinoModel {
       descricao: json['descricao'] ?? '',
       midiaUrl: json['midia_url'],
       categoria: json['categoria'] ?? 'Técnico',
-      criadoEm: DateTime.parse(json['criado_em']),
+      criadoEm: (json['criado_em'] as Timestamp).toDate(),
     );
   }
 
@@ -33,7 +35,7 @@ class DicaTreinoModel {
       'descricao': descricao,
       'midia_url': midiaUrl,
       'categoria': categoria,
-      'criado_em': criadoEm.toIso8601String(),
+      'criado_em': Timestamp.fromDate(criadoEm),
     };
 
     dados.removeWhere((chave, valor) => valor == null);

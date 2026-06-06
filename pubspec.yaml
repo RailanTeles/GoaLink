@@ -1,6 +1,6 @@
 name: goalink
 description: "A new Flutter project."
-publish_to: 'none' 
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -40,8 +40,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/icons/
-    - assets/mocks/
-  
+
   fonts:
     - family: MavenPro
       fonts:
@@ -58,5 +57,5 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/images/logo_app.png"
-  adaptive_icon_background: "#FFFFFF" 
+  adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/images/logo_app.png"
