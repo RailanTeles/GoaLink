@@ -58,43 +58,44 @@ class _TipsScreenState extends State<TipsScreen> {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Barra de Filtros
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: _buildFilterBar(context, vm),
-        ),
-        // Lista de Dicas
-        Expanded(
-          child: vm.dicasFiltradas.isEmpty
-              ? const Center(
-                  child: Text(
-                    'Nenhuma dica encontrada para este filtro.',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
+    return RefreshIndicator(
+      onRefresh: vm.obterDicas,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: _buildFilterBar(context, vm),
+          ),
+          Expanded(
+            child: vm.dicasFiltradas.isEmpty
+                ? const Center(
+                    child: Text(
+                      'Nenhuma dica encontrada para este filtro.',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      bottom: 90,
+                    ),
+                    itemCount: vm.dicasFiltradas.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
+                    itemBuilder: (_, index) {
+                      final dica = vm.dicasFiltradas[index];
+                      return _TipsWidget(
+                        dica: dica,
+                      ); // Widget construído logo abaixo
+                    },
                   ),
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    bottom: 90,
-                  ),
-                  itemCount: vm.dicasFiltradas.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 12),
-                  itemBuilder: (_, index) {
-                    final dica = vm.dicasFiltradas[index];
-                    return _TipsWidget(
-                      dica: dica,
-                    ); // Widget construído logo abaixo
-                  },
-                ),
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
