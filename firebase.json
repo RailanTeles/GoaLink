@@ -1,1 +1,45 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"goalink-67254","appId":"1:15014301618:android:d40659dbdd0b61fe3e1eab","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"goalink-67254","configurations":{"android":"1:15014301618:android:d40659dbdd0b61fe3e1eab","ios":"1:15014301618:ios:a8b2aab08e4c31843e1eab","macos":"1:15014301618:ios:a8b2aab08e4c31843e1eab","web":"1:15014301618:web:28058dc4ad9616e13e1eab","windows":"1:15014301618:web:2251f7bfaee93a523e1eab"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "goalink-67254",
+          "appId": "1:15014301618:android:d40659dbdd0b61fe3e1eab",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "goalink-67254",
+          "configurations": {
+            "android": "1:15014301618:android:d40659dbdd0b61fe3e1eab",
+            "ios": "1:15014301618:ios:a8b2aab08e4c31843e1eab",
+            "macos": "1:15014301618:ios:a8b2aab08e4c31843e1eab",
+            "web": "1:15014301618:web:28058dc4ad9616e13e1eab",
+            "windows": "1:15014301618:web:2251f7bfaee93a523e1eab"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ],
+  "firestore": {
+    "database": "default",
+    "location": "southamerica-east1",
+    "rules": "Y",
+    "indexes": "n"
+  }
+}
