@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:goalink/core/circular_loading.dart';
-import 'package:goalink/screens/favorites/favorite_card_widget.dart';
+import 'package:goalink/screens/favorites/widgets/favorite_card_widget.dart';
 import 'package:goalink/screens/favorites/favorite_view_model.dart';
 import 'package:provider/provider.dart';
 

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:goalink/models/favorito_model.dart';
 
 class FavoritoService {
   late final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
@@ -20,6 +21,30 @@ class FavoritoService {
       return resultado.docs;
     } catch (e) {
       throw Exception('Erro ao obter favoritos: $e');
+    }
+  }
+
+  Future<void> adicionarFavorito(FavoritoModel favorito) async {
+    try {
+      await _firestore.collection(_collectionName).add(favorito.toJson());
+    } catch (e) {
+      throw Exception("Erro ao adicionar aos favoritos: $e");
+    }
+  }
+
+  Future<void> removerFavorito(String meuUsuarioId, String uid) async {
+    try {
+      final snapshot = await _firestore
+          .collection(_collectionName)
+          .where('interessado_id', isEqualTo: meuUsuarioId)
+          .where('id_favorito', isEqualTo: uid)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      throw Exception("Erro ao remover do favorito: $e");
     }
   }
 
@@ -61,6 +86,24 @@ class FavoritoService {
       await batch.commit();
     } catch (e) {
       throw Exception('Erro ao deletar favoritos do usuário: $e');
+    }
+  }
+
+  Future<bool> verificarFavorito(
+    String uidInteressado,
+    String uidFavorito,
+  ) async {
+    try {
+      final snapshot = await _firestore
+          .collection(_collectionName)
+          .where('interessado_id', isEqualTo: uidInteressado)
+          .where('id_favorito', isEqualTo: uidFavorito)
+          .limit(1)
+          .get();
+
+      return snapshot.docs.isNotEmpty;
+    } catch (e) {
+      throw Exception('Erro ao verificar favorito: $e');
     }
   }
 }

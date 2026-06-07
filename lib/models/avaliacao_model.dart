@@ -31,7 +31,6 @@ class AvaliacaoModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id_avaliacao': idAvaliacao,
       'jogador_id': jogadorId,
       'autor_id': autorId,
       'autor_email': autorEmail,

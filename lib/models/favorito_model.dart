@@ -17,7 +17,7 @@ class FavoritoModel {
 
   factory FavoritoModel.fromJson(Map<String, dynamic> json) {
     return FavoritoModel(
-      id: json['id'] ?? '',
+      id: json['id'],
       idFavorito: json['id_favorito'] ?? '',
       interessadoId: json['interessado_id'] ?? '',
       nomeFavorito: json['nome_favorito'] ?? '',
@@ -28,7 +28,6 @@ class FavoritoModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'id_favorito': idFavorito,
       'interessado_id': interessadoId,
       'nome_favorito': nomeFavorito,

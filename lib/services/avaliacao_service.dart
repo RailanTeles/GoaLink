@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:goalink/models/avaliacao_model.dart';
 
 class AvaliacaoService {
   late final FirebaseFirestore _firestore = FirebaseFirestore.instanceFor(
@@ -13,12 +14,20 @@ class AvaliacaoService {
     try {
       var snapshot = await _firestore
           .collection(_collectionName)
-          .where('avaliado_id', isEqualTo: uid)
+          .where('jogador_id', isEqualTo: uid)
           .orderBy('criado_em', descending: true)
           .get();
       return snapshot.docs;
     } catch (e) {
       throw Exception('Erro ao obter avaliações do usuário: $e');
+    }
+  }
+
+  Future<void> adicionarAvaliacao(AvaliacaoModel avaliacao) async {
+    try {
+      await _firestore.collection(_collectionName).add(avaliacao.toJson());
+    } catch (e) {
+      throw Exception('Erro ao adicionar avaliação: $e');
     }
   }
 

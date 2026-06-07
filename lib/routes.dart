@@ -4,6 +4,8 @@ import 'package:goalink/repositories/dica_treino_exercicio_repository.dart';
 import 'package:goalink/repositories/favorito_repository.dart';
 import 'package:goalink/screens/favorites/favorite_view_model.dart';
 import 'package:goalink/screens/favorites/favorites_screen.dart';
+import 'package:goalink/screens/search/profiles/profiles_screen.dart';
+import 'package:goalink/screens/search/profiles/profiles_view_model.dart';
 import 'package:goalink/screens/search/search_screen.dart';
 import 'package:goalink/screens/search/search_view_model.dart';
 import 'package:goalink/screens/tips/exercice_screen.dart';
@@ -397,14 +399,34 @@ GoRouter criarRouter(AuthProvider authProvider) {
           );
         },
       ),
-      // // Rota para perfil de outros usuários
-      // GoRoute(
-      //   path: '/search/:id',
-      //   builder: (context, state) {
-      //     final id = state.pathParameters['id']!;
-      //     return ProfilesScreen(usuarioId: id);
-      //   },
-      // ),
+      // Rota para perfil de outros usuários
+      GoRoute(
+        path: '/search/:id',
+        pageBuilder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (_) => ProfilesViewModel(
+                context.read<UsuarioRepository>(),
+                context.read<PostagemRepository>(),
+                context.read<AvaliacoesRepository>(),
+                context.read<FavoritoRepository>(),
+              ),
+              child: ProfilesScreen(usuarioId: id),
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
     ],
   );
 }

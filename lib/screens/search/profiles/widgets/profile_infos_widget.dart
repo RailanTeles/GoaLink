@@ -10,21 +10,31 @@ class ProfileInfos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final listaRedesSociais = usuario.redesSociais ?? {};
+
     return SizedBox(
-      width: .infinity,
+      width: double.infinity,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final larguraItem = (constraints.maxWidth - 16) / 2;
+          // Define espaçamentos padronizados para o grid
+          const double espacamentoHorizontal = 16.0;
+          const double espacamentoVertical = 20.0;
+
+          // Calcula a largura exata de cada item para que ocupem metade da largura disponível
+          final larguraItem =
+              (constraints.maxWidth - espacamentoHorizontal) / 2;
+
           return Column(
-            mainAxisAlignment: .start,
-            crossAxisAlignment: .start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ---------------------------------------------------------------------
+              // SEÇÃO 1: INFORMAÇÕES DO JOGADOR
+              // ---------------------------------------------------------------------
               if (usuario.tipo == "jogador") ...[
                 Wrap(
-                  spacing: 16,
-                  runSpacing: 20,
+                  spacing: espacamentoHorizontal, // Espaço entre as colunas
+                  runSpacing: espacamentoVertical, // Espaço entre as linhas
                   children: [
-                    // Informações Primárias
                     if (usuario.cidade != null && usuario.cidade!.isNotEmpty)
                       SizedBox(
                         width: larguraItem,
@@ -59,11 +69,13 @@ class ProfileInfos extends StatelessWidget {
                 ),
               ],
 
-              // Informações do Olheiro
+              // ---------------------------------------------------------------------
+              // SEÇÃO 2: INFORMAÇÕES DO OLHEIRO
+              // ---------------------------------------------------------------------
               if (usuario.tipo == "olheiro") ...[
                 Wrap(
-                  spacing: 16,
-                  runSpacing: 20,
+                  spacing: espacamentoHorizontal,
+                  runSpacing: espacamentoVertical,
                   children: [
                     if (usuario.clubeRepresentante != null &&
                         usuario.clubeRepresentante!.isNotEmpty)
@@ -90,34 +102,46 @@ class ProfileInfos extends StatelessWidget {
                 ),
               ],
 
-              // Informações do clube
+              // ---------------------------------------------------------------------
+              // SEÇÃO 3: INFORMAÇÕES DO CLUBE
+              // ---------------------------------------------------------------------
               if (usuario.tipo == "clube") ...[
-                if (usuario.cidade != null && usuario.cidade!.isNotEmpty)
-                  SizedBox(
-                    width: larguraItem,
-                    child: LabelInfo(
-                      icone: Icons.location_pin,
-                      textoTitulo: "Cidade",
-                      textoLabel: usuario.cidade!,
-                    ),
-                  ),
-                if (usuario.jogadoresProcurados != null &&
-                    usuario.jogadoresProcurados!.isNotEmpty)
-                  SizedBox(
-                    width: larguraItem,
-                    child: LabelInfo(
-                      icone: Icons.group,
-                      textoTitulo: "Jogadores Procurados",
-                      textoLabel: usuario.jogadoresProcurados!,
-                    ),
-                  ),
+                Wrap(
+                  spacing: espacamentoHorizontal,
+                  runSpacing: espacamentoVertical,
+                  children: [
+                    if (usuario.cidade != null && usuario.cidade!.isNotEmpty)
+                      SizedBox(
+                        width: larguraItem,
+                        child: LabelInfo(
+                          icone: Icons.location_pin,
+                          textoTitulo: "Cidade",
+                          textoLabel: usuario.cidade!,
+                        ),
+                      ),
+                    if (usuario.jogadoresProcurados != null &&
+                        usuario.jogadoresProcurados!.isNotEmpty)
+                      SizedBox(
+                        width: larguraItem,
+                        child: LabelInfo(
+                          icone: Icons.group,
+                          textoTitulo: "Jogadores Procurados",
+                          textoLabel: usuario.jogadoresProcurados!,
+                        ),
+                      ),
+                  ],
+                ),
               ],
 
-              // Comum a todos -------------------------------
+              // ---------------------------------------------------------------------
+              // SEÇÕES COMUNS A TODOS
+              // ---------------------------------------------------------------------
+
               // Descrição
               if (usuario.descricao != null &&
                   usuario.descricao!.isNotEmpty) ...[
-                SizedBox(height: 20),
+                // Espaçamento consistente antes da descrição, se houver informações acima
+                const SizedBox(height: 24),
                 SizedBox(
                   width: constraints.maxWidth,
                   child: LabelInfo(
@@ -131,9 +155,9 @@ class ProfileInfos extends StatelessWidget {
 
               // Redes Sociais
               if (listaRedesSociais.isNotEmpty) ...[
-                SizedBox(height: 20),
+                const SizedBox(height: 24),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 12.0),
                   child: Row(
                     children: [
                       Icon(
@@ -141,15 +165,15 @@ class ProfileInfos extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                         size: 20,
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           "Redes Sociais",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
-                            fontWeight: .bold,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -158,7 +182,7 @@ class ProfileInfos extends StatelessWidget {
                 ),
                 Wrap(
                   spacing: 16,
-                  runSpacing: 20,
+                  runSpacing: 16,
                   children: [
                     for (var e in listaRedesSociais.entries)
                       SocialInfo(

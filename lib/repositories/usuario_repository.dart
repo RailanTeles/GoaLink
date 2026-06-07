@@ -136,6 +136,11 @@ class UsuarioRepository {
     throw Exception('Usuário não encontrado no banco de dados.');
   }
 
+  Future<UsuarioModel?> obterUsuarioPorUid(String uid) async {
+    final usuario = await _usuarioService.obterUsuarioUid(uid);
+    return usuario;
+  }
+
   Future<void> recuperarSenha(String email) async {
     await _authService.recuperarSenha(email.trim());
   }

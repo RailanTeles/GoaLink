@@ -10,11 +10,15 @@ class PostComentWidget extends StatefulWidget {
     super.key,
     required this.controller,
     this.onDelete,
+    this.onComment,
+    this.isLoadingComentar = false,
     required this.usuario,
   });
 
   final PostComentController controller;
   final Future<void> Function(PostagemModel)? onDelete;
+  final Future<void> Function(String)? onComment;
+  final bool isLoadingComentar;
   final UsuarioModel usuario;
 
   @override
@@ -103,6 +107,8 @@ class _PostComentWidgetState extends State<PostComentWidget> {
                         avaliacoes: c.avaliacoes,
                         isLoadingAvaliacoes: c.isLoadingAvaliacoes,
                         erroAvaliacoes: c.erroAvaliacoes,
+                        fazerComentario: widget.onComment,
+                        isLoadingComentar: widget.isLoadingComentar,
                       ),
               ),
             ],
