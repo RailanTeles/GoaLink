@@ -4,6 +4,8 @@ import 'package:goalink/repositories/dica_treino_exercicio_repository.dart';
 import 'package:goalink/repositories/favorito_repository.dart';
 import 'package:goalink/screens/favorites/favorite_view_model.dart';
 import 'package:goalink/screens/favorites/favorites_screen.dart';
+import 'package:goalink/screens/search/search_screen.dart';
+import 'package:goalink/screens/search/search_view_model.dart';
 import 'package:goalink/screens/tips/exercice_screen.dart';
 import 'package:goalink/screens/tips/exercice_view_model.dart';
 import 'package:goalink/screens/tips/tips_screen.dart';
@@ -90,11 +92,20 @@ GoRouter criarRouter(AuthProvider authProvider) {
             ],
           ),
           // Index 1: Search
-          // StatefulShellBranch(
-          //   routes: [
-          //     GoRoute(path: '/search', builder: (c, s) => const SearchScreen()),
-          //   ],
-          // ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/search',
+                builder: (context, state) {
+                  return ChangeNotifierProvider(
+                    create: (_) =>
+                        SearchViewModel(context.read<UsuarioRepository>()),
+                    child: const SearchScreen(),
+                  );
+                },
+              ),
+            ],
+          ),
           // // Index 2: Tips
           StatefulShellBranch(
             routes: [
@@ -314,7 +325,6 @@ GoRouter criarRouter(AuthProvider authProvider) {
       ),
       GoRoute(
         path: '/notifications',
-        // builder: (context, state) => const NotificationsScreen(),
         pageBuilder: (context, state) {
           return CustomTransitionPage(
             key: state.pageKey,

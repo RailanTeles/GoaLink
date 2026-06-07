@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:goalink/models/filtros_pesquisa.dart';
 import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/services/auth_service.dart';
 import 'package:goalink/services/avaliacao_service.dart';
@@ -58,6 +59,23 @@ class UsuarioRepository {
       );
       await _usuarioService.cadastrarUsuarioNoBanco(usuarioInstancia);
     }
+  }
+
+  Future<List<UsuarioModel>> pesquisarUsuarios({
+    String? termoNome,
+    FiltrosPesquisa? filtros,
+  }) async {
+    final docs = await _usuarioService.pesquisarUsuarios(
+      termoNome: termoNome,
+      filtros: filtros,
+    );
+
+    return docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      data['id'] = doc.id;
+
+      return UsuarioModel.fromJson(data);
+    }).toList();
   }
 
   Future<void> deletarConta(String senha, String uid, String? fotoUrl) async {

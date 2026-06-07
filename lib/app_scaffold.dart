@@ -18,7 +18,7 @@ class AppScaffold extends StatelessWidget {
       extendBody: true,
       appBar:
           navigationShell.currentIndex ==
-              2 //TODO: Mudar para 4
+              3 //TODO: Mudar para 4
           ? null
           : Navbar(tipoUsuario: usuarioModel?.tipo),
       body: SafeArea(bottom: false, child: navigationShell),

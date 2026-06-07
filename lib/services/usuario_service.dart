@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:goalink/models/filtros_pesquisa.dart';
 import 'package:goalink/models/usuario_model.dart';
 
 class UsuarioService {
@@ -72,6 +73,73 @@ class UsuarioService {
           .toList();
     } catch (e) {
       throw Exception('Erro ao obter jogadores novos: $e');
+    }
+  }
+
+  Future<List<DocumentSnapshot>> pesquisarUsuarios({
+    String? termoNome,
+    FiltrosPesquisa? filtros,
+  }) async {
+    try {
+      Query query = _firestore.collection("usuarios");
+
+      // Igualdade
+      if (filtros != null) {
+        if (filtros.tipo != null && filtros.tipo!.isNotEmpty) {
+          query = query.where('tipo', isEqualTo: filtros.tipo);
+        }
+        if (filtros.cidade != null && filtros.cidade!.isNotEmpty) {
+          query = query.where('cidade', isEqualTo: filtros.cidade);
+        }
+        if (filtros.posicao != null && filtros.posicao!.isNotEmpty) {
+          query = query.where('posicao', isEqualTo: filtros.posicao);
+        }
+        if (filtros.pernaPreferida != null &&
+            filtros.pernaPreferida!.isNotEmpty) {
+          query = query.where(
+            'perna_preferida',
+            isEqualTo: filtros.pernaPreferida,
+          );
+        }
+      }
+
+      // Peso
+      if (filtros?.pesoMinimo != null) {
+        query = query.where(
+          'peso',
+          isGreaterThanOrEqualTo: filtros!.pesoMinimo,
+        );
+      }
+      if (filtros?.pesoMaximo != null) {
+        query = query.where('peso', isLessThanOrEqualTo: filtros!.pesoMaximo);
+      }
+
+      // Altura
+      if (filtros?.alturaMinima != null) {
+        query = query.where(
+          'altura',
+          isGreaterThanOrEqualTo: filtros!.alturaMinima,
+        );
+      }
+      if (filtros?.alturaMaxima != null) {
+        query = query.where(
+          'altura',
+          isLessThanOrEqualTo: filtros!.alturaMaxima,
+        );
+      }
+
+      if (termoNome != null && termoNome.isNotEmpty) {
+        final termo = termoNome.trim();
+        query = query
+            .where('nome', isGreaterThanOrEqualTo: termo)
+            .where('nome', isLessThanOrEqualTo: '$termo\uf8ff');
+      }
+
+      QuerySnapshot snapshot = await query.limit(30).get();
+
+      return snapshot.docs;
+    } catch (e) {
+      throw Exception('Erro ao pesquisar usuários: $e');
     }
   }
 }
