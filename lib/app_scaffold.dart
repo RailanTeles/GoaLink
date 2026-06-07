@@ -3,11 +3,31 @@ import 'package:go_router/go_router.dart';
 import 'package:goalink/core/navbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:goalink/providers/auth_provider.dart';
+import 'package:goalink/providers/notification_helper.dart';
 import 'package:provider/provider.dart';
 
-class AppScaffold extends StatelessWidget {
+class AppScaffold extends StatefulWidget {
   const AppScaffold({super.key, required this.navigationShell});
   final StatefulNavigationShell navigationShell;
+
+  @override
+  State<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends State<AppScaffold> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final usuario = context.read<AuthProvider>().usuario;
+      if (usuario != null) {
+        NotificationHelper().inicializarNotificacoes(
+          currentUid: usuario.id,
+          tokenSalvo: usuario.fcmToken,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +37,11 @@ class AppScaffold extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       appBar:
-          navigationShell.currentIndex ==
+          widget.navigationShell.currentIndex ==
               3 //TODO: Mudar para 4
           ? null
           : Navbar(tipoUsuario: usuarioModel?.tipo),
-      body: SafeArea(bottom: false, child: navigationShell),
+      body: SafeArea(bottom: false, child: widget.navigationShell),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
@@ -52,14 +72,14 @@ class AppScaffold extends StatelessWidget {
   }
 
   Widget _buildNavItem(int index, String urlImage) {
-    final isSelected = navigationShell.currentIndex == index;
+    final isSelected = widget.navigationShell.currentIndex == index;
     final corAtiva = const Color(0xFF022412);
     final corInativa = Colors.white;
     final corAtual = isSelected ? corAtiva : corInativa;
     return GestureDetector(
-      onTap: () => navigationShell.goBranch(
+      onTap: () => widget.navigationShell.goBranch(
         index,
-        initialLocation: index == navigationShell.currentIndex,
+        initialLocation: index == widget.navigationShell.currentIndex,
       ),
       child: Container(
         padding: const EdgeInsets.all(12),
