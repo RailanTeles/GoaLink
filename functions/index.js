@@ -66,7 +66,7 @@ exports.enviarNotificacaoMensagem = functions
       const chatDoc = await db.collection("chats").doc(chatId).get();
       if (!chatDoc.exists) return null;
 
-      const { participantes = [], usuarios_dados: usuariosDados = {} } =
+      const { participantes = [], usuario_dados: usuariosDados = {} } =
         chatDoc.data();
 
       const destinatarioId = participantes.find((id) => id !== remetenteId);

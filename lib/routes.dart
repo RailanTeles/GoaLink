@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/models/usuario_model.dart';
 import 'package:goalink/repositories/chat_mensagem_repository.dart';
 import 'package:goalink/repositories/dica_treino_exercicio_repository.dart';
 import 'package:goalink/repositories/favorito_repository.dart';
+import 'package:goalink/screens/chat/chat_detail_screen.dart';
+import 'package:goalink/screens/chat/chat_detail_view_model.dart';
 import 'package:goalink/screens/chat/chat_screen.dart';
 import 'package:goalink/screens/chat/chat_view_model.dart';
 import 'package:goalink/screens/favorites/favorite_view_model.dart';
@@ -380,13 +383,36 @@ GoRouter criarRouter(AuthProvider authProvider) {
           );
         },
       ),
-      // GoRoute(
-      //   path: '/chat/conversation/:chatId',
-      //   builder: (context, state) {
-      //     final chatId = state.pathParameters['chatId']!;
-      //     return ChatDetailScreen(chatId: chatId);
-      //   },
-      // ),
+      GoRoute(
+        path: '/chat/conversation/:chatId',
+        pageBuilder: (context, state) {
+          final chatId = state.pathParameters['chatId']!;
+          final outroUsuario = state.extra as UsuarioModel?;
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: ChangeNotifierProvider(
+              create: (context) => ChatDetailViewModel(
+                context.read<ChatMensagemRepository>(),
+                context.read<UsuarioRepository>(),
+              ),
+              child: ChatDetailScreen(
+                chatId: chatId,
+                outroUsuario: outroUsuario,
+              ),
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: CurveTween(
+                      curve: Curves.easeInOut,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
       GoRoute(
         path: '/recuperar-senha',
         pageBuilder: (context, state) {
