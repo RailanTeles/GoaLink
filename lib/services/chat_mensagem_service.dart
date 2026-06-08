@@ -10,6 +10,15 @@ class ChatMensagemService {
   final String _collectionName = 'chats';
   // final String _subcollectionName = 'mensagens';
 
+  Stream<List<QueryDocumentSnapshot>> listarMeusChats(String uid) {
+    return _firestore
+        .collection(_collectionName)
+        .where('participantes', arrayContains: uid)
+        .orderBy('atualizado_em', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
+  }
+
   Future<void> softDeletarMensagensChat(String uid) async {
     try {
       final query = await _firestore
@@ -23,7 +32,7 @@ class ChatMensagemService {
 
       for (var doc in query.docs) {
         batch.update(doc.reference, {
-          'usuario_dados.$uid': {
+          'usuarios_dados.$uid': {
             'nome': 'Usuário Excluído',
             'foto_perfil': null,
             'tipo': 'excluido',

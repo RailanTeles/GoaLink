@@ -1,6 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/repositories/chat_mensagem_repository.dart';
+import 'package:provider/provider.dart';
+
 import 'package:goalink/providers/auth_provider.dart';
 import 'package:goalink/repositories/avaliacoes_repository.dart';
 import 'package:goalink/repositories/dica_treino_exercicio_repository.dart';
@@ -19,9 +23,8 @@ import 'package:goalink/services/notificacao_service.dart';
 import 'package:goalink/services/postagem_service.dart';
 import 'package:goalink/services/storage_service.dart';
 import 'package:goalink/services/usuario_service.dart';
-import 'package:provider/provider.dart';
+
 import 'firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,6 +75,9 @@ void main() async {
         Provider<DicaTreinoExercicioRepository>(
           create: (_) =>
               DicaTreinoExercicioRepository(DicaTreinoExercicioService()),
+        ),
+        Provider<ChatMensagemRepository>(
+          create: (_) => ChatMensagemRepository(ChatMensagemService()),
         ),
       ],
       child: const MyApp(),

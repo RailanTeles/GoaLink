@@ -36,9 +36,7 @@ class _AppScaffoldState extends State<AppScaffold> {
 
     return Scaffold(
       extendBody: true,
-      appBar:
-          widget.navigationShell.currentIndex ==
-              3 //TODO: Mudar para 4
+      appBar: widget.navigationShell.currentIndex == 4
           ? null
           : Navbar(tipoUsuario: usuarioModel?.tipo),
       body: SafeArea(bottom: false, child: widget.navigationShell),

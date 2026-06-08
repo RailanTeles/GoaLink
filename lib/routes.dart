@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goalink/repositories/chat_mensagem_repository.dart';
 import 'package:goalink/repositories/dica_treino_exercicio_repository.dart';
 import 'package:goalink/repositories/favorito_repository.dart';
+import 'package:goalink/screens/chat/chat_screen.dart';
+import 'package:goalink/screens/chat/chat_view_model.dart';
 import 'package:goalink/screens/favorites/favorite_view_model.dart';
 import 'package:goalink/screens/favorites/favorites_screen.dart';
 import 'package:goalink/screens/search/profiles/profiles_screen.dart';
@@ -150,11 +153,18 @@ GoRouter criarRouter(AuthProvider authProvider) {
             ],
           ),
           // // Index 3: Chat
-          // StatefulShellBranch(
-          //   routes: [
-          //     GoRoute(path: '/chat', builder: (c, s) => const ChatScreen()),
-          //   ],
-          // ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/chat',
+                builder: (context, state) => ChangeNotifierProvider(
+                  create: (_) =>
+                      ChatViewModel(context.read<ChatMensagemRepository>()),
+                  child: const ChatScreen(),
+                ),
+              ),
+            ],
+          ),
           // Index 4: Perfil
           StatefulShellBranch(
             routes: [
