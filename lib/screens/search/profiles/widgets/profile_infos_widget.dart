@@ -15,11 +15,9 @@ class ProfileInfos extends StatelessWidget {
       width: double.infinity,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Define espaçamentos padronizados para o grid
           const double espacamentoHorizontal = 16.0;
           const double espacamentoVertical = 20.0;
 
-          // Calcula a largura exata de cada item para que ocupem metade da largura disponível
           final larguraItem =
               (constraints.maxWidth - espacamentoHorizontal) / 2;
 
@@ -32,8 +30,8 @@ class ProfileInfos extends StatelessWidget {
               // ---------------------------------------------------------------------
               if (usuario.tipo == "jogador") ...[
                 Wrap(
-                  spacing: espacamentoHorizontal, // Espaço entre as colunas
-                  runSpacing: espacamentoVertical, // Espaço entre as linhas
+                  spacing: espacamentoHorizontal,
+                  runSpacing: espacamentoVertical,
                   children: [
                     if (usuario.cidade != null && usuario.cidade!.isNotEmpty)
                       SizedBox(
@@ -96,6 +94,7 @@ class ProfileInfos extends StatelessWidget {
                           icone: Icons.group,
                           textoTitulo: "Jogadores Procurados",
                           textoLabel: usuario.jogadoresProcurados!,
+                          maximoLinhas: 4,
                         ),
                       ),
                   ],
@@ -127,6 +126,7 @@ class ProfileInfos extends StatelessWidget {
                           icone: Icons.group,
                           textoTitulo: "Jogadores Procurados",
                           textoLabel: usuario.jogadoresProcurados!,
+                          maximoLinhas: 4,
                         ),
                       ),
                   ],
@@ -140,7 +140,6 @@ class ProfileInfos extends StatelessWidget {
               // Descrição
               if (usuario.descricao != null &&
                   usuario.descricao!.isNotEmpty) ...[
-                // Espaçamento consistente antes da descrição, se houver informações acima
                 const SizedBox(height: 24),
                 SizedBox(
                   width: constraints.maxWidth,

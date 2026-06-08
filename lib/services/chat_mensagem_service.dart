@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:goalink/models/chat_model.dart';
 import 'package:goalink/models/messagem_model.dart';
 
@@ -74,6 +75,7 @@ class ChatMensagemService {
 
       await batch.commit();
     } catch (e) {
+      debugPrint('Erro ao marcar como lida: $e');
       throw Exception('Erro ao marcar como lida: $e');
     }
   }
