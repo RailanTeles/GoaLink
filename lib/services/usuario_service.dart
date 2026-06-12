@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:goalink/models/filtros_pesquisa.dart';
 import 'package:goalink/models/usuario_model.dart';
 
@@ -83,6 +84,17 @@ class UsuarioService {
     try {
       Query query = _firestore.collection("usuarios");
 
+      debugPrint(
+        '[UsuarioService] pesquisarUsuarios recebeu: '
+        'termo=$termoNome, '
+        'tipo=${filtros?.tipo}, '
+        'cidade=${filtros?.cidade}, '
+        'posicao=${filtros?.posicao}, '
+        'perna=${filtros?.pernaPreferida}, '
+        'altura=${filtros?.alturaMinima}-${filtros?.alturaMaxima}, '
+        'peso=${filtros?.pesoMinimo}-${filtros?.pesoMaximo}',
+      );
+
       // Igualdade
       if (filtros != null) {
         if (filtros.tipo != null && filtros.tipo!.isNotEmpty) {
@@ -136,6 +148,10 @@ class UsuarioService {
       }
 
       QuerySnapshot snapshot = await query.limit(30).get();
+
+      debugPrint(
+        '[UsuarioService] pesquisarUsuarios retornou ${snapshot.docs.length} docs',
+      );
 
       return snapshot.docs;
     } catch (e) {

@@ -18,6 +18,8 @@ class _FiltrosBottomSheetState extends State<FiltrosBottomSheet> {
 
   RangeValues _alturaRange = const RangeValues(1.50, 2.20);
   RangeValues _pesoRange = const RangeValues(50, 120);
+  static const RangeValues _alturaPadrao = RangeValues(1.50, 2.20);
+  static const RangeValues _pesoPadrao = RangeValues(50, 120);
 
   @override
   void initState() {
@@ -47,20 +49,55 @@ class _FiltrosBottomSheetState extends State<FiltrosBottomSheet> {
   }
 
   void _aplicarFiltros() {
+    final aplicarFiltrosJogador =
+        _tipoSelecionado == 'jogador' || _tipoSelecionado == null;
+    final alturaAlterada =
+        _alturaRange.start != _alturaPadrao.start ||
+        _alturaRange.end != _alturaPadrao.end;
+    final pesoAlterado =
+        _pesoRange.start != _pesoPadrao.start ||
+        _pesoRange.end != _pesoPadrao.end;
+
     final novosFiltros = FiltrosPesquisa(
       tipo: _tipoSelecionado,
-      posicao: _posicaoSelecionada,
-      pernaPreferida: _pernaSelecionada,
+      posicao: aplicarFiltrosJogador ? _posicaoSelecionada : null,
+      pernaPreferida: aplicarFiltrosJogador ? _pernaSelecionada : null,
       cidade: _cidadeController.text.isNotEmpty
           ? _cidadeController.text.trim()
           : null,
-      alturaMinima: _alturaRange.start,
-      alturaMaxima: _alturaRange.end,
-      pesoMinimo: _pesoRange.start,
-      pesoMaximo: _pesoRange.end,
+      alturaMinima: aplicarFiltrosJogador && alturaAlterada
+          ? _alturaRange.start
+          : null,
+      alturaMaxima: aplicarFiltrosJogador && alturaAlterada
+          ? _alturaRange.end
+          : null,
+      pesoMinimo: aplicarFiltrosJogador && pesoAlterado
+          ? _pesoRange.start
+          : null,
+      pesoMaximo: aplicarFiltrosJogador && pesoAlterado ? _pesoRange.end : null,
+    );
+    final buscarTodos =
+        novosFiltros.tipo == null &&
+        novosFiltros.cidade == null &&
+        novosFiltros.posicao == null &&
+        novosFiltros.pernaPreferida == null &&
+        novosFiltros.alturaMinima == null &&
+        novosFiltros.alturaMaxima == null &&
+        novosFiltros.pesoMinimo == null &&
+        novosFiltros.pesoMaximo == null;
+
+    debugPrint(
+      '[FiltrosBottomSheet] aplicando filtros: '
+      'buscarTodos=$buscarTodos, '
+      'tipo=${novosFiltros.tipo}, '
+      'cidade=${novosFiltros.cidade}, '
+      'posicao=${novosFiltros.posicao}, '
+      'perna=${novosFiltros.pernaPreferida}, '
+      'altura=${novosFiltros.alturaMinima}-${novosFiltros.alturaMaxima}, '
+      'peso=${novosFiltros.pesoMinimo}-${novosFiltros.pesoMaximo}',
     );
 
-    widget.vm.buscar(novosFiltros: novosFiltros);
+    widget.vm.buscar(novosFiltros: novosFiltros, buscarTodos: buscarTodos);
 
     Navigator.pop(context);
   }
@@ -119,8 +156,15 @@ class _FiltrosBottomSheetState extends State<FiltrosBottomSheet> {
                       valorAtual: _tipoSelecionado,
                       opcoes: const ['jogador', 'olheiro', 'clube'],
                       hint: 'Qualquer tipo',
-                      onChanged: (val) =>
-                          setState(() => _tipoSelecionado = val),
+                      onChanged: (val) => setState(() {
+                        _tipoSelecionado = val;
+                        if (val != 'jogador') {
+                          _posicaoSelecionada = null;
+                          _pernaSelecionada = null;
+                          _alturaRange = _alturaPadrao;
+                          _pesoRange = _pesoPadrao;
+                        }
+                      }),
                     ),
                     const SizedBox(height: 16),
 

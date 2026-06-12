@@ -46,12 +46,15 @@ class SearchViewModel extends ChangeNotifier {
         f.alturaMaxima != null;
   }
 
-  Future<void> buscar({FiltrosPesquisa? novosFiltros}) async {
+  Future<void> buscar({
+    FiltrosPesquisa? novosFiltros,
+    bool buscarTodos = false,
+  }) async {
     if (novosFiltros != null) {
       _filtrosAtuais = _temFiltroAtivo(novosFiltros) ? novosFiltros : null;
     }
 
-    if (_termoBuscaAtual.isEmpty && _filtrosAtuais == null) {
+    if (_termoBuscaAtual.isEmpty && _filtrosAtuais == null && !buscarTodos) {
       _usuarios = [];
       _erro = null;
       _isLoading = false;
@@ -64,10 +67,24 @@ class SearchViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      debugPrint(
+        '[SearchViewModel] pesquisando usuarios: '
+        'termo=${_termoBuscaAtual.isNotEmpty ? _termoBuscaAtual : null}, '
+        'buscarTodos=$buscarTodos, '
+        'tipo=${_filtrosAtuais?.tipo}, '
+        'cidade=${_filtrosAtuais?.cidade}, '
+        'posicao=${_filtrosAtuais?.posicao}, '
+        'perna=${_filtrosAtuais?.pernaPreferida}, '
+        'altura=${_filtrosAtuais?.alturaMinima}-${_filtrosAtuais?.alturaMaxima}, '
+        'peso=${_filtrosAtuais?.pesoMinimo}-${_filtrosAtuais?.pesoMaximo}',
+      );
+
       _usuarios = await _repository.pesquisarUsuarios(
         termoNome: _termoBuscaAtual.isNotEmpty ? _termoBuscaAtual : null,
         filtros: _filtrosAtuais,
       );
+
+      debugPrint('[SearchViewModel] usuarios encontrados: ${_usuarios.length}');
     } catch (e) {
       debugPrint('ERRO DO FIREBASE: $e');
       _erro = e.toString().replaceAll('Exception: ', '');
