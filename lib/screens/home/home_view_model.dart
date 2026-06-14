@@ -18,6 +18,7 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> carregarDadosIniciais() async {
     erro = null;
+    temMaisPostsNoBanco = true;
     try {
       if (postagens.isEmpty) {
         isLoading = true;

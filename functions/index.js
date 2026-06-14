@@ -78,8 +78,13 @@ exports.enviarNotificacaoMensagem = functions
         .get();
       if (!destinatarioDoc.exists) return null;
 
-      const { fcm_token: token } = destinatarioDoc.data();
+      const { fcm_token: token, preferencias_notificacao: preferenciasNotificacao } = destinatarioDoc.data();
       if (!token) return null;
+
+      if (preferenciasNotificacao && preferenciasNotificacao.mensagens === false) {
+        console.log(`Envio cancelado: O usuário ${destinatarioId} desativou as notificações de mensagens.`);
+        return null; 
+      }
 
       const nomeRemetente = usuariosDados[remetenteId]?.nome ?? "Alguém";
 
