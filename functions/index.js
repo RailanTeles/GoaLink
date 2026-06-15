@@ -16,8 +16,10 @@ exports.enviarNotificacaoAvaliacao = functions
   .region(REGIAO)
   .firestore.database(NOME_BANCO)
   .document("avaliacoes/{avaliacaoId}")
-  .onCreate(async (snapshot) => {
-    const { jogador_id: jogadorId, texto: textoComentario } = snapshot.data();
+  .onCreate(async (snapshot, context) => {
+    // Adicionado avaliador_id (assumindo que você salva quem avaliou no doc)
+    const { jogador_id: jogadorId, avaliador_id: avaliadorId, texto: textoComentario } = snapshot.data();
+    const { avaliacaoId } = context.params;
 
     try {
       const jogadorDoc = await db.collection("usuarios").doc(jogadorId).get();
@@ -26,6 +28,33 @@ exports.enviarNotificacaoAvaliacao = functions
       const { fcm_token: token, preferencias_notificacao: preferencias = {} } =
         jogadorDoc.data();
 
+      // Busca os dados de quem enviou a avaliação para salvar no documento
+      let nomeAvaliador = "Alguém";
+      let fotoAvaliador = null;
+      if (avaliadorId) {
+        const avaliadorDoc = await db.collection("usuarios").doc(avaliadorId).get();
+        if (avaliadorDoc.exists) {
+          nomeAvaliador = avaliadorDoc.data().nome ?? "Alguém";
+          fotoAvaliador = avaliadorDoc.data().foto_url ?? null;
+        }
+      }
+
+      // 1. Criação do Documento no Banco (In-App Notification)
+      const notificacaoDoc = {
+        usuario_id: jogadorId,
+        tipo: "atualizacoes",
+        conteudo: textoComentario,
+        lida: false,
+        remetente_id: avaliadorId ?? "",
+        remetente_nome: nomeAvaliador,
+        remetente_foto_url: fotoAvaliador,
+        criado_em: admin.firestore.FieldValue.serverTimestamp(),
+        referencia_id: avaliacaoId
+      };
+      await db.collection("notificacoes").add(notificacaoDoc);
+
+
+      // 2. Envio do Push Notification (FCM)
       if (!token) return null;
       if (preferencias.atualizacoes === false) {
         console.log(`Usuário ${jogadorId} desativou notificações de avaliação.`);
@@ -78,6 +107,25 @@ exports.enviarNotificacaoMensagem = functions
         .get();
       if (!destinatarioDoc.exists) return null;
 
+      const nomeRemetente = usuariosDados[remetenteId]?.nome ?? "Alguém";
+      const fotoRemetente = usuariosDados[remetenteId]?.foto_perfil ?? null;
+
+      // 1. Criação do Documento no Banco (In-App Notification)
+      const notificacaoDoc = {
+        usuario_id: destinatarioId,
+        tipo: "mensagens",
+        conteudo: textoMensagem,
+        lida: false,
+        remetente_id: remetenteId,
+        remetente_nome: nomeRemetente,
+        remetente_foto_url: fotoRemetente,
+        criado_em: admin.firestore.FieldValue.serverTimestamp(),
+        referencia_id: chatId
+      };
+      await db.collection("notificacoes").add(notificacaoDoc);
+
+
+      // 2. Envio do Push Notification (FCM)
       const { fcm_token: token, preferencias_notificacao: preferenciasNotificacao } = destinatarioDoc.data();
       if (!token) return null;
 
@@ -85,8 +133,6 @@ exports.enviarNotificacaoMensagem = functions
         console.log(`Envio cancelado: O usuário ${destinatarioId} desativou as notificações de mensagens.`);
         return null; 
       }
-
-      const nomeRemetente = usuariosDados[remetenteId]?.nome ?? "Alguém";
 
       await admin.messaging().send({
         notification: {
