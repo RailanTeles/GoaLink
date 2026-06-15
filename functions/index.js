@@ -48,7 +48,7 @@ exports.enviarNotificacaoAvaliacao = functions
         remetente_id: avaliadorId ?? "",
         remetente_nome: nomeAvaliador,
         remetente_foto_url: fotoAvaliador,
-        criado_em: admin.firestore.FieldValue.serverTimestamp(),
+        criado_em: new Date().toISOString(),
         referencia_id: avaliacaoId
       };
       await db.collection("notificacoes").add(notificacaoDoc);
@@ -119,7 +119,7 @@ exports.enviarNotificacaoMensagem = functions
         remetente_id: remetenteId,
         remetente_nome: nomeRemetente,
         remetente_foto_url: fotoRemetente,
-        criado_em: admin.firestore.FieldValue.serverTimestamp(),
+        criado_em: new Date().toISOString(),
         referencia_id: chatId
       };
       await db.collection("notificacoes").add(notificacaoDoc);
